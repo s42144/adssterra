@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Complete Tasks to Get Verified & Paid</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root {
+      --primary: #4f8cff;
+      --secondary: #ffb347;
+      --success: #43cd80;
+      --danger: #fc5c65;
+      --bg: #f5f7fa;
+      --task-bg: #fff;
+      --border-radius: 16px;
+      --shadow: 0 6px 24px 0 rgba(80, 130, 255, 0.07), 0 1.5px 8px 0 rgba(80, 130, 255, 0.04);
+      --font: 'Segoe UI', 'Roboto', Arial, sans-serif;
+    }
+    body {
+      background: var(--bg);
+      font-family: var(--font);
+      margin: 0;
+      padding: 0;
+      color: #222;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .container {
+      max-width: 430px;
+      width: 99vw;
+      margin: 30px auto 20px auto;
+      background: var(--task-bg);
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+      padding: 24px 12px 28px 12px;
+    }
+    h1 {
+      text-align: center;
+      font-size: 1.6em;
+      color: var(--primary);
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+    .rules {
+      background: linear-gradient(90deg, #e0edff 0%, #fff 100%);
+      border-left: 3px solid var(--primary);
+      border-radius: var(--border-radius);
+      padding: 18px 16px 16px 16px;
+      font-size: 1em;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(80, 130, 255, 0.06);
+    }
+    .rules li {
+      margin-bottom: 10px;
+      line-height: 1.6;
+      font-weight: 500;
+    }
+    .tasks {
+      margin: 0 0 20px 0;
+    }
+    .task {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #f7faff;
+      border: 1px solid #e0edff;
+      border-radius: 12px;
+      margin: 10px 0;
+      padding: 18px 14px;
+      box-shadow: 0 1.5px 6px rgba(80, 130, 255, 0.06);
+    }
+    .task-name {
+      font-size: 1.07em;
+      font-weight: 500;
+      color: #333;
+      flex: 1 1 auto;
+      margin-right: 18px;
+    }
+    .task button {
+      background: linear-gradient(90deg, var(--primary) 70%, var(--secondary) 100%);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 18px;
+      font-size: 1em;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, box-shadow 0.2s;
+      box-shadow: 0 1.5px 5px rgba(80, 130, 255, 0.11);
+      outline: none;
+    }
+    .task button:disabled {
+      background: #b4d1ff;
+      color: #fff;
+      cursor: not-allowed;
+    }
+    .task .done {
+      background: linear-gradient(90deg, var(--success) 70%, #77e39c 100%);
+      color: #fff;
+    }
+    .task .timer {
+      font-size: 0.93em;
+      color: var(--danger);
+      margin-left: 8px;
+      font-weight: 500;
+    }
+    .progress-bar {
+      height: 7px;
+      background: #e0edff;
+      border-radius: 4px;
+      margin: 20px 0;
+      width: 100%;
+      overflow: hidden;
+    }
+    .progress-bar-inner {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary), var(--secondary) 80%);
+      width: 0%;
+      transition: width 0.4s;
+      border-radius: 4px;
+    }
+    .congrats-section {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 16px 0 0 0;
+      text-align: center;
+      min-height: 350px;
+    }
+    .congrats-section img {
+      width: 120px;
+      margin-bottom: 18px;
+    }
+    .congrats-title {
+      font-size: 1.25em;
+      font-weight: 700;
+      color: var(--success);
+      margin-bottom: 8px;
+    }
+    .code-box {
+      background: #f7faff;
+      border: 1px solid #e0edff;
+      border-radius: 8px;
+      padding: 14px 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 90%;
+      margin: 16px auto 12px auto;
+      font-size: 1.1em;
+      font-family: 'Roboto Mono', monospace, monospace;
+      font-weight: 700;
+      color: #222;
+    }
+    .copy-btn {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 6px 12px;
+      font-size: 0.97em;
+      font-weight: 600;
+      cursor: pointer;
+      margin-left: 10px;
+      transition: background 0.2s;
+    }
+    .copy-btn.copied {
+      background: var(--success);
+    }
+    .partners-section {
+      background: linear-gradient(90deg, #e0edff 60%, #fff 100%);
+      border-radius: var(--border-radius);
+      box-shadow: 0 1.5px 8px rgba(80, 130, 255, 0.09);
+      padding: 18px 14px;
+      margin-top: 24px;
+      margin-bottom: 0;
+      text-align: center;
+    }
+    .partners-title {
+      font-size: 1.1em;
+      font-weight: 700;
+      color: #4f8cff;
+      margin-bottom: 13px;
+      letter-spacing: 1px;
+    }
+    .partners-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 22px;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 0;
+    }
+    .partner-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-size: 1em;
+      font-weight: 600;
+      color: #333;
+      width: 110px;
+      margin-bottom: 8px;
+    }
+    .partner-img {
+      width: 52px;
+      height: 52px;
+      object-fit: cover;
+      border-radius: 12px;
+      margin-bottom: 6px;
+      background: #fff;
+      border: 1px solid #e0edff;
+      box-shadow: 0 1px 4px rgba(80, 130, 255, 0.08);
+    }
+    @media (max-width: 600px) {
+      .container {
+        padding: 10px 2vw 16px 2vw;
+      }
+      .congrats-section img {
+        width: 90px;
+      }
+      .code-box {
+        font-size: 1em;
+        padding: 10px 6px;
+      }
+      .partner-img {
+        width: 42px;
+        height: 42px;
+      }
+      .partner-item {
+        width: 90px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Complete Tasks & Get Verified</h1>
+    <ul class="rules">
+      <li>1. Click on the <b>Complete</b> button for each task, and stay on the opened link for at least <b>15 seconds</b>.</li>
+      <li>2. You must complete <b>all 6 tasks</b> to be verified and receive your payment.</li>
+      <li>3. After finishing all tasks, you will receive a unique code. Submit this code on your micro job website for instant payment and automatic verification.</li>
+    </ul>
+    <div class="progress-bar">
+      <div class="progress-bar-inner" id="progressBar"></div>
+    </div>
+    <div class="tasks" id="tasks">
+      <!-- Tasks will be injected here -->
+    </div>
+    <div class="congrats-section" id="congratsSection">
+      <img src="https://github.com/s42144/adssterra/blob/dea183135295889753585f4adc9a4f5be5a780dc/download%20(7).jpeg?raw=true" alt="Congratulations">
+      <div class="congrats-title">Congratulations! All tasks completed.</div>
+      <div style="margin-bottom: 10px;">Your payment code:</div>
+      <div class="code-box">
+        <span id="paymentCode">63836GSJXVH627</span>
+        <button class="copy-btn" id="copyBtn">Copy</button>
+      </div>
+      <div style="font-size: 0.97em; color: #4f8cff;">Submit this code to your micro job site for instant payment.</div>
+    </div>
+    <div class="partners-section">
+      <div class="partners-title">Our Partners</div>
+      <div class="partners-list">
+        <div class="partner-item">
+          <img class="partner-img" src="https://github.com/s42144/adssterra/blob/ad57518849558fffd9db6455ed639be017fe4d62/images%20(2)%20(27).jpeg?raw=true" alt="BUX.MONEY">
+          BUX.MONEY
+        </div>
+        <div class="partner-item">
+          <img class="partner-img" src="https://github.com/s42144/adssterra/blob/e2f121c96b816a1a46b51db502dfa0974c57b592/download%20(4).png?raw=true" alt="AVISO.BZ">
+          AVISO.BZ
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    // Task Data
+    const TASK_COUNT = 6;
+    const TASK_NAME = "Click Complete Button and Stay There 15 Second";
+    const TASK_LINK = "https://www.profitableratecpm.com/jj0rqun4?key=465c238dddc5368c1f512ac191ee3c43";
+    const tasksElem = document.getElementById('tasks');
+    const progressBar = document.getElementById('progressBar');
+    const congratsSection = document.getElementById('congratsSection');
+    let tasksStatus = Array(TASK_COUNT).fill(false);
+
+    function renderTasks() {
+      let html = '';
+      for (let i = 0; i < TASK_COUNT; i++) {
+        html += `
+          <div class="task" id="task-${i}">
+            <span class="task-name">${i+1}. ${TASK_NAME}</span>
+            <button onclick="handleTaskClick(${i})" id="btn-${i}">Complete</button>
+            <span class="timer" id="timer-${i}" style="display:none"></span>
+          </div>
+        `;
+      }
+      tasksElem.innerHTML = html;
+    }
+
+    renderTasks();
+
+    window.handleTaskClick = function(idx) {
+      const btn = document.getElementById(`btn-${idx}`);
+      const timer = document.getElementById(`timer-${idx}`);
+      if (btn.disabled) return;
+
+      // Open link in new tab
+      window.open(TASK_LINK, '_blank');
+
+      // Disable button and start 15s timer
+      btn.disabled = true;
+      timer.style.display = '';
+      let seconds = 15;
+      timer.textContent = `Wait ${seconds}s...`;
+
+      let interval = setInterval(() => {
+        seconds--;
+        timer.textContent = `Wait ${seconds}s...`;
+        if (seconds <= 0) {
+          clearInterval(interval);
+          timer.textContent = '';
+          // After 15s, start 5s for "Done" text
+          btn.textContent = 'Done';
+          btn.classList.add('done');
+          tasksStatus[idx] = true;
+          // Enable button again after 20s total (5s for "Done")
+          setTimeout(() => {
+            if (!document.getElementById(`btn-${idx}`)) return; // In case of early reload
+            if (tasksStatus[idx]) {
+              btn.textContent = 'Complete';
+              btn.classList.remove('done');
+              btn.disabled = false;
+              tasksStatus[idx] = false;
+            }
+            updateProgress();
+          }, 5000);
+          updateProgress();
+        }
+      }, 1000);
+    };
+
+    function updateProgress() {
+      let completed = tasksStatus.filter(Boolean).length;
+      let percent = Math.round((completed / TASK_COUNT) * 100);
+      progressBar.style.width = percent + '%';
+
+      if (completed === TASK_COUNT) {
+        showCongrats();
+      }
+    }
+
+    function showCongrats() {
+      tasksElem.style.display = 'none';
+      progressBar.style.width = '100%';
+      congratsSection.style.display = 'flex';
+    }
+
+    // Copy code
+    const copyBtn = document.getElementById('copyBtn');
+    copyBtn.onclick = function () {
+      const code = document.getElementById('paymentCode').textContent;
+      navigator.clipboard.writeText(code).then(() => {
+        copyBtn.textContent = "Copied!";
+        copyBtn.classList.add('copied');
+        setTimeout(() => {
+          copyBtn.textContent = "Copy";
+          copyBtn.classList.remove('copied');
+        }, 1500);
+      });
+    };
+
+    // Responsive: Fix for mobile viewport on iOS
+    window.addEventListener('load', function() {
+      if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
+        document.body.style.minHeight = window.innerHeight + 'px';
+      }
+    });
+  </script>
+</body>
+</html>
