@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Tasks & Payment Verification</title>
+  <title>Tasks Verification</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     :root {
@@ -39,35 +39,47 @@
       position: relative;
       overflow: hidden;
     }
-    .header-bar {
+    .top-bar {
       width: 100%;
       min-height: 60px;
       background: linear-gradient(90deg, #4b7bec 65%, #fc5c7d 100%);
       border-radius: var(--border-radius) var(--border-radius) 0 0;
       display: flex;
       align-items: center;
-      justify-content: center;
+      justify-content: flex-end;
+      padding: 0 24px;
       position: relative;
       z-index: 1;
       box-shadow: 0 4px 14px #4b7bec17;
     }
-    .header-bar .logo {
-      width: 48px;
-      height: 48px;
-      margin-right: 14px;
-      vertical-align: middle;
-      background: #fff;
-      border-radius: 16px;
-      box-shadow: 0 2px 12px #fc5c7d12;
-      border: 2.5px solid #fff;
-      object-fit: cover;
+    .lang-select-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-right: 0;
     }
-    .header-bar .main-title {
-      font-size: 1.35em;
-      font-weight: 900;
+    .lang-label {
       color: #fff;
-      letter-spacing: 0.03em;
-      text-shadow: 0 2px 10px #4b7bec33;
+      font-weight: 700;
+      font-size: 1.03em;
+      margin-right: 2px;
+      letter-spacing: 0.01em;
+      text-shadow: 0 1.5px 5px #4b7bec11;
+    }
+    .lang-select {
+      background: #fff;
+      color: #4b7bec;
+      border: none;
+      border-radius: 8px;
+      padding: 6px 16px;
+      font-size: 1em;
+      font-weight: 700;
+      box-shadow: 0 1.5px 8px #4b7bec19;
+      cursor: pointer;
+      outline: none;
+      margin-left: 4px;
+      margin-right: 6px;
+      transition: background 0.14s;
     }
     .rules {
       background: linear-gradient(90deg, #e0edff 0%, #fff 100%);
@@ -238,7 +250,6 @@
       text-align: center;
       z-index: 1;
       position: relative;
-      /* fancy border */
       border: 2.5px solid #fbc53144;
     }
     .partners-title {
@@ -291,13 +302,13 @@
     .partner-item:hover .partner-img {
       border-color: #fc5c7d88;
     }
-    /* Mobile responsiveness */
     @media (max-width: 600px) {
       .container {
         padding: 0 0 10px 0;
       }
-      .header-bar {
+      .top-bar {
         min-height: 44px;
+        padding: 0 10px;
       }
       .rules {
         margin: 17px 4vw 15px 4vw;
@@ -326,7 +337,6 @@
         font-size: 0.97em;
       }
     }
-    /* Button interaction */
     .task button:active,
     .task button:focus-visible {
       background: linear-gradient(90deg, #fc5c7d 60%, #4b7bec 100%);
@@ -336,103 +346,171 @@
 </head>
 <body>
   <div class="container">
-    <div class="header-bar">
-      <img class="logo" src="https://github.com/s42144/adssterra/blob/ad57518849558fffd9db6455ed639be017fe4d62/images%20(2)%20(27).jpeg?raw=true" alt="Site Logo">
-      <span class="main-title">Tasks & Payment Verification</span>
+    <div class="top-bar">
+      <form class="lang-select-wrap" onsubmit="return false;">
+        <label class="lang-label" for="lang-select" id="lang-label">Language:</label>
+        <select class="lang-select" id="lang-select" onchange="setLanguage(this.value)">
+          <option value="en">EN - English</option>
+          <option value="ru">RU - Русский</option>
+          <option value="ar">AR - العربية</option>
+        </select>
+      </form>
     </div>
-    <ul class="rules">
-      <li>1. Click the <b>Complete</b> button for each task and stay on the opened link for at least <b>15 seconds</b>.</li>
-      <li>2. You must finish <b>all 6 tasks</b> to be verified and receive your payment.</li>
-      <li>3. After completing all tasks, you will receive a unique code. Submit this code to your micro job website for instant payment & automatic verification.</li>
+    <ul class="rules" id="rules-list">
+      <li id="rule-1">1. Click the <b>Complete</b> button for each task and stay on the opened link for at least <b>15 seconds</b>.</li>
+      <li id="rule-2">2. You must finish <b>all 6 tasks</b> to be verified and receive your payment.</li>
+      <li id="rule-3">3. After completing all tasks, you will receive a unique code. Submit this code to your micro job website for instant payment & automatic verification.</li>
     </ul>
     <div class="progress-bar">
       <div class="progress-bar-inner" id="progressBar"></div>
     </div>
-    <div class="tasks" id="tasks">
-      <!-- Tasks will be injected here -->
-    </div>
+    <div class="tasks" id="tasks"></div>
     <div class="congrats-section" id="congratsSection">
       <img src="https://github.com/s42144/adssterra/blob/dea183135295889753585f4adc9a4f5be5a780dc/download%20(7).jpeg?raw=true" alt="Congratulations">
-      <div class="congrats-title">Congratulations! All tasks completed.</div>
-      <div style="margin-bottom: 10px;">Your payment code:</div>
+      <div class="congrats-title" id="congrats-title">Congratulations! All tasks completed.</div>
+      <div style="margin-bottom: 10px;" id="your-code">Your payment code:</div>
       <div class="code-box">
         <span id="paymentCode">63836GSJXVH627</span>
         <button class="copy-btn" id="copyBtn">Copy</button>
       </div>
-      <div style="font-size: 1em; color: #4b7bec; font-weight: 600;">
+      <div style="font-size: 1em; color: #4b7bec; font-weight: 600;" id="code-info">
         Submit this code on your micro job site for instant payment.
       </div>
     </div>
     <div class="partners-section">
-      <div class="partners-title">Our Partners</div>
+      <div class="partners-title" id="partners-title">Our Partners</div>
       <div class="partners-list">
         <div class="partner-item">
           <img class="partner-img" src="https://github.com/s42144/adssterra/blob/ad57518849558fffd9db6455ed639be017fe4d62/images%20(2)%20(27).jpeg?raw=true" alt="BUX.MONEY">
-          BUX.MONEY
+          <span>BUX.MONEY</span>
         </div>
         <div class="partner-item">
           <img class="partner-img" src="https://github.com/s42144/adssterra/blob/e2f121c96b816a1a46b51db502dfa0974c57b592/download%20(4).png?raw=true" alt="AVISO.BZ">
-          AVISO.BZ
+          <span>AVISO.BZ</span>
         </div>
         <div class="partner-item">
           <img class="partner-img" src="https://raw.githubusercontent.com/s42144/adssterra/main/files/taskburg-logo.svg" alt="TASKBURG">
-          TASKBURG
+          <span>TASKBURG</span>
         </div>
         <div class="partner-item">
           <img class="partner-img" src="https://github.com/s42144/adssterra/blob/a4f00dc714d2dd7735a0e1d54088567d2ece1cb3/1739638304-1708266691-gigclickers%20(1).webp?raw=true" alt="GIGCLICKERS">
-          GIGCLICKERS
+          <span>GIGCLICKERS</span>
         </div>
       </div>
     </div>
   </div>
   <script>
-    // Task Data
+    // TRANSLATIONS
+    const translations = {
+      en: {
+        langLabel: "Language:",
+        rules: [
+          '1. Click the <b>Complete</b> button for each task and stay on the opened link for at least <b>15 seconds</b>.',
+          '2. You must finish <b>all 6 tasks</b> to be verified and receive your payment.',
+          '3. After completing all tasks, you will receive a unique code. Submit this code to your micro job website for instant payment & automatic verification.'
+        ],
+        taskName: "Click Complete Button and Stay There 15 Second",
+        complete: "Complete",
+        done: "Done",
+        congrats: "Congratulations! All tasks completed.",
+        yourCode: "Your payment code:",
+        codeInfo: "Submit this code on your micro job site for instant payment.",
+        copy: "Copy",
+        copied: "Copied!",
+        partners: "Our Partners",
+        wait: "Wait {seconds}s..."
+      },
+      ru: {
+        langLabel: "Язык:",
+        rules: [
+          '1. Нажмите кнопку <b>Завершить</b> для каждого задания и оставайтесь на открытой ссылке не менее <b>15 секунд</b>.',
+          '2. Вы должны выполнить <b>все 6 заданий</b>, чтобы пройти верификацию и получить оплату.',
+          '3. После выполнения всех заданий вы получите уникальный код. Отправьте этот код на ваш сайт микроработ для мгновенной оплаты и автоматической проверки.'
+        ],
+        taskName: "Нажмите кнопку Завершить и оставайтесь там 15 секунд",
+        complete: "Завершить",
+        done: "Готово",
+        congrats: "Поздравляем! Все задания выполнены.",
+        yourCode: "Ваш платежный код:",
+        codeInfo: "Отправьте этот код на сайт микроработ для мгновенной оплаты.",
+        copy: "Копировать",
+        copied: "Скопировано!",
+        partners: "Наши партнеры",
+        wait: "Ожидайте {seconds}с..."
+      },
+      ar: {
+        langLabel: "اللغة:",
+        rules: [
+          '1. انقر على زر <b>إكمال</b> لكل مهمة وابق في الرابط المفتوح لمدة <b>15 ثانية</b>.',
+          '2. يجب عليك إكمال <b>جميع المهام الستة</b> ليتم التحقق منك واستلام الدفعة.',
+          '3. بعد إكمال جميع المهام، ستحصل على رمز فريد. قدّم هذا الرمز في موقع المهام المصغرة الخاص بك للحصول على الدفعة فوراً والتحقق التلقائي.'
+        ],
+        taskName: "انقر على زر إكمال وابق هناك 15 ثانية",
+        complete: "إكمال",
+        done: "تم",
+        congrats: "تهانينا! تم إكمال جميع المهام.",
+        yourCode: "رمز الدفع الخاص بك:",
+        codeInfo: "قدّم هذا الرمز في موقع المهام المصغرة الخاص بك لتحصل على الدفعة فوراً.",
+        copy: "نسخ",
+        copied: "تم النسخ!",
+        partners: "شركاؤنا",
+        wait: "انتظر {seconds}ث..."
+      }
+    };
     const TASK_COUNT = 6;
-    const TASK_NAME = "Click Complete Button and Stay There 15 Second";
     const TASK_LINK = "https://www.profitableratecpm.com/jj0rqun4?key=465c238dddc5368c1f512ac191ee3c43";
-    const tasksElem = document.getElementById('tasks');
-    const progressBar = document.getElementById('progressBar');
-    const congratsSection = document.getElementById('congratsSection');
+    let lang = "en";
     let tasksStatus = Array(TASK_COUNT).fill(false);
+
+    // Render all translatable UI
+    function renderUI() {
+      document.getElementById("lang-label").textContent = translations[lang].langLabel;
+      // Rules
+      for (let i = 1; i <= 3; ++i) {
+        document.getElementById("rule-" + i).innerHTML = translations[lang].rules[i-1];
+      }
+      // Partners
+      document.getElementById("partners-title").textContent = translations[lang].partners;
+      // Tasks
+      renderTasks();
+      // If congrats visible, update its texts
+      document.getElementById("congrats-title").textContent = translations[lang].congrats;
+      document.getElementById("your-code").textContent = translations[lang].yourCode;
+      document.getElementById("code-info").textContent = translations[lang].codeInfo;
+      document.getElementById("copyBtn").textContent = translations[lang].copy;
+    }
 
     function renderTasks() {
       let html = '';
       for (let i = 0; i < TASK_COUNT; i++) {
+        let isDone = tasksStatus[i];
         html += `
           <div class="task" id="task-${i}">
-            <span class="task-name">${i+1}. ${TASK_NAME}</span>
-            <button onclick="handleTaskClick(${i})" class="" id="btn-${i}">Complete</button>
+            <span class="task-name">${i+1}. ${translations[lang].taskName}</span>
+            <button onclick="handleTaskClick(${i})" class="${isDone ? 'done' : ''}" id="btn-${i}">${isDone ? translations[lang].done : translations[lang].complete}</button>
             <span class="timer" id="timer-${i}" style="display:none"></span>
           </div>
         `;
       }
-      tasksElem.innerHTML = html;
+      document.getElementById('tasks').innerHTML = html;
     }
 
-    renderTasks();
-
-    // Keep "Done" and clickable after click, with 30s timer
     window.handleTaskClick = function(idx) {
       const btn = document.getElementById(`btn-${idx}`);
       const timer = document.getElementById(`timer-${idx}`);
       if (btn.classList.contains('done')) return window.open(TASK_LINK, '_blank');
-
-      // Open link in new tab
       window.open(TASK_LINK, '_blank');
-
-      // Disable button and start 15s timer
       btn.disabled = true;
       timer.style.display = '';
       let seconds = 30;
-      timer.textContent = `Wait ${seconds}s...`;
-
+      timer.textContent = translations[lang].wait.replace('{seconds}', seconds);
       let interval = setInterval(() => {
         seconds--;
-        timer.textContent = `Wait ${seconds}s...`;
+        timer.textContent = translations[lang].wait.replace('{seconds}', seconds);
         if (seconds <= 0) {
           clearInterval(interval);
           timer.textContent = '';
-          btn.textContent = 'Done';
+          btn.textContent = translations[lang].done;
           btn.classList.add('done');
           btn.disabled = false;
           tasksStatus[idx] = true;
@@ -444,17 +522,20 @@
     function updateProgress() {
       let completed = tasksStatus.filter(Boolean).length;
       let percent = Math.round((completed / TASK_COUNT) * 100);
-      progressBar.style.width = percent + '%';
-
+      document.getElementById('progressBar').style.width = percent + '%';
       if (completed === TASK_COUNT) {
-        setTimeout(showCongrats, 600); // short delay for effect
+        setTimeout(showCongrats, 600);
       }
     }
 
     function showCongrats() {
-      tasksElem.style.display = 'none';
-      progressBar.style.width = '100%';
-      congratsSection.style.display = 'flex';
+      document.getElementById('tasks').style.display = 'none';
+      document.getElementById('progressBar').style.width = '100%';
+      document.getElementById('congratsSection').style.display = 'flex';
+      document.getElementById("congrats-title").textContent = translations[lang].congrats;
+      document.getElementById("your-code").textContent = translations[lang].yourCode;
+      document.getElementById("code-info").textContent = translations[lang].codeInfo;
+      document.getElementById("copyBtn").textContent = translations[lang].copy;
     }
 
     // Copy code
@@ -462,17 +543,24 @@
     copyBtn.onclick = function () {
       const code = document.getElementById('paymentCode').textContent;
       navigator.clipboard.writeText(code).then(() => {
-        copyBtn.textContent = "Copied!";
+        copyBtn.textContent = translations[lang].copied;
         copyBtn.classList.add('copied');
         setTimeout(() => {
-          copyBtn.textContent = "Copy";
+          copyBtn.textContent = translations[lang].copy;
           copyBtn.classList.remove('copied');
         }, 1700);
       });
     };
 
+    // Language switcher
+    window.setLanguage = function(l) {
+      lang = l;
+      renderUI();
+    };
+
     // Responsive: Fix for mobile viewport on iOS
     window.addEventListener('load', function() {
+      renderUI();
       if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
         document.body.style.minHeight = window.innerHeight + 'px';
       }
