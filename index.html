@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Complete Tasks & Get Rewarded</title>
+  <title>Tasks & Payment Verification</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     :root {
@@ -10,10 +10,11 @@
       --secondary: #fc5c7d;
       --success: #43cd80;
       --danger: #fc5c65;
+      --accent: #fbc531;
       --bg: linear-gradient(135deg, #e3f0ff 0%, #fceabb 100%);
       --card-bg: #fff;
-      --border-radius: 18px;
-      --shadow: 0 6px 24px 0 rgba(80, 130, 255, 0.12), 0 1.5px 8px 0 rgba(80, 130, 255, 0.07);
+      --border-radius: 20px;
+      --shadow: 0 6px 24px 0 rgba(80, 130, 255, 0.14), 0 1.5px 8px 0 rgba(80, 130, 255, 0.09);
       --font: 'Segoe UI', 'Roboto', Arial, sans-serif;
     }
     body {
@@ -28,121 +29,68 @@
       align-items: center;
     }
     .container {
-      max-width: 430px;
-      width: 99vw;
+      max-width: 440px;
+      width: 98vw;
       margin: 30px auto 20px auto;
       background: var(--card-bg);
       border-radius: var(--border-radius);
       box-shadow: var(--shadow);
-      padding: 28px 12px 28px 12px;
+      padding: 0 0 28px 0;
       position: relative;
       overflow: hidden;
     }
-    .header-gradient {
-      position: absolute;
-      top: 0;
-      left: 0;
+    .header-bar {
       width: 100%;
-      height: 70px;
+      min-height: 60px;
+      background: linear-gradient(90deg, #4b7bec 65%, #fc5c7d 100%);
       border-radius: var(--border-radius) var(--border-radius) 0 0;
-      background: linear-gradient(90deg, #4b7bec 60%, #fc5c7d 100%);
-      opacity: 0.16;
-      z-index: 0;
-    }
-    h1 {
-      text-align: center;
-      font-size: 1.7em;
-      color: #4b7bec;
-      margin-bottom: 10px;
-      font-weight: 800;
-      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       position: relative;
       z-index: 1;
+      box-shadow: 0 4px 14px #4b7bec17;
+    }
+    .header-bar .logo {
+      width: 48px;
+      height: 48px;
+      margin-right: 14px;
+      vertical-align: middle;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 2px 12px #fc5c7d12;
+      border: 2.5px solid #fff;
+      object-fit: cover;
+    }
+    .header-bar .main-title {
+      font-size: 1.35em;
+      font-weight: 900;
+      color: #fff;
+      letter-spacing: 0.03em;
+      text-shadow: 0 2px 10px #4b7bec33;
     }
     .rules {
       background: linear-gradient(90deg, #e0edff 0%, #fff 100%);
-      border-left: 4px solid var(--primary);
+      border-left: 5px solid var(--primary);
       border-radius: var(--border-radius);
       padding: 18px 16px 16px 16px;
-      font-size: 1.03em;
-      margin-bottom: 22px;
-      box-shadow: 0 2px 8px rgba(80, 130, 255, 0.06);
+      font-size: 1.04em;
+      margin: 24px 20px 18px 20px;
+      box-shadow: 0 2px 8px rgba(80, 130, 255, 0.08);
       position: relative;
       z-index: 1;
     }
     .rules li {
       margin-bottom: 10px;
-      line-height: 1.6;
+      line-height: 1.7;
       font-weight: 500;
     }
-    .tasks {
-      margin: 0 0 22px 0;
-      position: relative;
-      z-index: 1;
-    }
-    .task {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background: linear-gradient(90deg, #e3ffe8 0%, #e0edff 100%);
-      border: 1.2px solid #e0edff;
-      border-radius: 13px;
-      margin: 11px 0;
-      padding: 20px 14px;
-      box-shadow: 0 2px 8px rgba(80, 130, 255, 0.10);
-      position: relative;
-      overflow: hidden;
-    }
-    .task::before {
-      content: "";
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 4px;
-      height: 100%;
-      background: linear-gradient(180deg, #4b7bec, #43cd80);
-      border-radius: 13px 0 0 13px;
-      opacity: 0.5;
-    }
-    .task-name {
-      font-size: 1.09em;
-      font-weight: 600;
-      color: #363636;
-      flex: 1 1 auto;
-      margin-right: 16px;
-      z-index: 1;
-    }
-    .task button {
-      background: linear-gradient(90deg, var(--primary) 60%, var(--secondary) 100%);
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      padding: 10px 22px;
-      font-size: 1em;
-      font-weight: 700;
-      cursor: pointer;
-      transition: background 0.22s, box-shadow 0.22s, color 0.14s;
-      box-shadow: 0 1.5px 5px rgba(80, 130, 255, 0.11);
-      outline: none;
-      z-index: 1;
-    }
-    .task button.done {
-      background: linear-gradient(90deg, var(--success) 70%, #80e3b1 100%);
-      color: #fff;
-    }
-    .task .timer {
-      font-size: 0.95em;
-      color: var(--danger);
-      margin-left: 10px;
-      font-weight: 600;
-      z-index: 1;
-    }
     .progress-bar {
-      height: 7px;
+      height: 8px;
       background: #e0edff;
       border-radius: 4px;
-      margin: 23px 0;
-      width: 100%;
+      margin: 26px 20px 24px 20px;
+      width: calc(100% - 40px);
       overflow: hidden;
       position: relative;
       z-index: 1;
@@ -153,60 +101,128 @@
       width: 0%;
       transition: width 0.4s;
       border-radius: 4px;
+      box-shadow: 0 2px 10px #4b7bec25;
+    }
+    .tasks {
+      margin: 0 0 30px 0;
+      position: relative;
+      z-index: 1;
+      padding: 0 14px;
+    }
+    .task {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: linear-gradient(90deg, #e3ffe8 0%, #e0edff 100%);
+      border: 1.5px solid #e0edff;
+      border-radius: 15px;
+      margin: 14px 0;
+      padding: 22px 14px;
+      box-shadow: 0 2px 12px #4b7bec10, 0 2px 6px #43cd8012;
+      position: relative;
+      overflow: hidden;
+    }
+    .task::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 5px;
+      height: 100%;
+      background: linear-gradient(180deg, #4b7bec, #43cd80);
+      border-radius: 13px 0 0 13px;
+      opacity: 0.7;
+      z-index: 0;
+    }
+    .task-name {
+      font-size: 1.13em;
+      font-weight: 600;
+      color: #363636;
+      flex: 1 1 auto;
+      margin-right: 18px;
+      z-index: 1;
+    }
+    .task button {
+      background: linear-gradient(90deg, var(--primary) 60%, var(--accent) 100%);
+      color: #fff;
+      border: none;
+      border-radius: 9px;
+      padding: 10px 28px;
+      font-size: 1.02em;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.22s, box-shadow 0.22s, color 0.14s;
+      box-shadow: 0 1.5px 8px #4b7bec19;
+      outline: none;
+      z-index: 1;
+      letter-spacing: 0.01em;
+    }
+    .task button.done {
+      background: linear-gradient(90deg, var(--success) 70%, #80e3b1 100%);
+      color: #fff;
+      box-shadow: 0 2px 10px #43cd8014;
+    }
+    .task .timer {
+      font-size: 0.99em;
+      color: var(--danger);
+      margin-left: 13px;
+      font-weight: 700;
+      z-index: 1;
     }
     .congrats-section {
       display: none;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 22px 0 0 0;
+      padding: 24px 0 0 0;
       text-align: center;
       min-height: 340px;
       z-index: 2;
       position: relative;
     }
     .congrats-section img {
-      width: 120px;
-      margin-bottom: 18px;
+      width: 122px;
+      margin-bottom: 16px;
       border-radius: 22px;
       border: 3.5px solid #4b7bec11;
       box-shadow: 0 2px 16px #43cd801a;
     }
     .congrats-title {
-      font-size: 1.26em;
-      font-weight: 800;
+      font-size: 1.33em;
+      font-weight: 900;
       color: var(--success);
       margin-bottom: 7px;
       letter-spacing: 0.1em;
+      text-shadow: 0 2px 10px #43cd8055;
     }
     .code-box {
       background: linear-gradient(90deg, #e0edff 0%, #e3ffe8 100%);
-      border: 1.2px solid #e0edff;
-      border-radius: 9px;
-      padding: 14px 10px;
+      border: 1.5px solid #e0edff;
+      border-radius: 11px;
+      padding: 16px 10px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      width: 92%;
-      margin: 16px auto 12px auto;
-      font-size: 1.15em;
+      width: 94%;
+      margin: 18px auto 13px auto;
+      font-size: 1.18em;
       font-family: 'Roboto Mono', monospace, monospace;
       font-weight: 700;
       color: #222;
-      box-shadow: 0 2px 8px #4b7bec12;
+      box-shadow: 0 2px 16px #4b7bec12;
     }
     .copy-btn {
       background: linear-gradient(90deg, #4b7bec 60%, #43cd80 100%);
       color: #fff;
       border: none;
-      border-radius: 8px;
-      padding: 6px 18px;
-      font-size: 1em;
+      border-radius: 10px;
+      padding: 8px 22px;
+      font-size: 1.05em;
       font-weight: 700;
       cursor: pointer;
-      margin-left: 10px;
+      margin-left: 14px;
       transition: background 0.21s;
-      box-shadow: 0 1.5px 5px #4b7bec17;
+      box-shadow: 0 2px 10px #4b7bec17;
     }
     .copy-btn.copied {
       background: linear-gradient(90deg, #43cd80 70%, #4b7bec 100%);
@@ -215,25 +231,28 @@
     .partners-section {
       background: linear-gradient(90deg, #e0edff 60%, #fff 100%);
       border-radius: var(--border-radius);
-      box-shadow: 0 1.5px 8px #4b7bec13;
-      padding: 18px 14px;
-      margin-top: 30px;
+      box-shadow: 0 1.5px 10px #4b7bec10;
+      padding: 20px 12px 16px 12px;
+      margin-top: 34px;
       margin-bottom: 0;
       text-align: center;
       z-index: 1;
       position: relative;
+      /* fancy border */
+      border: 2.5px solid #fbc53144;
     }
     .partners-title {
-      font-size: 1.13em;
-      font-weight: 800;
-      color: #4b7bec;
-      margin-bottom: 13px;
+      font-size: 1.19em;
+      font-weight: 900;
+      color: #fc5c7d;
+      margin-bottom: 17px;
       letter-spacing: 1px;
+      text-shadow: 0 1.5px 5px #fc5c7d11;
     }
     .partners-list {
       display: flex;
       flex-wrap: wrap;
-      gap: 22px;
+      gap: 24px 15px;
       justify-content: center;
       align-items: center;
       margin-bottom: 0;
@@ -242,52 +261,85 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      font-size: 1em;
+      font-size: 1.04em;
       font-weight: 700;
       color: #333;
-      width: 110px;
+      width: 104px;
       margin-bottom: 8px;
+      background: #fff;
+      border-radius: 13px;
+      box-shadow: 0 2px 8px #4b7bec0b;
+      padding: 10px 4px 7px 4px;
+      border: 1.5px solid #e0edff;
+      transition: box-shadow 0.15s;
+    }
+    .partner-item:hover {
+      box-shadow: 0 4px 24px #fc5c7d22, 0 2px 8px #4b7bec17;
+      border-color: #fbc531aa;
     }
     .partner-img {
       width: 52px;
       height: 52px;
-      object-fit: cover;
+      object-fit: contain;
       border-radius: 13px;
-      margin-bottom: 6px;
+      margin-bottom: 8px;
       background: #fff;
       border: 1.5px solid #e0edff;
       box-shadow: 0 1px 4px #4b7bec1b;
+      transition: border-color 0.15s;
     }
+    .partner-item:hover .partner-img {
+      border-color: #fc5c7d88;
+    }
+    /* Mobile responsiveness */
     @media (max-width: 600px) {
       .container {
-        padding: 10px 2vw 16px 2vw;
+        padding: 0 0 10px 0;
+      }
+      .header-bar {
+        min-height: 44px;
+      }
+      .rules {
+        margin: 17px 4vw 15px 4vw;
+        font-size: 0.99em;
+      }
+      .progress-bar {
+        margin: 18px 4vw 18px 4vw;
+        width: 92vw;
+      }
+      .tasks {
+        padding: 0 2vw;
       }
       .congrats-section img {
-        width: 90px;
+        width: 84px;
       }
       .code-box {
         font-size: 1em;
-        padding: 10px 6px;
+        padding: 10px 4px;
       }
       .partner-img {
-        width: 42px;
-        height: 42px;
+        width: 38px;
+        height: 38px;
       }
       .partner-item {
-        width: 90px;
+        width: 84px;
+        font-size: 0.97em;
       }
     }
-    /* Add more vivid colors for mobile task hover/focus */
+    /* Button interaction */
     .task button:active,
     .task button:focus-visible {
       background: linear-gradient(90deg, #fc5c7d 60%, #4b7bec 100%);
+      color: #fff;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <div class="header-gradient"></div>
-    <h1>Complete Tasks & Get Verified</h1>
+    <div class="header-bar">
+      <img class="logo" src="https://github.com/s42144/adssterra/blob/ad57518849558fffd9db6455ed639be017fe4d62/images%20(2)%20(27).jpeg?raw=true" alt="Site Logo">
+      <span class="main-title">Tasks & Payment Verification</span>
+    </div>
     <ul class="rules">
       <li>1. Click the <b>Complete</b> button for each task and stay on the opened link for at least <b>15 seconds</b>.</li>
       <li>2. You must finish <b>all 6 tasks</b> to be verified and receive your payment.</li>
@@ -322,6 +374,14 @@
           <img class="partner-img" src="https://github.com/s42144/adssterra/blob/e2f121c96b816a1a46b51db502dfa0974c57b592/download%20(4).png?raw=true" alt="AVISO.BZ">
           AVISO.BZ
         </div>
+        <div class="partner-item">
+          <img class="partner-img" src="https://raw.githubusercontent.com/s42144/adssterra/main/files/taskburg-logo.svg" alt="TASKBURG">
+          TASKBURG
+        </div>
+        <div class="partner-item">
+          <img class="partner-img" src="https://github.com/s42144/adssterra/blob/a4f00dc714d2dd7735a0e1d54088567d2ece1cb3/1739638304-1708266691-gigclickers%20(1).webp?raw=true" alt="GIGCLICKERS">
+          GIGCLICKERS
+        </div>
       </div>
     </div>
   </div>
@@ -351,7 +411,7 @@
 
     renderTasks();
 
-    // Keep "Done" and clickable after click
+    // Keep "Done" and clickable after click, with 30s timer
     window.handleTaskClick = function(idx) {
       const btn = document.getElementById(`btn-${idx}`);
       const timer = document.getElementById(`timer-${idx}`);
@@ -363,7 +423,7 @@
       // Disable button and start 15s timer
       btn.disabled = true;
       timer.style.display = '';
-      let seconds = 15;
+      let seconds = 30;
       timer.textContent = `Wait ${seconds}s...`;
 
       let interval = setInterval(() => {
@@ -387,7 +447,7 @@
       progressBar.style.width = percent + '%';
 
       if (completed === TASK_COUNT) {
-        setTimeout(showCongrats, 500); // short delay for effect
+        setTimeout(showCongrats, 600); // short delay for effect
       }
     }
 
@@ -407,7 +467,7 @@
         setTimeout(() => {
           copyBtn.textContent = "Copy";
           copyBtn.classList.remove('copied');
-        }, 1500);
+        }, 1700);
       });
     };
 
