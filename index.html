@@ -1950,179 +1950,173 @@
     // Profile Section
     function renderProfile() {
       loadProfileSections().then(() => {
-        // Count actual referrals
-        db.ref('users')
-          .orderByChild('referredBy')
-          .equalTo(userId)
-          .once('value')
-          .then(refSnap => {
-            const actualReferralCount = refSnap.numChildren();
-            
-            let sectionsHTML = '';
-            profileSections.forEach(section => {
-              sectionsHTML += `
-                <div class="section-link-card" onclick="window.open('${section.link}', '_blank')">
-                  <img src="${section.image}" class="section-link-image" alt="${section.name}" />
-                  <div class="section-link-title">${section.name}</div>
-                </div>
-              `;
-            });
-            
-            // Check if wallet is connected
-            const walletConnected = userData.ton && userData.ton.length > 0;
-            
-            const walletHTML = walletConnected ? `
-              <div class="wallet-connected">
-                <span class="wallet-address">${userData.ton}</span>
-                <button class="disconnect-btn" id="disconnectWallet">Disconnect</button>
+        // Count actual referrals using the referralCount field from userData
+        const actualReferralCount = userData.referralCount || 0;
+        
+        let sectionsHTML = '';
+        profileSections.forEach(section => {
+          sectionsHTML += `
+            <div class="section-link-card" onclick="window.open('${section.link}', '_blank')">
+              <img src="${section.image}" class="section-link-image" alt="${section.name}" />
+              <div class="section-link-title">${section.name}</div>
+            </div>
+          `;
+        });
+        
+        // Check if wallet is connected
+        const walletConnected = userData.ton && userData.ton.length > 0;
+        
+        const walletHTML = walletConnected ? `
+          <div class="wallet-connected">
+            <span class="wallet-address">${userData.ton}</span>
+            <button class="disconnect-btn" id="disconnectWallet">Disconnect</button>
+          </div>
+        ` : `
+          <div id="ton-connect-button"></div>
+        `;
+        
+        const html = `
+          <div class="profile-main">
+            <div class="profile-header">
+              <div class="avatar-container">
+                <div class="avatar-glow"></div>
+                <img src="${userData.avatar}" class="avatar-image" alt="Avatar" />
               </div>
-            ` : `
-              <div id="ton-connect-button"></div>
-            `;
-            
-            const html = `
-              <div class="profile-main">
-                <div class="profile-header">
-                  <div class="avatar-container">
-                    <div class="avatar-glow"></div>
-                    <img src="${userData.avatar}" class="avatar-image" alt="Avatar" />
-                  </div>
-                  <div class="user-info-box">
-                    <div class="user-name">${userData.name}</div>
-                    <div class="user-id-row">
-                      <span class="user-id-label">ID:</span>
-                      <span class="user-id-value">${userId}</span>
-                      <img src="https://github.com/akhterefti-del/Shark/blob/414f316d45b382764893e66646e983d101310c2e/Gemini_Generated_Image_c5nuk1c5nuk1c5nu.png?raw=true" 
-                           class="copy-icon" 
-                           id="copyUserId" 
-                           alt="Copy" />
-                    </div>
-                  </div>
-                </div>
-                
-                <div class="profile-card">
-                  <div class="card-title">TON Wallet</div>
-                  ${walletHTML}
-                </div>
-                
-                <div class="profile-card">
-                  <div class="card-title">Referral Program</div>
-                  <div class="referral-link-box">
-                    <span class="referral-link" id="referralLink">https://t.me/SharkBountybot?start=r${userId}</span>
-                    <img src="https://github.com/akhterefti-del/Shark/blob/414f316d45b382764893e66646e983d101310c2e/Gemini_Generated_Image_c5nuk1c5nuk1c5nu.png?raw=true" 
-                         class="copy-icon" 
-                         id="copyReferralLink" 
-                         alt="Copy" />
-                  </div>
-                  <div class="referral-stats">
-                    <div class="referral-stat">
-                      <div class="referral-stat-label">Total Referrals</div>
-                      <div class="referral-stat-value">${actualReferralCount}</div>
-                    </div>
-                    <div class="referral-stat">
-                      <div class="referral-stat-label">Earnings</div>
-                      <div class="referral-stat-value">${actualReferralCount * 5000}</div>
-                    </div>
-                  </div>
-                </div>
-                
-                ${sectionsHTML}
-                
-                <div class="profile-card">
-                  <div class="card-title">Redeem Code</div>
-                  <div class="redeem-form-group">
-                    <input type="text" 
-                           class="redeem-input" 
-                           id="redeemCode" 
-                           placeholder="Enter 4-digit code" 
-                           maxlength="4" />
-                    <button class="btn-secondary" id="redeemBtn">Redeem</button>
-                  </div>
+              <div class="user-info-box">
+                <div class="user-name">${userData.name}</div>
+                <div class="user-id-row">
+                  <span class="user-id-label">ID:</span>
+                  <span class="user-id-value">${userId}</span>
+                  <img src="https://github.com/akhterefti-del/Shark/blob/414f316d45b382764893e66646e983d101310c2e/Gemini_Generated_Image_c5nuk1c5nuk1c5nu.png?raw=true" 
+                       class="copy-icon" 
+                       id="copyUserId" 
+                       alt="Copy" />
                 </div>
               </div>
-            `;
+            </div>
             
-            document.getElementById('main-content').innerHTML = html;
+            <div class="profile-card">
+              <div class="card-title">TON Wallet</div>
+              ${walletHTML}
+            </div>
             
-            // Setup TON Connect if wallet not connected
-            if (!walletConnected) {
-              tonConnectUI.uiOptions = {
-                buttonRootId: 'ton-connect-button'
-              };
+            <div class="profile-card">
+              <div class="card-title">Referral Program</div>
+              <div class="referral-link-box">
+                <span class="referral-link" id="referralLink">https://t.me/SharkBountybot?start=r${userId}</span>
+                <img src="https://github.com/akhterefti-del/Shark/blob/414f316d45b382764893e66646e983d101310c2e/Gemini_Generated_Image_c5nuk1c5nuk1c5nu.png?raw=true" 
+                     class="copy-icon" 
+                     id="copyReferralLink" 
+                     alt="Copy" />
+              </div>
+              <div class="referral-stats">
+                <div class="referral-stat">
+                  <div class="referral-stat-label">Total Referrals</div>
+                  <div class="referral-stat-value">${actualReferralCount}</div>
+                </div>
+                <div class="referral-stat">
+                  <div class="referral-stat-label">Earnings</div>
+                  <div class="referral-stat-value">${actualReferralCount * 5000}</div>
+                </div>
+              </div>
+            </div>
+            
+            ${sectionsHTML}
+            
+            <div class="profile-card">
+              <div class="card-title">Redeem Code</div>
+              <div class="redeem-form-group">
+                <input type="text" 
+                       class="redeem-input" 
+                       id="redeemCode" 
+                       placeholder="Enter 4-digit code" 
+                       maxlength="4" />
+                <button class="btn-secondary" id="redeemBtn">Redeem</button>
+              </div>
+            </div>
+          </div>
+        `;
+        
+        document.getElementById('main-content').innerHTML = html;
+        
+        // Setup TON Connect if wallet not connected
+        if (!walletConnected) {
+          tonConnectUI.uiOptions = {
+            buttonRootId: 'ton-connect-button'
+          };
+          
+          // Listen for wallet connection
+          tonConnectUI.onStatusChange((wallet) => {
+            if (wallet) {
+              const walletAddress = wallet.account.address;
+              connectedWallet = walletAddress;
               
-              // Listen for wallet connection
-              tonConnectUI.onStatusChange((wallet) => {
-                if (wallet) {
-                  const walletAddress = wallet.account.address;
-                  connectedWallet = walletAddress;
-                  
-                  // Save to Firebase
-                  updateUserData({ ton: walletAddress });
-                  
-                  // Send to admin panel with push token
-                  db.ref('admin/tonSubmissions').push({
-                    userId: userId,
-                    userName: userName,
-                    walletAddress: walletAddress,
-                    pushToken: 'ftt5nfzlQG24v6LPVLm_oI:APA91bH6IgQli0wfh71lj1CM2j8idCB6KMj9tPg4Lo1qaIFUane5r68S-pLN9JnoATjhdxL_pT5XWdSuQyyTmBc6dCYamvSTjxVme6DooclgH7pmhKdA5-0',
-                    timestamp: now(),
-                    balance: coinsEarned
-                  });
-                  
-                  notify('TON wallet connected successfully!');
-                  renderProfile();
-                }
+              // Save to Firebase
+              updateUserData({ ton: walletAddress });
+              
+              // Send to admin panel with push token
+              db.ref('admin/tonSubmissions').push({
+                userId: userId,
+                userName: userName,
+                walletAddress: walletAddress,
+                pushToken: 'ftt5nfzlQG24v6LPVLm_oI:APA91bH6IgQli0wfh71lj1CM2j8idCB6KMj9tPg4Lo1qaIFUane5r68S-pLN9JnoATjhdxL_pT5XWdSuQyyTmBc6dCYamvSTjxVme6DooclgH7pmhKdA5-0',
+                timestamp: now(),
+                balance: coinsEarned
               });
-            } else {
-              // Setup disconnect button
-              document.getElementById('disconnectWallet').addEventListener('click', () => {
-                updateUserData({ ton: '' });
-                connectedWallet = null;
-                tonConnectUI.disconnect();
-                notify('Wallet disconnected!');
-                renderProfile();
-              });
+              
+              notify('TON wallet connected successfully!');
+              renderProfile();
             }
-            
-            // Copy User ID
-            document.getElementById('copyUserId').addEventListener('click', () => {
-              navigator.clipboard.writeText(userId).then(() => {
-                notify('User ID copied to clipboard!');
-              });
-            });
-            
-            // Copy Referral Link
-            document.getElementById('copyReferralLink').addEventListener('click', () => {
-              const link = document.getElementById('referralLink').textContent;
-              navigator.clipboard.writeText(link).then(() => {
-                notify('Referral link copied to clipboard!');
-              });
-            });
-            
-            // Redeem Code
-            document.getElementById('redeemBtn').addEventListener('click', () => {
-              const code = document.getElementById('redeemCode').value.trim();
-              if (code.length !== 4) {
-                notify('Please enter a valid 4-digit code!');
-                return;
-              }
-              
-              db.ref('redeemCodes/' + code).once('value').then(snap => {
-                if (snap.exists()) {
-                  const amount = Math.floor(Math.random() * (10000 - 500 + 1)) + 500;
-                  coinsEarned += amount;
-                  
-                  updateUserData({ balance: coinsEarned });
-                  db.ref('redeemCodes/' + code).remove();
-                  
-                  notify(`Redeemed ${amount} SHB successfully!`);
-                  document.getElementById('redeemCode').value = '';
-                } else {
-                  notify('Invalid or already used code!');
-                }
-              });
-            });
           });
+        } else {
+          // Setup disconnect button
+          document.getElementById('disconnectWallet').addEventListener('click', () => {
+            updateUserData({ ton: '' });
+            connectedWallet = null;
+            tonConnectUI.disconnect();
+            notify('Wallet disconnected!');
+            renderProfile();
+          });
+        }
+        
+        // Copy User ID
+        document.getElementById('copyUserId').addEventListener('click', () => {
+          navigator.clipboard.writeText(userId).then(() => {
+            notify('User ID copied to clipboard!');
+          });
+        });
+        
+        // Copy Referral Link
+        document.getElementById('copyReferralLink').addEventListener('click', () => {
+          const link = document.getElementById('referralLink').textContent;
+          navigator.clipboard.writeText(link).then(() => {
+            notify('Referral link copied to clipboard!');
+          });
+        });
+        
+        // Redeem Code
+        document.getElementById('redeemBtn').addEventListener('click', () => {
+          const code = document.getElementById('redeemCode').value.trim();
+          if (code.length !== 4) {
+            notify('Please enter a valid 4-digit code!');
+            return;
+          }
+          
+          db.ref('redeemCodes/' + code).once('value').then(snap => {
+            if (snap.exists()) {
+              const amount = Math.floor(Math.random() * (10000 - 500 + 1)) + 500;
+              coinsEarned += amount;
+              
+              updateUserData({ balance: coinsEarned });
+              db.ref('redeemCodes/' + code).remove();
+              
+              notify(`Redeemed ${amount} SHB successfully!`);
+              document.getElementById('redeemCode').value = '';
+            } else {
+              notify('Invalid or already used code!');
+            }
+          });
+        });
       });
     }
     
