@@ -22,9 +22,6 @@
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-analytics-compat.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   
-  <!-- TON Connect SDK -->
-  <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
-  
   <style>
     * {
       margin: 0;
@@ -564,6 +561,112 @@
       margin-bottom: 16px;
     }
     
+    /* Milestone Cards */
+    .milestone-card {
+      background: linear-gradient(135deg, rgba(79, 172, 254, 0.1) 0%, rgba(0, 242, 254, 0.1) 100%);
+      backdrop-filter: blur(20px);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 12px;
+      border: 2px solid var(--card-border);
+      box-shadow: var(--shadow-md);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .milestone-card.claimed {
+      opacity: 0.6;
+      border-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    .milestone-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    
+    .milestone-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      box-shadow: 0 4px 12px rgba(79, 172, 254, 0.4);
+    }
+    
+    .milestone-reward {
+      font-size: 24px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .milestone-info {
+      margin-bottom: 12px;
+    }
+    
+    .milestone-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+    
+    .milestone-desc {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+    
+    .milestone-progress {
+      width: 100%;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+    
+    .milestone-progress-bar {
+      height: 100%;
+      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      border-radius: 4px;
+      transition: width 0.3s ease;
+    }
+    
+    .milestone-progress-text {
+      font-size: 11px;
+      color: var(--text-secondary);
+      text-align: center;
+      margin-bottom: 12px;
+    }
+    
+    .btn-milestone {
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      border: none;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .btn-milestone:disabled {
+      background: rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.4);
+      cursor: not-allowed;
+    }
+    
     /* Task Card */
     .task-card {
       background: var(--card-bg);
@@ -772,44 +875,6 @@
     .btn-secondary:hover {
       transform: translateY(-2px);
       box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
-    }
-    
-    .wallet-connected {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--card-border);
-      border-radius: 10px;
-      padding: 12px 16px;
-      margin-bottom: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    
-    .wallet-address {
-      font-size: 12px;
-      color: var(--accent-cyan);
-      font-weight: 600;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      flex: 1;
-      margin-right: 8px;
-    }
-    
-    .disconnect-btn {
-      padding: 6px 12px;
-      background: rgba(245, 87, 108, 0.2);
-      border: 1px solid var(--accent-pink);
-      border-radius: 6px;
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--accent-pink);
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-    
-    .disconnect-btn:hover {
-      background: rgba(245, 87, 108, 0.3);
     }
     
     .referral-link-box {
@@ -1153,12 +1218,6 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
     
-    // TON Connect Configuration
-    const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
-      manifestUrl: 'https://shark-silk-two.vercel.app/tonconnect-manifest.json',
-      buttonRootId: 'ton-connect-button'
-    });
-    
     // Global State
     let userId = null;
     let userName = null;
@@ -1166,7 +1225,14 @@
     let userData = null;
     let energyTimer = null;
     let incomeTimer = null;
-    let adStats = { today: 0, daily: 0, monthly: 0, lifetime: 0 };
+    let adStats = { 
+      today: 0, 
+      yesterday: 0, 
+      thisWeek: 0, 
+      thisMonth: 0,
+      lifetime: 0,
+      lastAdDate: null
+    };
     let booster = {
       energy: 1200,
       maxEnergy: 1200,
@@ -1179,11 +1245,40 @@
     let adLoading = false;
     let profileSections = [];
     let rankingListener = null;
-    let connectedWallet = null;
+    let referralCount = 0;
+    let milestones = {
+      m100: false,
+      m200: false,
+      m500: false
+    };
     
     // Utility Functions
     function now() {
       return Math.floor(Date.now() / 1000);
+    }
+    
+    function getToday() {
+      const d = new Date();
+      return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+    }
+    
+    function getYesterday() {
+      const d = new Date();
+      d.setDate(d.getDate() - 1);
+      return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+    }
+    
+    function getWeekStart() {
+      const d = new Date();
+      const day = d.getDay();
+      const diff = d.getDate() - day + (day === 0 ? -6 : 1);
+      d.setDate(diff);
+      return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+    }
+    
+    function getMonthStart() {
+      const d = new Date();
+      return `${d.getFullYear()}-${d.getMonth() + 1}-1`;
     }
     
     function updateLoadingProgress(text) {
@@ -1213,7 +1308,6 @@
         userId = user.id.toString();
         userName = user.first_name + (user.last_name ? ' ' + user.last_name : '');
         
-        // Get user photo URL if available
         if (user.photo_url) {
           userAvatar = user.photo_url;
         } else {
@@ -1225,7 +1319,6 @@
         return true;
       }
       
-      // Fallback for testing outside Telegram
       console.warn('Running outside Telegram environment - using test user');
       userId = 'test_' + Math.floor(10000 + Math.random() * 89999).toString();
       userName = 'Test User';
@@ -1242,7 +1335,6 @@
       if (startParam) {
         let referrerId = null;
         
-        // Handle both formats: r123456 or just 123456
         if (startParam.startsWith('r')) {
           referrerId = startParam.substring(1);
         } else {
@@ -1253,24 +1345,22 @@
         console.log('Current User ID:', userId);
         
         if (referrerId && referrerId !== userId) {
-          // Check if user was already referred
           db.ref('users/' + userId + '/referredBy').once('value').then(snap => {
             if (!snap.exists()) {
               console.log('Processing new referral...');
               
-              // First time being referred
               db.ref('users/' + referrerId).once('value').then(refSnap => {
                 if (refSnap.exists()) {
                   console.log('Referrer found in database');
                   
                   const referrerData = refSnap.val();
                   const newBalance = (referrerData.balance || 0) + 5000;
-                  const newReferralCount = (referrerData.referralCount || 0) + 1;
+                  const newReferralCount = (referrerData.referrals || 0) + 1;
                   
                   // Update referrer's balance and referral count
                   db.ref('users/' + referrerId).update({
                     balance: newBalance,
-                    referralCount: newReferralCount,
+                    referrals: newReferralCount,
                     lastUpdated: now()
                   }).then(() => {
                     console.log('Referrer balance updated to:', newBalance);
@@ -1285,9 +1375,6 @@
                     console.log('Referral link saved for user');
                     notify('Welcome! Your referrer earned 5000 SHB!', 3000);
                   });
-                  
-                  // Send notification to bot owner
-                  sendReferralNotification(referrerId, userId, userName);
                 } else {
                   console.log('Referrer not found in database');
                 }
@@ -1300,17 +1387,6 @@
       } else {
         console.log('No referral parameter found');
       }
-    }
-    
-    function sendReferralNotification(referrerId, newUserId, newUserName) {
-      // Store notification in Firebase for bot to pick up
-      db.ref('notifications/referrals').push({
-        referrerId: referrerId,
-        newUserId: newUserId,
-        newUserName: newUserName,
-        timestamp: now(),
-        processed: false
-      });
     }
     
     function saveLastSeenData() {
@@ -1326,7 +1402,6 @@
     window.addEventListener('beforeunload', saveLastSeenData);
     window.addEventListener('unload', saveLastSeenData);
     
-    // Auto-save every 30 seconds
     setInterval(saveLastSeenData, 30000);
     
     function getOfflineTime(snap) {
@@ -1334,6 +1409,29 @@
       if (!lastSeen) return 0;
       const timeDiff = now() - lastSeen;
       return timeDiff > 0 ? timeDiff : 0;
+    }
+    
+    function updateAdStats() {
+      const today = getToday();
+      const yesterday = getYesterday();
+      const weekStart = getWeekStart();
+      const monthStart = getMonthStart();
+      
+      if (adStats.lastAdDate !== today) {
+        if (adStats.lastAdDate === yesterday) {
+          adStats.yesterday = adStats.today;
+        }
+        adStats.today = 0;
+      }
+      
+      adStats.today++;
+      adStats.lifetime++;
+      adStats.lastAdDate = today;
+      
+      // Calculate this week and this month
+      // This is simplified - in production you'd track each day
+      adStats.thisWeek = adStats.today + (adStats.yesterday || 0);
+      adStats.thisMonth = adStats.thisWeek;
     }
     
     // Load User Data
@@ -1358,10 +1456,22 @@
             ton: "",
             avatar: userAvatar,
             name: userName,
-            referralCount: 0,
+            referrals: 0,
             eject: 0,
             completedTasks: {},
-            adStats: { today: 0, daily: 0, monthly: 0, lifetime: 0 },
+            adStats: { 
+              today: 0, 
+              yesterday: 0, 
+              thisWeek: 0, 
+              thisMonth: 0,
+              lifetime: 0,
+              lastAdDate: null
+            },
+            milestones: {
+              m100: false,
+              m200: false,
+              m500: false
+            },
             lastSeen: now(),
             lastBalance: 0,
             lastEnergy: 1200,
@@ -1371,7 +1481,6 @@
           console.log('New user created');
         }
         
-        // Update user name and avatar if changed
         if (userData.name !== userName || userData.avatar !== userAvatar) {
           db.ref('users/' + userId).update({
             name: userName,
@@ -1381,12 +1490,10 @@
           userData.avatar = userAvatar;
         }
         
-        // Handle offline energy recovery (0.5 per second)
         let energy = userData.energy || 1200;
         const maxEnergy = userData.maxEnergy || 1200;
         const offlineEnergy = Math.min(energy + offlineTime * 0.5, maxEnergy);
         
-        // Handle offline income booster (1 SHB per 10 seconds)
         let balance = userData.balance || 0;
         const incomeBooster = userData.incomeBooster || false;
         if (incomeBooster) {
@@ -1397,7 +1504,6 @@
           }
         }
         
-        // Update state
         userData.energy = Math.round(offlineEnergy);
         userData.balance = balance;
         coinsEarned = balance;
@@ -1407,9 +1513,21 @@
         booster.incomeBooster = incomeBooster;
         booster.multiTapCount = userData.multiTapCount || 0;
         booster.maxEnergyUpCount = userData.maxEnergyUpCount || 0;
-        adStats = userData.adStats || { today: 0, daily: 0, monthly: 0, lifetime: 0 };
+        adStats = userData.adStats || { 
+          today: 0, 
+          yesterday: 0, 
+          thisWeek: 0, 
+          thisMonth: 0,
+          lifetime: 0,
+          lastAdDate: null
+        };
+        milestones = userData.milestones || {
+          m100: false,
+          m200: false,
+          m500: false
+        };
+        referralCount = userData.referrals || 0;
         
-        // Save updated values
         db.ref('users/' + userId).update({
           energy: userData.energy,
           balance: balance,
@@ -1418,10 +1536,8 @@
           lastEnergy: userData.energy
         });
         
-        // Process referral if exists
         processReferral();
         
-        // Hide loading screen and show app directly (NO VIDEO)
         updateLoadingProgress('Starting app...');
         
         setTimeout(() => {
@@ -1446,6 +1562,8 @@
       if (newData.multiTapCount !== undefined) booster.multiTapCount = newData.multiTapCount;
       if (newData.maxEnergyUpCount !== undefined) booster.maxEnergyUpCount = newData.maxEnergyUpCount;
       if (newData.adStats !== undefined) adStats = newData.adStats;
+      if (newData.milestones !== undefined) milestones = newData.milestones;
+      if (newData.referrals !== undefined) referralCount = newData.referrals;
     }
     
     // Navigation
@@ -1538,13 +1656,11 @@
         document.getElementById('homeBalance').textContent = coinsEarned;
       }
       
-      // Desktop click
       coin.addEventListener('click', (e) => {
         e.preventDefault();
         handleTap(booster.multiTap);
       });
       
-      // Mobile touch with multi-finger support
       coin.addEventListener('touchstart', (e) => {
         e.preventDefault();
         const touches = e.touches.length;
@@ -1675,7 +1791,6 @@
       
       document.getElementById('main-content').innerHTML = html;
       
-      // Energy Booster
       document.getElementById('buyEnergy').addEventListener('click', () => {
         if (coinsEarned < 10000 || maxEnergyDisabled) {
           notify('Cannot purchase this upgrade!');
@@ -1698,7 +1813,6 @@
         renderBooster();
       });
       
-      // Multi-Tap Booster
       document.getElementById('buyMultiTap').addEventListener('click', () => {
         if (coinsEarned < 15000 || multiTapDisabled) {
           notify('Cannot purchase this upgrade!');
@@ -1721,7 +1835,6 @@
         updateStatsDisplay();
       });
       
-      // Income Booster
       document.getElementById('buyIncome').addEventListener('click', () => {
         if (coinsEarned < 100000 || incomeDisabled) {
           notify('Cannot purchase this upgrade!');
@@ -1745,6 +1858,11 @@
     
     // Earn Section
     function renderEarn() {
+      const lifetimeAds = adStats.lifetime || 0;
+      const progress100 = Math.min((lifetimeAds / 100) * 100, 100);
+      const progress200 = Math.min((lifetimeAds / 200) * 100, 100);
+      const progress500 = Math.min((lifetimeAds / 500) * 100, 100);
+      
       const html = `
         <div class="earn-main">
           <div class="section-header">
@@ -1763,16 +1881,16 @@
               <div class="stat-box-value">${adStats.today || 0}</div>
             </div>
             <div class="stat-box">
-              <div class="stat-box-label">Daily</div>
-              <div class="stat-box-value">${adStats.daily || 0}</div>
+              <div class="stat-box-label">Yesterday</div>
+              <div class="stat-box-value">${adStats.yesterday || 0}</div>
             </div>
             <div class="stat-box">
-              <div class="stat-box-label">Monthly</div>
-              <div class="stat-box-value">${adStats.monthly || 0}</div>
+              <div class="stat-box-label">This Week</div>
+              <div class="stat-box-value">${adStats.thisWeek || 0}</div>
             </div>
             <div class="stat-box">
-              <div class="stat-box-label">Lifetime</div>
-              <div class="stat-box-value">${adStats.lifetime || 0}</div>
+              <div class="stat-box-label">This Month</div>
+              <div class="stat-box-value">${adStats.thisMonth || 0}</div>
             </div>
           </div>
           
@@ -1784,13 +1902,71 @@
             </button>
           </div>
           
+          <div class="section-header" style="padding-top: 10px;">
+            <div class="section-title" style="font-size: 22px;">Ad Milestones</div>
+            <div class="section-subtitle">Watch ads to unlock bonus rewards</div>
+          </div>
+          
+          <div class="milestone-card ${milestones.m100 ? 'claimed' : ''}">
+            <div class="milestone-header">
+              <div class="milestone-icon">🎯</div>
+              <div class="milestone-reward">+5,000 SHB</div>
+            </div>
+            <div class="milestone-info">
+              <div class="milestone-title">Bronze Milestone</div>
+              <div class="milestone-desc">Watch 100 ads to claim this reward</div>
+            </div>
+            <div class="milestone-progress">
+              <div class="milestone-progress-bar" style="width: ${progress100}%"></div>
+            </div>
+            <div class="milestone-progress-text">${lifetimeAds} / 100 ads watched</div>
+            <button class="btn-milestone" id="claim100" ${lifetimeAds < 100 || milestones.m100 ? 'disabled' : ''}>
+              ${milestones.m100 ? 'Claimed' : lifetimeAds >= 100 ? 'Claim Reward' : 'Locked'}
+            </button>
+          </div>
+          
+          <div class="milestone-card ${milestones.m200 ? 'claimed' : ''}">
+            <div class="milestone-header">
+              <div class="milestone-icon">🏆</div>
+              <div class="milestone-reward">+10,000 SHB</div>
+            </div>
+            <div class="milestone-info">
+              <div class="milestone-title">Silver Milestone</div>
+              <div class="milestone-desc">Watch 200 ads to claim this reward</div>
+            </div>
+            <div class="milestone-progress">
+              <div class="milestone-progress-bar" style="width: ${progress200}%"></div>
+            </div>
+            <div class="milestone-progress-text">${lifetimeAds} / 200 ads watched</div>
+            <button class="btn-milestone" id="claim200" ${lifetimeAds < 200 || milestones.m200 ? 'disabled' : ''}>
+              ${milestones.m200 ? 'Claimed' : lifetimeAds >= 200 ? 'Claim Reward' : 'Locked'}
+            </button>
+          </div>
+          
+          <div class="milestone-card ${milestones.m500 ? 'claimed' : ''}">
+            <div class="milestone-header">
+              <div class="milestone-icon">👑</div>
+              <div class="milestone-reward">+20,000 SHB</div>
+            </div>
+            <div class="milestone-info">
+              <div class="milestone-title">Gold Milestone</div>
+              <div class="milestone-desc">Watch 500 ads to claim this reward</div>
+            </div>
+            <div class="milestone-progress">
+              <div class="milestone-progress-bar" style="width: ${progress500}%"></div>
+            </div>
+            <div class="milestone-progress-text">${lifetimeAds} / 500 ads watched</div>
+            <button class="btn-milestone" id="claim500" ${lifetimeAds < 500 || milestones.m500 ? 'disabled' : ''}>
+              ${milestones.m500 ? 'Claimed' : lifetimeAds >= 500 ? 'Claim Reward' : 'Locked'}
+            </button>
+          </div>
+          
           <div id="tasksList"></div>
         </div>
       `;
       
       document.getElementById('main-content').innerHTML = html;
       
-      // Setup ad button
       document.getElementById('showAdBtn').addEventListener('click', () => {
         if (adLoading) return;
         
@@ -1803,10 +1979,7 @@
             document.getElementById('showAdBtn').textContent = 'Watch Ad';
             
             coinsEarned += 500;
-            adStats.today++;
-            adStats.daily++;
-            adStats.monthly++;
-            adStats.lifetime++;
+            updateAdStats();
             
             updateUserData({
               balance: coinsEarned,
@@ -1827,23 +2000,67 @@
         }
       });
       
-      // Load tasks
+      // Milestone claim buttons
+      if (document.getElementById('claim100')) {
+        document.getElementById('claim100').addEventListener('click', () => {
+          if (lifetimeAds >= 100 && !milestones.m100) {
+            coinsEarned += 5000;
+            milestones.m100 = true;
+            updateUserData({
+              balance: coinsEarned,
+              milestones: milestones
+            });
+            notify('Claimed 5,000 SHB! 🎉');
+            renderEarn();
+          }
+        });
+      }
+      
+      if (document.getElementById('claim200')) {
+        document.getElementById('claim200').addEventListener('click', () => {
+          if (lifetimeAds >= 200 && !milestones.m200) {
+            coinsEarned += 10000;
+            milestones.m200 = true;
+            updateUserData({
+              balance: coinsEarned,
+              milestones: milestones
+            });
+            notify('Claimed 10,000 SHB! 🏆');
+            renderEarn();
+          }
+        });
+      }
+      
+      if (document.getElementById('claim500')) {
+        document.getElementById('claim500').addEventListener('click', () => {
+          if (lifetimeAds >= 500 && !milestones.m500) {
+            coinsEarned += 20000;
+            milestones.m500 = true;
+            updateUserData({
+              balance: coinsEarned,
+              milestones: milestones
+            });
+            notify('Claimed 20,000 SHB! 👑');
+            renderEarn();
+          }
+        });
+      }
+      
       loadTasks();
       
-      // Setup chart
       setTimeout(() => {
         const ctx = document.getElementById('adChart').getContext('2d');
         new Chart(ctx, {
           type: 'bar',
           data: {
-            labels: ['Today', 'Daily', 'Monthly', 'Lifetime'],
+            labels: ['Today', 'Yesterday', 'This Week', 'This Month'],
             datasets: [{
               label: 'Ads Watched',
               data: [
                 adStats.today || 0,
-                adStats.daily || 0,
-                adStats.monthly || 0,
-                adStats.lifetime || 0
+                adStats.yesterday || 0,
+                adStats.thisWeek || 0,
+                adStats.thisMonth || 0
               ],
               backgroundColor: [
                 'rgba(79, 172, 254, 0.8)',
@@ -1918,7 +2135,6 @@
         
         document.getElementById('tasksList').innerHTML = html;
         
-        // Setup task buttons
         document.querySelectorAll('.task-btn').forEach(btn => {
           btn.addEventListener('click', function() {
             const taskId = this.dataset.taskId;
@@ -1950,173 +2166,155 @@
     // Profile Section
     function renderProfile() {
       loadProfileSections().then(() => {
-        // Count actual referrals using the referralCount field from userData
-        const actualReferralCount = userData.referralCount || 0;
-        
-        let sectionsHTML = '';
-        profileSections.forEach(section => {
-          sectionsHTML += `
-            <div class="section-link-card" onclick="window.open('${section.link}', '_blank')">
-              <img src="${section.image}" class="section-link-image" alt="${section.name}" />
-              <div class="section-link-title">${section.name}</div>
-            </div>
-          `;
-        });
-        
-        // Check if wallet is connected
-        const walletConnected = userData.ton && userData.ton.length > 0;
-        
-        const walletHTML = walletConnected ? `
-          <div class="wallet-connected">
-            <span class="wallet-address">${userData.ton}</span>
-            <button class="disconnect-btn" id="disconnectWallet">Disconnect</button>
-          </div>
-        ` : `
-          <div id="ton-connect-button"></div>
-        `;
-        
-        const html = `
-          <div class="profile-main">
-            <div class="profile-header">
-              <div class="avatar-container">
-                <div class="avatar-glow"></div>
-                <img src="${userData.avatar}" class="avatar-image" alt="Avatar" />
-              </div>
-              <div class="user-info-box">
-                <div class="user-name">${userData.name}</div>
-                <div class="user-id-row">
-                  <span class="user-id-label">ID:</span>
-                  <span class="user-id-value">${userId}</span>
-                  <img src="https://github.com/akhterefti-del/Shark/blob/414f316d45b382764893e66646e983d101310c2e/Gemini_Generated_Image_c5nuk1c5nuk1c5nu.png?raw=true" 
-                       class="copy-icon" 
-                       id="copyUserId" 
-                       alt="Copy" />
+        db.ref('users')
+          .orderByChild('referredBy')
+          .equalTo(userId)
+          .once('value')
+          .then(refSnap => {
+            const actualReferralCount = refSnap.numChildren();
+            
+            if (actualReferralCount !== referralCount) {
+              referralCount = actualReferralCount;
+              updateUserData({ referrals: actualReferralCount });
+            }
+            
+            let sectionsHTML = '';
+            profileSections.forEach(section => {
+              sectionsHTML += `
+                <div class="section-link-card" onclick="window.open('${section.link}', '_blank')">
+                  <img src="${section.image}" class="section-link-image" alt="${section.name}" />
+                  <div class="section-link-title">${section.name}</div>
+                </div>
+              `;
+            });
+            
+            const html = `
+              <div class="profile-main">
+                <div class="profile-header">
+                  <div class="avatar-container">
+                    <div class="avatar-glow"></div>
+                    <img src="${userData.avatar}" class="avatar-image" alt="Avatar" />
+                  </div>
+                  <div class="user-info-box">
+                    <div class="user-name">${userData.name}</div>
+                    <div class="user-id-row">
+                      <span class="user-id-label">ID:</span>
+                      <span class="user-id-value">${userId}</span>
+                      <img src="https://github.com/akhterefti-del/Shark/blob/414f316d45b382764893e66646e983d101310c2e/Gemini_Generated_Image_c5nuk1c5nuk1c5nu.png?raw=true" 
+                           class="copy-icon" 
+                           id="copyUserId" 
+                           alt="Copy" />
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="profile-card">
+                  <div class="card-title">TON Wallet</div>
+                  <div class="wallet-input-group">
+                    <input type="text" 
+                           class="input-field" 
+                           id="tonWallet" 
+                           placeholder="Enter your TON wallet address" 
+                           value="${userData.ton || ''}" />
+                    <button class="btn-secondary" id="saveTonWallet">Save</button>
+                  </div>
+                </div>
+                
+                <div class="profile-card">
+                  <div class="card-title">Referral Program</div>
+                  <div class="referral-link-box">
+                    <span class="referral-link" id="referralLink">https://t.me/SharkBountybot?start=r${userId}</span>
+                    <img src="https://github.com/akhterefti-del/Shark/blob/414f316d45b382764893e66646e983d101310c2e/Gemini_Generated_Image_c5nuk1c5nuk1c5nu.png?raw=true" 
+                         class="copy-icon" 
+                         id="copyReferralLink" 
+                         alt="Copy" />
+                  </div>
+                  <div class="referral-stats">
+                    <div class="referral-stat">
+                      <div class="referral-stat-label">Total Referrals</div>
+                      <div class="referral-stat-value">${actualReferralCount}</div>
+                    </div>
+                    <div class="referral-stat">
+                      <div class="referral-stat-label">Earnings</div>
+                      <div class="referral-stat-value">${actualReferralCount * 5000}</div>
+                    </div>
+                  </div>
+                </div>
+                
+                ${sectionsHTML}
+                
+                <div class="profile-card">
+                  <div class="card-title">Redeem Code</div>
+                  <div class="redeem-form-group">
+                    <input type="text" 
+                           class="redeem-input" 
+                           id="redeemCode" 
+                           placeholder="Enter 4-digit code" 
+                           maxlength="4" />
+                    <button class="btn-secondary" id="redeemBtn">Redeem</button>
+                  </div>
                 </div>
               </div>
-            </div>
+            `;
             
-            <div class="profile-card">
-              <div class="card-title">TON Wallet</div>
-              ${walletHTML}
-            </div>
+            document.getElementById('main-content').innerHTML = html;
             
-            <div class="profile-card">
-              <div class="card-title">Referral Program</div>
-              <div class="referral-link-box">
-                <span class="referral-link" id="referralLink">https://t.me/SharkBountybot?start=r${userId}</span>
-                <img src="https://github.com/akhterefti-del/Shark/blob/414f316d45b382764893e66646e983d101310c2e/Gemini_Generated_Image_c5nuk1c5nuk1c5nu.png?raw=true" 
-                     class="copy-icon" 
-                     id="copyReferralLink" 
-                     alt="Copy" />
-              </div>
-              <div class="referral-stats">
-                <div class="referral-stat">
-                  <div class="referral-stat-label">Total Referrals</div>
-                  <div class="referral-stat-value">${actualReferralCount}</div>
-                </div>
-                <div class="referral-stat">
-                  <div class="referral-stat-label">Earnings</div>
-                  <div class="referral-stat-value">${actualReferralCount * 5000}</div>
-                </div>
-              </div>
-            </div>
+            document.getElementById('copyUserId').addEventListener('click', () => {
+              navigator.clipboard.writeText(userId).then(() => {
+                notify('User ID copied to clipboard!');
+              });
+            });
             
-            ${sectionsHTML}
-            
-            <div class="profile-card">
-              <div class="card-title">Redeem Code</div>
-              <div class="redeem-form-group">
-                <input type="text" 
-                       class="redeem-input" 
-                       id="redeemCode" 
-                       placeholder="Enter 4-digit code" 
-                       maxlength="4" />
-                <button class="btn-secondary" id="redeemBtn">Redeem</button>
-              </div>
-            </div>
-          </div>
-        `;
-        
-        document.getElementById('main-content').innerHTML = html;
-        
-        // Setup TON Connect if wallet not connected
-        if (!walletConnected) {
-          tonConnectUI.uiOptions = {
-            buttonRootId: 'ton-connect-button'
-          };
-          
-          // Listen for wallet connection
-          tonConnectUI.onStatusChange((wallet) => {
-            if (wallet) {
-              const walletAddress = wallet.account.address;
-              connectedWallet = walletAddress;
+            document.getElementById('saveTonWallet').addEventListener('click', () => {
+              const wallet = document.getElementById('tonWallet').value.trim();
+              if (wallet.length < 10) {
+                notify('Please enter a valid TON wallet address!');
+                return;
+              }
               
-              // Save to Firebase
-              updateUserData({ ton: walletAddress });
+              updateUserData({ ton: wallet });
               
-              // Send to admin panel with push token
               db.ref('admin/tonSubmissions').push({
                 userId: userId,
                 userName: userName,
-                walletAddress: walletAddress,
-                pushToken: 'ftt5nfzlQG24v6LPVLm_oI:APA91bH6IgQli0wfh71lj1CM2j8idCB6KMj9tPg4Lo1qaIFUane5r68S-pLN9JnoATjhdxL_pT5XWdSuQyyTmBc6dCYamvSTjxVme6DooclgH7pmhKdA5-0',
+                walletAddress: wallet,
                 timestamp: now(),
                 balance: coinsEarned
               });
               
-              notify('TON wallet connected successfully!');
-              renderProfile();
-            }
-          });
-        } else {
-          // Setup disconnect button
-          document.getElementById('disconnectWallet').addEventListener('click', () => {
-            updateUserData({ ton: '' });
-            connectedWallet = null;
-            tonConnectUI.disconnect();
-            notify('Wallet disconnected!');
-            renderProfile();
-          });
-        }
-        
-        // Copy User ID
-        document.getElementById('copyUserId').addEventListener('click', () => {
-          navigator.clipboard.writeText(userId).then(() => {
-            notify('User ID copied to clipboard!');
-          });
-        });
-        
-        // Copy Referral Link
-        document.getElementById('copyReferralLink').addEventListener('click', () => {
-          const link = document.getElementById('referralLink').textContent;
-          navigator.clipboard.writeText(link).then(() => {
-            notify('Referral link copied to clipboard!');
-          });
-        });
-        
-        // Redeem Code
-        document.getElementById('redeemBtn').addEventListener('click', () => {
-          const code = document.getElementById('redeemCode').value.trim();
-          if (code.length !== 4) {
-            notify('Please enter a valid 4-digit code!');
-            return;
-          }
-          
-          db.ref('redeemCodes/' + code).once('value').then(snap => {
-            if (snap.exists()) {
-              const amount = Math.floor(Math.random() * (10000 - 500 + 1)) + 500;
-              coinsEarned += amount;
+              notify('TON wallet saved successfully!');
+            });
+            
+            document.getElementById('copyReferralLink').addEventListener('click', () => {
+              const link = document.getElementById('referralLink').textContent;
+              navigator.clipboard.writeText(link).then(() => {
+                notify('Referral link copied to clipboard!');
+              });
+            });
+            
+            document.getElementById('redeemBtn').addEventListener('click', () => {
+              const code = document.getElementById('redeemCode').value.trim();
+              if (code.length !== 4) {
+                notify('Please enter a valid 4-digit code!');
+                return;
+              }
               
-              updateUserData({ balance: coinsEarned });
-              db.ref('redeemCodes/' + code).remove();
-              
-              notify(`Redeemed ${amount} SHB successfully!`);
-              document.getElementById('redeemCode').value = '';
-            } else {
-              notify('Invalid or already used code!');
-            }
+              db.ref('redeemCodes/' + code).once('value').then(snap => {
+                if (snap.exists()) {
+                  const amount = Math.floor(Math.random() * (10000 - 500 + 1)) + 500;
+                  coinsEarned += amount;
+                  
+                  updateUserData({ balance: coinsEarned });
+                  db.ref('redeemCodes/' + code).remove();
+                  
+                  notify(`Redeemed ${amount} SHB successfully!`);
+                  document.getElementById('redeemCode').value = '';
+                } else {
+                  notify('Invalid or already used code!');
+                }
+              });
+            });
           });
-        });
       });
     }
     
@@ -2156,7 +2354,6 @@
       
       document.getElementById('main-content').innerHTML = html;
       
-      // Setup live ranking listener
       if (rankingListener) rankingListener.off();
       
       const usersRef = db.ref('users');
