@@ -1,17 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Shark Bounty - Trading Admin Panel</title>
-  <link rel="icon" href="https://github.com/s42144/Shark-Bounty/blob/dc7c6b7451be7e4767f4c84bdecf7dfed3082bed/HOME.png?raw=true" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
   
   <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   
@@ -26,193 +24,51 @@
       --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       --success-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
       --danger-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      --dark-bg: #0f2027;
       --card-bg: rgba(255, 255, 255, 0.08);
       --card-border: rgba(255, 255, 255, 0.15);
       --text-primary: #ffffff;
       --text-secondary: #b8c5d6;
-      --accent-blue: #4facfe;
-      --accent-green: #00ff88;
-      --accent-red: #f5576c;
+      --accent-cyan: #00f2fe;
       --accent-gold: #ffd700;
       --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.15);
       --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.2);
     }
     
     body {
-      font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #667eea 100%);
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
       color: var(--text-primary);
-      min-height: 100vh;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-    }
-    
-    /* Login Screen */
-    #login-screen {
-      display: flex;
-      align-items: center;
-      justify-content: center;
       min-height: 100vh;
       padding: 20px;
-    }
-    
-    .login-card {
-      background: var(--card-bg);
-      backdrop-filter: blur(20px);
-      border-radius: 24px;
-      padding: 40px;
-      border: 1px solid var(--card-border);
-      box-shadow: var(--shadow-lg);
-      max-width: 400px;
-      width: 100%;
-    }
-    
-    .login-logo {
-      width: 100px;
-      height: 100px;
-      border-radius: 50%;
-      margin: 0 auto 24px;
-      display: block;
-    }
-    
-    .login-title {
-      font-size: 28px;
-      font-weight: 800;
-      text-align: center;
-      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      margin-bottom: 8px;
-    }
-    
-    .login-subtitle {
-      font-size: 14px;
-      color: var(--text-secondary);
-      text-align: center;
-      margin-bottom: 32px;
-    }
-    
-    .form-group {
-      margin-bottom: 20px;
-    }
-    
-    .form-label {
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--text-primary);
-      margin-bottom: 8px;
-      display: block;
-    }
-    
-    .form-input {
-      width: 100%;
-      padding: 12px 16px;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--card-border);
-      border-radius: 10px;
-      font-size: 14px;
-      color: var(--text-primary);
-      font-family: 'Poppins', sans-serif;
-      outline: none;
-      transition: all 0.3s ease;
-    }
-    
-    .form-input:focus {
-      border-color: var(--accent-blue);
-      background: rgba(255, 255, 255, 0.08);
-    }
-    
-    .btn-login {
-      width: 100%;
-      padding: 14px;
-      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-      border: none;
-      border-radius: 12px;
-      font-size: 16px;
-      font-weight: 700;
-      color: #fff;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-    
-    .btn-login:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(79, 172, 254, 0.4);
-    }
-    
-    /* Admin Dashboard */
-    #admin-dashboard {
-      display: none;
-      min-height: 100vh;
-    }
-    
-    .admin-header {
-      background: rgba(30, 60, 114, 0.95);
-      backdrop-filter: blur(20px);
-      padding: 20px 40px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-bottom: 1px solid var(--card-border);
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
-    
-    .admin-logo-section {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
-    
-    .admin-logo {
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-    }
-    
-    .admin-title {
-      font-size: 24px;
-      font-weight: 800;
-      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-    
-    .admin-subtitle {
-      font-size: 12px;
-      color: var(--text-secondary);
-      font-weight: 500;
-    }
-    
-    .btn-logout {
-      padding: 10px 24px;
-      background: rgba(245, 87, 108, 0.2);
-      border: 1px solid var(--accent-red);
-      border-radius: 10px;
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--accent-red);
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-    
-    .btn-logout:hover {
-      background: rgba(245, 87, 108, 0.3);
     }
     
     .admin-container {
       max-width: 1400px;
       margin: 0 auto;
-      padding: 40px 20px;
     }
     
-    /* Stats Cards */
-    .stats-grid {
+    .admin-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    
+    .admin-title {
+      font-size: 36px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 8px;
+    }
+    
+    .admin-subtitle {
+      font-size: 16px;
+      color: var(--text-secondary);
+    }
+    
+    .stats-overview {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
       gap: 20px;
@@ -250,79 +106,69 @@
     .stat-value {
       font-size: 32px;
       font-weight: 800;
-      color: var(--text-primary);
-      margin-bottom: 4px;
+      color: var(--accent-cyan);
     }
     
-    .stat-change {
-      font-size: 12px;
-      font-weight: 600;
-    }
-    
-    .stat-change.positive {
-      color: var(--accent-green);
-    }
-    
-    .stat-change.negative {
-      color: var(--accent-red);
-    }
-    
-    /* Tabs */
     .admin-tabs {
       display: flex;
       gap: 12px;
-      margin-bottom: 32px;
+      margin-bottom: 30px;
       overflow-x: auto;
-      padding-bottom: 8px;
+      padding-bottom: 10px;
     }
     
-    .admin-tab {
+    .admin-tab-btn {
       padding: 12px 24px;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--card-border);
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
       border-radius: 12px;
+      color: var(--text-secondary);
       font-size: 14px;
       font-weight: 600;
-      color: var(--text-secondary);
       cursor: pointer;
       transition: all 0.3s ease;
       white-space: nowrap;
     }
     
-    .admin-tab.active {
+    .admin-tab-btn.active {
       background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
       color: #fff;
       border-color: transparent;
     }
     
-    .admin-tab:hover:not(.active) {
-      background: rgba(255, 255, 255, 0.08);
-    }
-    
-    /* Content Sections */
-    .admin-section {
+    .admin-tab-content {
       display: none;
     }
     
-    .admin-section.active {
+    .admin-tab-content.active {
       display: block;
     }
     
-    .section-title {
-      font-size: 24px;
-      font-weight: 700;
-      color: var(--text-primary);
-      margin-bottom: 24px;
-    }
-    
-    /* Table */
-    .data-table {
+    .section-card {
       background: var(--card-bg);
       backdrop-filter: blur(20px);
       border-radius: 20px;
       padding: 24px;
       border: 1px solid var(--card-border);
       box-shadow: var(--shadow-md);
+      margin-bottom: 24px;
+    }
+    
+    .section-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .section-icon {
+      font-size: 24px;
+    }
+    
+    .table-container {
       overflow-x: auto;
     }
     
@@ -336,29 +182,33 @@
     }
     
     th {
-      padding: 16px;
+      padding: 12px;
       text-align: left;
-      font-size: 13px;
-      font-weight: 700;
+      font-size: 12px;
+      font-weight: 600;
       color: var(--text-secondary);
       text-transform: uppercase;
-      border-bottom: 2px solid var(--card-border);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
     
     td {
-      padding: 16px;
+      padding: 16px 12px;
       font-size: 14px;
       color: var(--text-primary);
       border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     }
     
-    tr:hover {
-      background: rgba(255, 255, 255, 0.03);
+    tbody tr {
+      transition: all 0.3s ease;
+    }
+    
+    tbody tr:hover {
+      background: rgba(255, 255, 255, 0.05);
     }
     
     .status-badge {
-      padding: 6px 12px;
-      border-radius: 20px;
+      padding: 4px 12px;
+      border-radius: 12px;
       font-size: 11px;
       font-weight: 700;
       text-transform: uppercase;
@@ -371,191 +221,63 @@
     }
     
     .status-approved {
-      background: rgba(0, 255, 136, 0.2);
-      color: var(--accent-green);
+      background: rgba(76, 175, 80, 0.2);
+      color: #4caf50;
     }
     
     .status-rejected {
-      background: rgba(245, 87, 108, 0.2);
-      color: var(--accent-red);
+      background: rgba(244, 67, 54, 0.2);
+      color: #f44336;
     }
     
-    .status-active {
-      background: rgba(79, 172, 254, 0.2);
-      color: var(--accent-blue);
-    }
-    
-    .status-completed {
-      background: rgba(102, 126, 234, 0.2);
-      color: #667eea;
-    }
-    
-    /* Action Buttons */
-    .action-buttons {
-      display: flex;
-      gap: 8px;
-    }
-    
-    .btn-action {
-      padding: 8px 16px;
+    .action-btn {
+      padding: 6px 16px;
       border: none;
       border-radius: 8px;
       font-size: 12px;
       font-weight: 600;
       cursor: pointer;
       transition: all 0.3s ease;
+      margin-right: 8px;
       text-transform: uppercase;
     }
     
     .btn-approve {
-      background: rgba(0, 255, 136, 0.2);
-      color: var(--accent-green);
-      border: 1px solid var(--accent-green);
+      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      color: #fff;
     }
     
     .btn-approve:hover {
-      background: rgba(0, 255, 136, 0.3);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(79, 172, 254, 0.4);
     }
     
     .btn-reject {
-      background: rgba(245, 87, 108, 0.2);
-      color: var(--accent-red);
-      border: 1px solid var(--accent-red);
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      color: #fff;
     }
     
     .btn-reject:hover {
-      background: rgba(245, 87, 108, 0.3);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(240, 147, 251, 0.4);
     }
     
-    .btn-view {
-      background: rgba(79, 172, 254, 0.2);
-      color: var(--accent-blue);
-      border: 1px solid var(--accent-blue);
-    }
-    
-    .btn-view:hover {
-      background: rgba(79, 172, 254, 0.3);
-    }
-    
-    /* User Details Modal */
-    .modal-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: rgba(0, 0, 0, 0.8);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
-      padding: 20px;
-    }
-    
-    .modal-content {
-      background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-      border-radius: 24px;
-      padding: 32px;
-      max-width: 600px;
-      width: 100%;
-      max-height: 90vh;
-      overflow-y: auto;
-      border: 1px solid var(--card-border);
-      box-shadow: var(--shadow-lg);
-    }
-    
-    .modal-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 24px;
-    }
-    
-    .modal-title {
-      font-size: 24px;
-      font-weight: 800;
-      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-    
-    .modal-close {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.1);
-      border: none;
-      color: var(--text-primary);
-      font-size: 20px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.3s ease;
-    }
-    
-    .modal-close:hover {
-      background: rgba(255, 255, 255, 0.2);
-    }
-    
-    .detail-row {
-      display: flex;
-      justify-content: space-between;
-      padding: 12px 0;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    }
-    
-    .detail-label {
-      font-size: 14px;
-      color: var(--text-secondary);
-      font-weight: 600;
-    }
-    
-    .detail-value {
-      font-size: 14px;
-      color: var(--text-primary);
-      font-weight: 600;
-      text-align: right;
-    }
-    
-    /* Charts */
-    .chart-container {
-      background: var(--card-bg);
-      backdrop-filter: blur(20px);
-      border-radius: 20px;
-      padding: 24px;
-      border: 1px solid var(--card-border);
-      box-shadow: var(--shadow-md);
-      margin-bottom: 32px;
-    }
-    
-    .chart-title {
-      font-size: 18px;
-      font-weight: 700;
-      color: var(--text-primary);
-      margin-bottom: 20px;
-    }
-    
-    /* Empty State */
     .empty-state {
       text-align: center;
       padding: 60px 20px;
+      color: var(--text-secondary);
     }
     
     .empty-icon {
       font-size: 64px;
       margin-bottom: 16px;
-      opacity: 0.5;
     }
     
     .empty-text {
       font-size: 16px;
-      color: var(--text-secondary);
-      font-weight: 500;
+      font-weight: 600;
     }
     
-    /* Notification */
     .notification {
       position: fixed;
       top: 20px;
@@ -582,288 +304,151 @@
       }
     }
     
-    /* Responsive */
-    @media (max-width: 768px) {
-      .admin-header {
-        padding: 16px 20px;
-      }
-      
-      .admin-logo-section {
-        gap: 12px;
-      }
-      
-      .admin-logo {
-        width: 40px;
-        height: 40px;
-      }
-      
-      .admin-title {
-        font-size: 18px;
-      }
-      
-      .admin-subtitle {
-        font-size: 10px;
-      }
-      
-      .stats-grid {
-        grid-template-columns: 1fr;
-      }
-      
-      .admin-tabs {
-        flex-wrap: nowrap;
-      }
-      
-      .data-table {
-        overflow-x: scroll;
-      }
-      
-      table {
-        min-width: 800px;
-      }
+    .refresh-btn {
+      padding: 10px 20px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border: none;
+      border-radius: 10px;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      margin-left: auto;
+    }
+    
+    .refresh-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
     }
   </style>
 <script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
 </head>
 <body>
-  <!-- Login Screen -->
-  <div id="login-screen">
-    <div class="login-card">
-      <img src="https://github.com/akhterefti-del/Shark/blob/eec9a5de183800435c0f781a44b5da5722479f20/sharkcoin.png?raw=true" 
-           class="login-logo" 
-           alt="Shark Bounty" />
-      <div class="login-title">Trading Admin Panel</div>
-      <div class="login-subtitle">Manage deposits, withdrawals, and trades</div>
-      
-      <form id="loginForm">
-        <div class="form-group">
-          <label class="form-label">Email</label>
-          <input type="email" class="form-input" id="adminEmail" placeholder="Enter admin email" required />
-        </div>
-        <div class="form-group">
-          <label class="form-label">Password</label>
-          <input type="password" class="form-input" id="adminPassword" placeholder="Enter password" required />
-        </div>
-        <button type="submit" class="btn-login">Login</button>
-      </form>
-    </div>
-  </div>
-  
-  <!-- Admin Dashboard -->
-  <div id="admin-dashboard">
+  <div class="admin-container">
     <div class="admin-header">
-      <div class="admin-logo-section">
-        <img src="https://github.com/akhterefti-del/Shark/blob/eec9a5de183800435c0f781a44b5da5722479f20/sharkcoin.png?raw=true" 
-             class="admin-logo" 
-             alt="Shark Bounty" />
-        <div>
-          <div class="admin-title">Trading Admin</div>
-          <div class="admin-subtitle">Shark Bounty Management</div>
-        </div>
-      </div>
-      <button class="btn-logout" id="logoutBtn">Logout</button>
+      <div class="admin-title">🦈 Shark Bounty Trading Admin</div>
+      <div class="admin-subtitle">Manage deposits, withdrawals, and trading activities</div>
     </div>
     
-    <div class="admin-container">
-      <!-- Stats Grid -->
-      <div class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-icon">💰</div>
-          <div class="stat-label">Total Deposits</div>
-          <div class="stat-value" id="totalDeposits">$0</div>
-          <div class="stat-change positive" id="depositsChange">+0%</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon">💸</div>
-          <div class="stat-label">Total Withdrawals</div>
-          <div class="stat-value" id="totalWithdrawals">$0</div>
-          <div class="stat-change negative" id="withdrawalsChange">-0%</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon">📊</div>
-          <div class="stat-label">Active Trades</div>
-          <div class="stat-value" id="activeTrades">0</div>
-          <div class="stat-change positive" id="tradesChange">+0%</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon">👥</div>
-          <div class="stat-label">Total Users</div>
-          <div class="stat-value" id="totalUsers">0</div>
-          <div class="stat-change positive" id="usersChange">+0%</div>
-        </div>
+    <div class="stats-overview">
+      <div class="stat-card">
+        <div class="stat-icon">💰</div>
+        <div class="stat-label">Total Deposits</div>
+        <div class="stat-value" id="totalDeposits">$0</div>
       </div>
-      
-      <!-- Tabs -->
-      <div class="admin-tabs">
-        <button class="admin-tab active" data-tab="deposits">Pending Deposits</button>
-        <button class="admin-tab" data-tab="withdrawals">Pending Withdrawals</button>
-        <button class="admin-tab" data-tab="all-deposits">All Deposits</button>
-        <button class="admin-tab" data-tab="all-withdrawals">All Withdrawals</button>
-        <button class="admin-tab" data-tab="trades">All Trades</button>
-        <button class="admin-tab" data-tab="users">Users</button>
-        <button class="admin-tab" data-tab="analytics">Analytics</button>
+      <div class="stat-card">
+        <div class="stat-icon">💸</div>
+        <div class="stat-label">Total Withdrawals</div>
+        <div class="stat-value" id="totalWithdrawals">$0</div>
       </div>
-      
-      <!-- Pending Deposits Section -->
-      <div class="admin-section active" id="deposits-section">
-        <div class="section-title">Pending Deposits</div>
-        <div class="data-table">
-          <table>
-            <thead>
-              <tr>
-                <th>User</th>
-                <th>Amount</th>
-                <th>Memo</th>
-                <th>TX Hash</th>
-                <th>Date</th>
-                <th>Status</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody id="depositsTableBody"></tbody>
-          </table>
+      <div class="stat-card">
+        <div class="stat-icon">📊</div>
+        <div class="stat-label">Active Trades</div>
+        <div class="stat-value" id="activeTrades">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">⏳</div>
+        <div class="stat-label">Pending Deposits</div>
+        <div class="stat-value" id="pendingDeposits">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">⏳</div>
+        <div class="stat-label">Pending Withdrawals</div>
+        <div class="stat-value" id="pendingWithdrawals">0</div>
+      </div>
+    </div>
+    
+    <div class="admin-tabs">
+      <button class="admin-tab-btn active" data-tab="deposits">Deposits</button>
+      <button class="admin-tab-btn" data-tab="withdrawals">Withdrawals</button>
+      <button class="admin-tab-btn" data-tab="trades">Active Trades</button>
+    </div>
+    
+    <div id="deposits-content" class="admin-tab-content active">
+      <div class="section-card">
+        <div class="section-title">
+          <span class="section-icon">💰</span>
+          <span>Deposit Requests</span>
+          <button class="refresh-btn" onclick="loadDeposits()">Refresh</button>
         </div>
-      </div>
-      
-      <!-- Pending Withdrawals Section -->
-      <div class="admin-section" id="withdrawals-section">
-        <div class="section-title">Pending Withdrawals</div>
-        <div class="data-table">
-          <table>
-            <thead>
-              <tr>
-                <th>User</th>
-                <th>Amount</th>
-                <th>Address</th>
-                <th>Memo</th>
-                <th>Date</th>
-                <th>Status</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody id="withdrawalsTableBody"></tbody>
-          </table>
-        </div>
-      </div>
-      
-      <!-- All Deposits Section -->
-      <div class="admin-section" id="all-deposits-section">
-        <div class="section-title">All Deposits</div>
-        <div class="data-table">
-          <table>
-            <thead>
-              <tr>
-                <th>User</th>
-                <th>Amount</th>
-                <th>Memo</th>
-                <th>TX Hash</th>
-                <th>Date</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody id="allDepositsTableBody"></tbody>
-          </table>
-        </div>
-      </div>
-      
-      <!-- All Withdrawals Section -->
-      <div class="admin-section" id="all-withdrawals-section">
-        <div class="section-title">All Withdrawals</div>
-        <div class="data-table">
-          <table>
-            <thead>
-              <tr>
-                <th>User</th>
-                <th>Amount</th>
-                <th>Address</th>
-                <th>Memo</th>
-                <th>Date</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody id="allWithdrawalsTableBody"></tbody>
-          </table>
-        </div>
-      </div>
-      
-      <!-- All Trades Section -->
-      <div class="admin-section" id="trades-section">
-        <div class="section-title">All Trades</div>
-        <div class="data-table">
-          <table>
-            <thead>
-              <tr>
-                <th>User</th>
-                <th>Pair</th>
-                <th>Investment</th>
-                <th>Daily Earning</th>
-                <th>Total Earned</th>
-                <th>Duration</th>
-                <th>Status</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody id="tradesTableBody"></tbody>
-          </table>
-        </div>
-      </div>
-      
-      <!-- Users Section -->
-      <div class="admin-section" id="users-section">
-        <div class="section-title">All Users</div>
-        <div class="data-table">
+        <div class="table-container">
           <table>
             <thead>
               <tr>
                 <th>User ID</th>
-                <th>Name</th>
-                <th>USDT Balance</th>
-                <th>TON Balance</th>
-                <th>Active Trades</th>
-                <th>Total Deposits</th>
-                <th>Total Withdrawals</th>
+                <th>Amount</th>
+                <th>Memo</th>
+                <th>TX Hash</th>
+                <th>Date</th>
+                <th>Status</th>
                 <th>Actions</th>
               </tr>
             </thead>
-            <tbody id="usersTableBody"></tbody>
+            <tbody id="depositsTableBody">
+            </tbody>
           </table>
         </div>
       </div>
-      
-      <!-- Analytics Section -->
-      <div class="admin-section" id="analytics-section">
-        <div class="section-title">Analytics & Reports</div>
-        
-        <div class="chart-container">
-          <div class="chart-title">Deposits vs Withdrawals (Last 7 Days)</div>
-          <canvas id="depositsWithdrawalsChart"></canvas>
+    </div>
+    
+    <div id="withdrawals-content" class="admin-tab-content">
+      <div class="section-card">
+        <div class="section-title">
+          <span class="section-icon">💸</span>
+          <span>Withdrawal Requests</span>
+          <button class="refresh-btn" onclick="loadWithdrawals()">Refresh</button>
         </div>
-        
-        <div class="chart-container">
-          <div class="chart-title">Trading Activity (Last 30 Days)</div>
-          <canvas id="tradingActivityChart"></canvas>
-        </div>
-        
-        <div class="chart-container">
-          <div class="chart-title">User Growth</div>
-          <canvas id="userGrowthChart"></canvas>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>User ID</th>
+                <th>Amount</th>
+                <th>Address</th>
+                <th>Memo</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="withdrawalsTableBody">
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
-  </div>
-  
-  <!-- User Details Modal -->
-  <div class="modal-overlay" id="userModal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <div class="modal-title">User Details</div>
-        <button class="modal-close" id="closeUserModal">×</button>
+    
+    <div id="trades-content" class="admin-tab-content">
+      <div class="section-card">
+        <div class="section-title">
+          <span class="section-icon">📊</span>
+          <span>Active Trading Plans</span>
+          <button class="refresh-btn" onclick="loadTrades()">Refresh</button>
+        </div>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>User ID</th>
+                <th>Pair</th>
+                <th>Investment</th>
+                <th>Daily Earning</th>
+                <th>Days</th>
+                <th>Total Earned</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="tradesTableBody">
+            </tbody>
+          </table>
+        </div>
       </div>
-      <div id="userDetailsContent"></div>
     </div>
   </div>
   
   <script>
-    // Firebase Configuration
     const firebaseConfig = {
       apiKey: "AIzaSyAHofuS76xf2oGPaJqEtopmcxdoJzjkDL4",
       authDomain: "zmex-investments.firebaseapp.com",
@@ -871,686 +456,206 @@
       projectId: "zmex-investments",
       storageBucket: "zmex-investments.appspot.com",
       messagingSenderId: "971623941364",
-      appId: "1:971623941364:web:6c65604fc45c3f64e74aa1",
-      measurementId: "G-KQ1LYP77JF"
+      appId: "1:971623941364:web:6c65604fc45c3f64e74aa1"
     };
     
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
-    const auth = firebase.auth();
     
-    // Global State
-    let currentUser = null;
-    let allUsers = {};
-    let allDeposits = {};
-    let allWithdrawals = {};
-    let allTrades = {};
-    
-    // Utility Functions
     function notify(message) {
       const notification = document.createElement('div');
       notification.className = 'notification';
       notification.textContent = message;
       document.body.appendChild(notification);
-      
-      setTimeout(() => {
-        notification.remove();
-      }, 3000);
+      setTimeout(() => notification.remove(), 3000);
     }
     
     function formatDate(timestamp) {
       return new Date(timestamp * 1000).toLocaleString();
     }
     
-    function formatCurrency(amount) {
-      return '$' + parseFloat(amount).toFixed(2);
-    }
-    
-    // Authentication - Direct access without password
-    document.getElementById('loginForm').addEventListener('submit', (e) => {
-      e.preventDefault();
-      
-      // Direct access - no authentication required
-      document.getElementById('login-screen').style.display = 'none';
-      document.getElementById('admin-dashboard').style.display = 'block';
-      notify('Admin access granted!');
-      loadDashboardData();
-    });
-    
-    document.getElementById('logoutBtn').addEventListener('click', () => {
-      auth.signOut().then(() => {
-        document.getElementById('login-screen').style.display = 'flex';
-        document.getElementById('admin-dashboard').style.display = 'none';
-        notify('Logged out successfully');
-      });
-    });
-    
-    // Tab Navigation
-    document.querySelectorAll('.admin-tab').forEach(tab => {
-      tab.addEventListener('click', function() {
-        document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
-        document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
-        
+    document.querySelectorAll('.admin-tab-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('.admin-tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.admin-tab-content').forEach(c => c.classList.remove('active'));
         this.classList.add('active');
-        const tabName = this.dataset.tab;
-        document.getElementById(tabName + '-section').classList.add('active');
-        
-        if (tabName === 'analytics') {
-          renderAnalytics();
-        }
+        document.getElementById(this.dataset.tab + '-content').classList.add('active');
+        if (this.dataset.tab === 'deposits') loadDeposits();
+        else if (this.dataset.tab === 'withdrawals') loadWithdrawals();
+        else if (this.dataset.tab === 'trades') loadTrades();
       });
     });
     
-    // Load Dashboard Data
-    function loadDashboardData() {
-      loadStats();
-      loadPendingDeposits();
-      loadPendingWithdrawals();
-      loadAllDeposits();
-      loadAllWithdrawals();
-      loadAllTrades();
-      loadAllUsers();
-    }
-    
-    // Load Stats
-    function loadStats() {
-      // Total Deposits
-      db.ref('admin/deposits').on('value', (snapshot) => {
-        let total = 0;
+    function loadStatistics() {
+      db.ref('admin/trading/deposits').once('value').then(snapshot => {
+        let total = 0, pending = 0;
         snapshot.forEach(child => {
           const deposit = child.val();
-          if (deposit.status === 'approved') {
-            total += deposit.amount;
-          }
+          if (deposit.status === 'approved') total += parseFloat(deposit.amount);
+          if (deposit.status === 'pending') pending++;
         });
-        document.getElementById('totalDeposits').textContent = formatCurrency(total);
+        document.getElementById('totalDeposits').textContent = '$' + total.toFixed(2);
+        document.getElementById('pendingDeposits').textContent = pending;
       });
       
-      // Total Withdrawals
-      db.ref('admin/withdrawals').on('value', (snapshot) => {
-        let total = 0;
+      db.ref('admin/trading/withdrawals').once('value').then(snapshot => {
+        let total = 0, pending = 0;
         snapshot.forEach(child => {
           const withdrawal = child.val();
-          if (withdrawal.status === 'approved') {
-            total += withdrawal.amount;
-          }
+          if (withdrawal.status === 'approved') total += parseFloat(withdrawal.amount);
+          if (withdrawal.status === 'pending') pending++;
         });
-        document.getElementById('totalWithdrawals').textContent = formatCurrency(total);
+        document.getElementById('totalWithdrawals').textContent = '$' + total.toFixed(2);
+        document.getElementById('pendingWithdrawals').textContent = pending;
       });
       
-      // Active Trades
-      db.ref('users').on('value', (snapshot) => {
-        let activeCount = 0;
-        let totalUsers = 0;
-        
-        snapshot.forEach(child => {
-          totalUsers++;
-          const user = child.val();
-          if (user.trades) {
-            Object.values(user.trades).forEach(trade => {
-              if (trade.status === 'active') {
-                activeCount++;
-              }
-            });
-          }
-        });
-        
-        document.getElementById('activeTrades').textContent = activeCount;
-        document.getElementById('totalUsers').textContent = totalUsers;
+      db.ref('admin/trading/purchases').once('value').then(snapshot => {
+        document.getElementById('activeTrades').textContent = snapshot.numChildren();
       });
     }
     
-    // Load Pending Deposits
-    function loadPendingDeposits() {
-      db.ref('admin/deposits').on('value', (snapshot) => {
+    function loadDeposits() {
+      db.ref('admin/trading/deposits').once('value').then(snapshot => {
         const tbody = document.getElementById('depositsTableBody');
         tbody.innerHTML = '';
         
-        let hasPending = false;
+        if (!snapshot.exists()) {
+          tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state"><div class="empty-icon">📭</div><div class="empty-text">No deposits yet</div></div></td></tr>';
+          return;
+        }
         
         snapshot.forEach(child => {
           const deposit = child.val();
-          const depositId = child.key;
-          
-          if (deposit.status === 'pending') {
-            hasPending = true;
-            const row = document.createElement('tr');
-            row.innerHTML = `
-              <td>${deposit.userName}</td>
-              <td>${formatCurrency(deposit.amount)}</td>
-              <td>${deposit.memo}</td>
-              <td>${deposit.txHash.substring(0, 20)}...</td>
-              <td>${formatDate(deposit.timestamp)}</td>
-              <td><span class="status-badge status-pending">${deposit.status}</span></td>
-              <td>
-                <div class="action-buttons">
-                  <button class="btn-action btn-approve" onclick="approveDeposit('${depositId}', '${deposit.userId}', ${deposit.amount})">Approve</button>
-                  <button class="btn-action btn-reject" onclick="rejectDeposit('${depositId}', '${deposit.userId}')">Reject</button>
-                </div>
-              </td>
-            `;
-            tbody.appendChild(row);
-          }
+          const key = child.key;
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${deposit.userId}</td>
+            <td>$${deposit.amount}</td>
+            <td>${deposit.memo}</td>
+            <td>${deposit.txHash.substring(0, 10)}...</td>
+            <td>${formatDate(deposit.timestamp)}</td>
+            <td><span class="status-badge status-${deposit.status}">${deposit.status}</span></td>
+            <td>
+              ${deposit.status === 'pending' ? `
+                <button class="action-btn btn-approve" onclick="approveDeposit('${key}', '${deposit.userId}', '${deposit.depositId}', ${deposit.amount})">Approve</button>
+                <button class="action-btn btn-reject" onclick="rejectDeposit('${key}', '${deposit.userId}', '${deposit.depositId}')">Reject</button>
+              ` : '-'}
+            </td>
+          `;
+          tbody.appendChild(row);
         });
-        
-        if (!hasPending) {
-          tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 40px;">No pending deposits</td></tr>';
-        }
       });
     }
     
-    // Approve Deposit
-    window.approveDeposit = function(depositId, userId, amount) {
+    function approveDeposit(key, userId, depositId, amount) {
       if (!confirm('Approve this deposit?')) return;
       
-      // Update deposit status
-      db.ref('admin/deposits/' + depositId).update({ status: 'approved' });
-      db.ref('users/' + userId + '/depositHistory/' + depositId).update({ status: 'approved' });
-      
-      // Add balance to user
-      db.ref('users/' + userId + '/usdtBalance').transaction((currentBalance) => {
-        return (currentBalance || 0) + amount;
-      });
-      
-      // Log activity
-      db.ref('users/' + userId + '/activities').push({
-        type: 'deposit_approved',
-        description: `Deposit of ${formatCurrency(amount)} approved`,
-        timestamp: Math.floor(Date.now() / 1000)
-      });
+      db.ref(`admin/trading/deposits/${key}`).update({ status: 'approved' });
+      db.ref(`users/${userId}/trading/depositHistory/${depositId}`).update({ status: 'approved' });
+      db.ref(`users/${userId}/trading/usdtBalance`).transaction(balance => (balance || 0) + amount);
       
       notify('Deposit approved successfully!');
-    };
+      loadDeposits();
+      loadStatistics();
+    }
     
-    // Reject Deposit
-    window.rejectDeposit = function(depositId, userId) {
+    function rejectDeposit(key, userId, depositId) {
       if (!confirm('Reject this deposit?')) return;
       
-      db.ref('admin/deposits/' + depositId).update({ status: 'rejected' });
-      db.ref('users/' + userId + '/depositHistory/' + depositId).update({ status: 'rejected' });
+      db.ref(`admin/trading/deposits/${key}`).update({ status: 'rejected' });
+      db.ref(`users/${userId}/trading/depositHistory/${depositId}`).update({ status: 'rejected' });
       
-      // Log activity
-      db.ref('users/' + userId + '/activities').push({
-        type: 'deposit_rejected',
-        description: 'Deposit request rejected',
-        timestamp: Math.floor(Date.now() / 1000)
-      });
-      
-      notify('Deposit rejected');
-    };
+      notify('Deposit rejected!');
+      loadDeposits();
+      loadStatistics();
+    }
     
-    // Load Pending Withdrawals
-    function loadPendingWithdrawals() {
-      db.ref('admin/withdrawals').on('value', (snapshot) => {
+    function loadWithdrawals() {
+      db.ref('admin/trading/withdrawals').once('value').then(snapshot => {
         const tbody = document.getElementById('withdrawalsTableBody');
         tbody.innerHTML = '';
         
-        let hasPending = false;
+        if (!snapshot.exists()) {
+          tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state"><div class="empty-icon">📭</div><div class="empty-text">No withdrawals yet</div></div></td></tr>';
+          return;
+        }
         
         snapshot.forEach(child => {
           const withdrawal = child.val();
-          const withdrawalId = child.key;
-          
-          if (withdrawal.status === 'pending') {
-            hasPending = true;
-            const row = document.createElement('tr');
-            row.innerHTML = `
-              <td>${withdrawal.userName}</td>
-              <td>${formatCurrency(withdrawal.amount)}</td>
-              <td>${withdrawal.address.substring(0, 20)}...</td>
-              <td>${withdrawal.memo || 'N/A'}</td>
-              <td>${formatDate(withdrawal.timestamp)}</td>
-              <td><span class="status-badge status-pending">${withdrawal.status}</span></td>
-              <td>
-                <div class="action-buttons">
-                  <button class="btn-action btn-approve" onclick="approveWithdrawal('${withdrawalId}', '${withdrawal.userId}', ${withdrawal.amount})">Approve</button>
-                  <button class="btn-action btn-reject" onclick="rejectWithdrawal('${withdrawalId}', '${withdrawal.userId}', ${withdrawal.amount})">Reject</button>
-                </div>
-              </td>
-            `;
-            tbody.appendChild(row);
-          }
-        });
-        
-        if (!hasPending) {
-          tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 40px;">No pending withdrawals</td></tr>';
-        }
-      });
-    }
-    
-    // Approve Withdrawal
-    window.approveWithdrawal = function(withdrawalId, userId, amount) {
-      if (!confirm('Approve this withdrawal?')) return;
-      
-      db.ref('admin/withdrawals/' + withdrawalId).update({ status: 'approved' });
-      db.ref('users/' + userId + '/withdrawHistory/' + withdrawalId).update({ status: 'approved' });
-      
-      // Deduct balance from user
-      db.ref('users/' + userId + '/usdtBalance').transaction((currentBalance) => {
-        return Math.max(0, (currentBalance || 0) - amount);
-      });
-      
-      // Log activity
-      db.ref('users/' + userId + '/activities').push({
-        type: 'withdrawal_approved',
-        description: `Withdrawal of ${formatCurrency(amount)} approved`,
-        timestamp: Math.floor(Date.now() / 1000)
-      });
-      
-      notify('Withdrawal approved successfully!');
-    };
-    
-    // Reject Withdrawal
-    window.rejectWithdrawal = function(withdrawalId, userId, amount) {
-      if (!confirm('Reject this withdrawal?')) return;
-      
-      db.ref('admin/withdrawals/' + withdrawalId).update({ status: 'rejected' });
-      db.ref('users/' + userId + '/withdrawHistory/' + withdrawalId).update({ status: 'rejected' });
-      
-      // Log activity
-      db.ref('users/' + userId + '/activities').push({
-        type: 'withdrawal_rejected',
-        description: 'Withdrawal request rejected',
-        timestamp: Math.floor(Date.now() / 1000)
-      });
-      
-      notify('Withdrawal rejected');
-    };
-    
-    // Load All Deposits
-    function loadAllDeposits() {
-      db.ref('admin/deposits').on('value', (snapshot) => {
-        const tbody = document.getElementById('allDepositsTableBody');
-        tbody.innerHTML = '';
-        
-        const deposits = [];
-        snapshot.forEach(child => {
-          deposits.push({ id: child.key, ...child.val() });
-        });
-        
-        deposits.sort((a, b) => b.timestamp - a.timestamp);
-        
-        if (deposits.length === 0) {
-          tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 40px;">No deposits yet</td></tr>';
-          return;
-        }
-        
-        deposits.forEach(deposit => {
+          const key = child.key;
           const row = document.createElement('tr');
           row.innerHTML = `
-            <td>${deposit.userName}</td>
-            <td>${formatCurrency(deposit.amount)}</td>
-            <td>${deposit.memo}</td>
-            <td>${deposit.txHash.substring(0, 20)}...</td>
-            <td>${formatDate(deposit.timestamp)}</td>
-            <td><span class="status-badge status-${deposit.status}">${deposit.status}</span></td>
-          `;
-          tbody.appendChild(row);
-        });
-      });
-    }
-    
-    // Load All Withdrawals
-    function loadAllWithdrawals() {
-      db.ref('admin/withdrawals').on('value', (snapshot) => {
-        const tbody = document.getElementById('allWithdrawalsTableBody');
-        tbody.innerHTML = '';
-        
-        const withdrawals = [];
-        snapshot.forEach(child => {
-          withdrawals.push({ id: child.key, ...child.val() });
-        });
-        
-        withdrawals.sort((a, b) => b.timestamp - a.timestamp);
-        
-        if (withdrawals.length === 0) {
-          tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 40px;">No withdrawals yet</td></tr>';
-          return;
-        }
-        
-        withdrawals.forEach(withdrawal => {
-          const row = document.createElement('tr');
-          row.innerHTML = `
-            <td>${withdrawal.userName}</td>
-            <td>${formatCurrency(withdrawal.amount)}</td>
-            <td>${withdrawal.address.substring(0, 20)}...</td>
-            <td>${withdrawal.memo || 'N/A'}</td>
+            <td>${withdrawal.userId}</td>
+            <td>$${withdrawal.amount}</td>
+            <td>${withdrawal.address.substring(0, 15)}...</td>
+            <td>${withdrawal.memo || '-'}</td>
             <td>${formatDate(withdrawal.timestamp)}</td>
             <td><span class="status-badge status-${withdrawal.status}">${withdrawal.status}</span></td>
+            <td>
+              ${withdrawal.status === 'pending' ? `
+                <button class="action-btn btn-approve" onclick="approveWithdrawal('${key}', '${withdrawal.userId}', '${withdrawal.withdrawId}')">Approve</button>
+                <button class="action-btn btn-reject" onclick="rejectWithdrawal('${key}', '${withdrawal.userId}', '${withdrawal.withdrawId}', ${withdrawal.amount})">Reject</button>
+              ` : '-'}
+            </td>
           `;
           tbody.appendChild(row);
         });
       });
     }
     
-    // Load All Trades
-    function loadAllTrades() {
-      db.ref('users').on('value', (snapshot) => {
+    function approveWithdrawal(key, userId, withdrawId) {
+      if (!confirm('Approve this withdrawal?')) return;
+      
+      db.ref(`admin/trading/withdrawals/${key}`).update({ status: 'approved' });
+      db.ref(`users/${userId}/trading/withdrawHistory/${withdrawId}`).update({ status: 'approved' });
+      
+      notify('Withdrawal approved successfully!');
+      loadWithdrawals();
+      loadStatistics();
+    }
+    
+    function rejectWithdrawal(key, userId, withdrawId, amount) {
+      if (!confirm('Reject this withdrawal?')) return;
+      
+      db.ref(`admin/trading/withdrawals/${key}`).update({ status: 'rejected' });
+      db.ref(`users/${userId}/trading/withdrawHistory/${withdrawId}`).update({ status: 'rejected' });
+      db.ref(`users/${userId}/trading/usdtBalance`).transaction(balance => (balance || 0) + amount);
+      
+      notify('Withdrawal rejected and balance refunded!');
+      loadWithdrawals();
+      loadStatistics();
+    }
+    
+    function loadTrades() {
+      db.ref('admin/trading/purchases').once('value').then(snapshot => {
         const tbody = document.getElementById('tradesTableBody');
         tbody.innerHTML = '';
         
-        const trades = [];
-        
-        snapshot.forEach(child => {
-          const user = child.val();
-          const userId = child.key;
-          
-          if (user.trades) {
-            Object.keys(user.trades).forEach(tradeId => {
-              trades.push({
-                id: tradeId,
-                userId: userId,
-                userName: user.name,
-                ...user.trades[tradeId]
-              });
-            });
-          }
-        });
-        
-        trades.sort((a, b) => b.startDate - a.startDate);
-        
-        if (trades.length === 0) {
-          tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 40px;">No trades yet</td></tr>';
+        if (!snapshot.exists()) {
+          tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state"><div class="empty-icon">📊</div><div class="empty-text">No trades yet</div></div></td></tr>';
           return;
         }
         
-        trades.forEach(trade => {
+        snapshot.forEach(child => {
+          const trade = child.val();
           const row = document.createElement('tr');
           row.innerHTML = `
-            <td>${trade.userName}</td>
+            <td>${trade.userId}</td>
             <td>${trade.pair}</td>
-            <td>${formatCurrency(trade.price)}</td>
-            <td>${formatCurrency(trade.dailyEarning)}</td>
-            <td>${formatCurrency(trade.totalEarned)}</td>
-            <td>${trade.duration} days</td>
-            <td><span class="status-badge status-${trade.status}">${trade.status}</span></td>
-            <td>
-              <button class="btn-action btn-view" onclick="viewUserDetails('${trade.userId}')">View User</button>
-            </td>
+            <td>$${trade.investment}</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td><span class="status-badge status-approved">Active</span></td>
           `;
           tbody.appendChild(row);
         });
       });
     }
     
-    // Load All Users
-    function loadAllUsers() {
-      db.ref('users').on('value', (snapshot) => {
-        const tbody = document.getElementById('usersTableBody');
-        tbody.innerHTML = '';
-        
-        const users = [];
-        
-        snapshot.forEach(child => {
-          const user = child.val();
-          const userId = child.key;
-          
-          let activeTrades = 0;
-          let totalDeposits = 0;
-          let totalWithdrawals = 0;
-          
-          if (user.trades) {
-            Object.values(user.trades).forEach(trade => {
-              if (trade.status === 'active') activeTrades++;
-            });
-          }
-          
-          if (user.depositHistory) {
-            Object.values(user.depositHistory).forEach(deposit => {
-              if (deposit.status === 'approved') totalDeposits += deposit.amount;
-            });
-          }
-          
-          if (user.withdrawHistory) {
-            Object.values(user.withdrawHistory).forEach(withdrawal => {
-              if (withdrawal.status === 'approved') totalWithdrawals += withdrawal.amount;
-            });
-          }
-          
-          users.push({
-            id: userId,
-            name: user.name,
-            usdtBalance: user.usdtBalance || 0,
-            tonBalance: user.tonBalance || 0,
-            activeTrades: activeTrades,
-            totalDeposits: totalDeposits,
-            totalWithdrawals: totalWithdrawals
-          });
-        });
-        
-        if (users.length === 0) {
-          tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 40px;">No users yet</td></tr>';
-          return;
-        }
-        
-        users.forEach(user => {
-          const row = document.createElement('tr');
-          row.innerHTML = `
-            <td>${user.id}</td>
-            <td>${user.name}</td>
-            <td>${formatCurrency(user.usdtBalance)}</td>
-            <td>${formatCurrency(user.tonBalance)}</td>
-            <td>${user.activeTrades}</td>
-            <td>${formatCurrency(user.totalDeposits)}</td>
-            <td>${formatCurrency(user.totalWithdrawals)}</td>
-            <td>
-              <button class="btn-action btn-view" onclick="viewUserDetails('${user.id}')">View Details</button>
-            </td>
-          `;
-          tbody.appendChild(row);
-        });
-      });
-    }
-    
-    // View User Details
-    window.viewUserDetails = function(userId) {
-      db.ref('users/' + userId).once('value').then(snapshot => {
-        const user = snapshot.val();
-        
-        let activeTrades = 0;
-        let totalDeposits = 0;
-        let totalWithdrawals = 0;
-        
-        if (user.trades) {
-          Object.values(user.trades).forEach(trade => {
-            if (trade.status === 'active') activeTrades++;
-          });
-        }
-        
-        if (user.depositHistory) {
-          Object.values(user.depositHistory).forEach(deposit => {
-            if (deposit.status === 'approved') totalDeposits += deposit.amount;
-          });
-        }
-        
-        if (user.withdrawHistory) {
-          Object.values(user.withdrawHistory).forEach(withdrawal => {
-            if (withdrawal.status === 'approved') totalWithdrawals += withdrawal.amount;
-          });
-        }
-        
-        const html = `
-          <div class="detail-row">
-            <span class="detail-label">User ID:</span>
-            <span class="detail-value">${userId}</span>
-          </div>
-          <div class="detail-row">
-            <span class="detail-label">Name:</span>
-            <span class="detail-value">${user.name}</span>
-          </div>
-          <div class="detail-row">
-            <span class="detail-label">USDT Balance:</span>
-            <span class="detail-value">${formatCurrency(user.usdtBalance || 0)}</span>
-          </div>
-          <div class="detail-row">
-            <span class="detail-label">TON Balance:</span>
-            <span class="detail-value">${formatCurrency(user.tonBalance || 0)}</span>
-          </div>
-          <div class="detail-row">
-            <span class="detail-label">Active Trades:</span>
-            <span class="detail-value">${activeTrades}</span>
-          </div>
-          <div class="detail-row">
-            <span class="detail-label">Total Deposits:</span>
-            <span class="detail-value">${formatCurrency(totalDeposits)}</span>
-          </div>
-          <div class="detail-row">
-            <span class="detail-label">Total Withdrawals:</span>
-            <span class="detail-value">${formatCurrency(totalWithdrawals)}</span>
-          </div>
-          <div class="detail-row">
-            <span class="detail-label">Deposit Memo:</span>
-            <span class="detail-value">${user.depositMemo || 'Not set'}</span>
-          </div>
-        `;
-        
-        document.getElementById('userDetailsContent').innerHTML = html;
-        document.getElementById('userModal').style.display = 'flex';
-      });
-    };
-    
-    document.getElementById('closeUserModal').addEventListener('click', () => {
-      document.getElementById('userModal').style.display = 'none';
-    });
-    
-    document.getElementById('userModal').addEventListener('click', (e) => {
-      if (e.target.id === 'userModal') {
-        document.getElementById('userModal').style.display = 'none';
-      }
-    });
-    
-    // Render Analytics
-    function renderAnalytics() {
-      // Deposits vs Withdrawals Chart
-      const ctx1 = document.getElementById('depositsWithdrawalsChart').getContext('2d');
-      new Chart(ctx1, {
-        type: 'line',
-        data: {
-          labels: ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Day 6', 'Day 7'],
-          datasets: [{
-            label: 'Deposits',
-            data: [1200, 1900, 3000, 5000, 2300, 3200, 4100],
-            borderColor: '#4facfe',
-            backgroundColor: 'rgba(79, 172, 254, 0.1)',
-            tension: 0.4
-          }, {
-            label: 'Withdrawals',
-            data: [800, 1200, 1500, 2200, 1800, 2100, 2500],
-            borderColor: '#f5576c',
-            backgroundColor: 'rgba(245, 87, 108, 0.1)',
-            tension: 0.4
-          }]
-        },
-        options: {
-          responsive: true,
-          plugins: {
-            legend: {
-              labels: {
-                color: '#ffffff'
-              }
-            }
-          },
-          scales: {
-            y: {
-              ticks: { color: '#ffffff' },
-              grid: { color: 'rgba(255, 255, 255, 0.1)' }
-            },
-            x: {
-              ticks: { color: '#ffffff' },
-              grid: { color: 'rgba(255, 255, 255, 0.1)' }
-            }
-          }
-        }
-      });
-      
-      // Trading Activity Chart
-      const ctx2 = document.getElementById('tradingActivityChart').getContext('2d');
-      new Chart(ctx2, {
-        type: 'bar',
-        data: {
-          labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
-          datasets: [{
-            label: 'New Trades',
-            data: [12, 19, 15, 25],
-            backgroundColor: 'rgba(79, 172, 254, 0.8)',
-            borderColor: '#4facfe',
-            borderWidth: 2
-          }]
-        },
-        options: {
-          responsive: true,
-          plugins: {
-            legend: {
-              labels: {
-                color: '#ffffff'
-              }
-            }
-          },
-          scales: {
-            y: {
-              beginAtZero: true,
-              ticks: { color: '#ffffff' },
-              grid: { color: 'rgba(255, 255, 255, 0.1)' }
-            },
-            x: {
-              ticks: { color: '#ffffff' },
-              grid: { color: 'rgba(255, 255, 255, 0.1)' }
-            }
-          }
-        }
-      });
-      
-      // User Growth Chart
-      const ctx3 = document.getElementById('userGrowthChart').getContext('2d');
-      new Chart(ctx3, {
-        type: 'line',
-        data: {
-          labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-          datasets: [{
-            label: 'Total Users',
-            data: [50, 120, 250, 400, 650, 900],
-            borderColor: '#00ff88',
-            backgroundColor: 'rgba(0, 255, 136, 0.1)',
-            tension: 0.4,
-            fill: true
-          }]
-        },
-        options: {
-          responsive: true,
-          plugins: {
-            legend: {
-              labels: {
-                color: '#ffffff'
-              }
-            }
-          },
-          scales: {
-            y: {
-              beginAtZero: true,
-              ticks: { color: '#ffffff' },
-              grid: { color: 'rgba(255, 255, 255, 0.1)' }
-            },
-            x: {
-              ticks: { color: '#ffffff' },
-              grid: { color: 'rgba(255, 255, 255, 0.1)' }
-            }
-          }
-        }
-      });
-    }
-    
-    // Check Auth State
-    auth.onAuthStateChanged((user) => {
-      if (user) {
-        currentUser = user;
-        document.getElementById('login-screen').style.display = 'none';
-        document.getElementById('admin-dashboard').style.display = 'block';
-        loadDashboardData();
-      } else {
-        document.getElementById('login-screen').style.display = 'flex';
-        document.getElementById('admin-dashboard').style.display = 'none';
-      }
-    });
+    loadStatistics();
+    loadDeposits();
+    setInterval(loadStatistics, 30000);
   </script>
 </body>
 </html>
