@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Shark Bounty - Trading Admin Panel</title>
+  <title>Shark Bounty - Enhanced Admin Panel</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   
   <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -168,6 +168,66 @@
       font-size: 24px;
     }
     
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    .form-label {
+      display: block;
+      font-size: 13px;
+      color: var(--text-secondary);
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    
+    .form-input {
+      width: 100%;
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      color: var(--text-primary);
+      font-size: 14px;
+    }
+    
+    .form-input::placeholder {
+      color: var(--text-secondary);
+    }
+    
+    .btn-primary {
+      padding: 12px 24px;
+      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      border: none;
+      border-radius: 12px;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(79, 172, 254, 0.4);
+    }
+    
+    .btn-danger {
+      padding: 12px 24px;
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      border: none;
+      border-radius: 12px;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .btn-danger:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(240, 147, 251, 0.4);
+    }
+    
     .table-container {
       overflow-x: auto;
     }
@@ -304,23 +364,137 @@
       }
     }
     
-    .refresh-btn {
-      padding: 10px 20px;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      border: none;
-      border-radius: 10px;
-      color: #fff;
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      text-transform: uppercase;
-      margin-left: auto;
+    .code-list {
+      display: grid;
+      gap: 16px;
     }
     
-    .refresh-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+    .code-item {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      padding: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .code-info {
+      flex: 1;
+    }
+    
+    .code-value {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--accent-cyan);
+      font-family: 'Courier New', monospace;
+      margin-bottom: 8px;
+    }
+    
+    .code-details {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+    
+    .code-actions {
+      display: flex;
+      gap: 8px;
+    }
+    
+    .search-box {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    
+    .search-input {
+      flex: 1;
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      color: var(--text-primary);
+      font-size: 14px;
+    }
+    
+    .user-result {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      padding: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      margin-bottom: 20px;
+    }
+    
+    .user-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    
+    .user-avatar {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      border: 2px solid var(--accent-cyan);
+    }
+    
+    .user-info {
+      flex: 1;
+    }
+    
+    .user-name {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+    
+    .user-id {
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+    
+    .user-balances {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    
+    .balance-box {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      padding: 16px;
+      text-align: center;
+    }
+    
+    .balance-label {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+    }
+    
+    .balance-value {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--accent-cyan);
+    }
+    
+    .balance-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 20px;
+    }
+    
+    .balance-input {
+      flex: 1;
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      color: var(--text-primary);
+      font-size: 14px;
     }
   </style>
 <script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
@@ -328,11 +502,16 @@
 <body>
   <div class="admin-container">
     <div class="admin-header">
-      <div class="admin-title">🦈 Shark Bounty Trading Admin</div>
-      <div class="admin-subtitle">Manage deposits, withdrawals, and trading activities</div>
+      <div class="admin-title">🦈 Shark Bounty Admin Panel</div>
+      <div class="admin-subtitle">Enhanced Trading Platform Management</div>
     </div>
     
     <div class="stats-overview">
+      <div class="stat-card">
+        <div class="stat-icon">👥</div>
+        <div class="stat-label">Total Users</div>
+        <div class="stat-value" id="totalUsers">0</div>
+      </div>
       <div class="stat-card">
         <div class="stat-icon">💰</div>
         <div class="stat-label">Total Deposits</div>
@@ -348,36 +527,29 @@
         <div class="stat-label">Active Trades</div>
         <div class="stat-value" id="activeTrades">0</div>
       </div>
-      <div class="stat-card">
-        <div class="stat-icon">⏳</div>
-        <div class="stat-label">Pending Deposits</div>
-        <div class="stat-value" id="pendingDeposits">0</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-icon">⏳</div>
-        <div class="stat-label">Pending Withdrawals</div>
-        <div class="stat-value" id="pendingWithdrawals">0</div>
-      </div>
     </div>
     
     <div class="admin-tabs">
       <button class="admin-tab-btn active" data-tab="deposits">Deposits</button>
       <button class="admin-tab-btn" data-tab="withdrawals">Withdrawals</button>
-      <button class="admin-tab-btn" data-tab="trades">Active Trades</button>
+      <button class="admin-tab-btn" data-tab="trades">Trades</button>
+      <button class="admin-tab-btn" data-tab="redeem-codes">Redeem Codes</button>
+      <button class="admin-tab-btn" data-tab="user-search">User Search</button>
+      <button class="admin-tab-btn" data-tab="redemptions">Redemptions Log</button>
     </div>
     
-    <div id="deposits-content" class="admin-tab-content active">
+    <!-- Deposits Tab -->
+    <div id="deposits-tab" class="admin-tab-content active">
       <div class="section-card">
         <div class="section-title">
           <span class="section-icon">💰</span>
-          <span>Deposit Requests</span>
-          <button class="refresh-btn" onclick="loadDeposits()">Refresh</button>
+          Pending Deposits
         </div>
         <div class="table-container">
-          <table>
+          <table id="depositsTable">
             <thead>
               <tr>
-                <th>User ID</th>
+                <th>User</th>
                 <th>Amount</th>
                 <th>Memo</th>
                 <th>TX Hash</th>
@@ -386,25 +558,24 @@
                 <th>Actions</th>
               </tr>
             </thead>
-            <tbody id="depositsTableBody">
-            </tbody>
+            <tbody id="depositsTableBody"></tbody>
           </table>
         </div>
       </div>
     </div>
     
-    <div id="withdrawals-content" class="admin-tab-content">
+    <!-- Withdrawals Tab -->
+    <div id="withdrawals-tab" class="admin-tab-content">
       <div class="section-card">
         <div class="section-title">
           <span class="section-icon">💸</span>
-          <span>Withdrawal Requests</span>
-          <button class="refresh-btn" onclick="loadWithdrawals()">Refresh</button>
+          Pending Withdrawals
         </div>
         <div class="table-container">
-          <table>
+          <table id="withdrawalsTable">
             <thead>
               <tr>
-                <th>User ID</th>
+                <th>User</th>
                 <th>Amount</th>
                 <th>Address</th>
                 <th>Memo</th>
@@ -413,35 +584,103 @@
                 <th>Actions</th>
               </tr>
             </thead>
-            <tbody id="withdrawalsTableBody">
-            </tbody>
+            <tbody id="withdrawalsTableBody"></tbody>
           </table>
         </div>
       </div>
     </div>
     
-    <div id="trades-content" class="admin-tab-content">
+    <!-- Trades Tab -->
+    <div id="trades-tab" class="admin-tab-content">
       <div class="section-card">
         <div class="section-title">
           <span class="section-icon">📊</span>
-          <span>Active Trading Plans</span>
-          <button class="refresh-btn" onclick="loadTrades()">Refresh</button>
+          All Trades
         </div>
         <div class="table-container">
-          <table>
+          <table id="tradesTable">
             <thead>
               <tr>
-                <th>User ID</th>
+                <th>User</th>
                 <th>Pair</th>
                 <th>Investment</th>
                 <th>Daily Earning</th>
-                <th>Days</th>
+                <th>Days Completed</th>
                 <th>Total Earned</th>
                 <th>Status</th>
+                <th>Date</th>
               </tr>
             </thead>
-            <tbody id="tradesTableBody">
-            </tbody>
+            <tbody id="tradesTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Redeem Codes Tab -->
+    <div id="redeem-codes-tab" class="admin-tab-content">
+      <div class="section-card">
+        <div class="section-title">
+          <span class="section-icon">🎁</span>
+          Generate Redeem Code
+        </div>
+        <div class="form-group">
+          <label class="form-label">Code (5 digits, leave empty for auto-generate)</label>
+          <input type="text" class="form-input" id="codeValue" placeholder="XXXXX" maxlength="5" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Maximum Uses</label>
+          <input type="number" class="form-input" id="codeMaxUses" placeholder="100" min="1" value="100" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Number of Codes to Generate</label>
+          <input type="number" class="form-input" id="codeBulkCount" placeholder="1" min="1" max="100" value="1" />
+        </div>
+        <button class="btn-primary" id="generateCodeBtn">Generate Code(s)</button>
+      </div>
+      
+      <div class="section-card">
+        <div class="section-title">
+          <span class="section-icon">📋</span>
+          Active Redeem Codes
+        </div>
+        <div class="code-list" id="codesList"></div>
+      </div>
+    </div>
+    
+    <!-- User Search Tab -->
+    <div id="user-search-tab" class="admin-tab-content">
+      <div class="section-card">
+        <div class="section-title">
+          <span class="section-icon">🔍</span>
+          Search User
+        </div>
+        <div class="search-box">
+          <input type="text" class="search-input" id="userSearchInput" placeholder="Enter User ID" />
+          <button class="btn-primary" id="searchUserBtn">Search</button>
+        </div>
+        <div id="userSearchResult"></div>
+      </div>
+    </div>
+    
+    <!-- Redemptions Log Tab -->
+    <div id="redemptions-tab" class="admin-tab-content">
+      <div class="section-card">
+        <div class="section-title">
+          <span class="section-icon">📜</span>
+          Redemptions History
+        </div>
+        <div class="table-container">
+          <table id="redemptionsTable">
+            <thead>
+              <tr>
+                <th>User</th>
+                <th>Code</th>
+                <th>Reward</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+            <tbody id="redemptionsTableBody"></tbody>
           </table>
         </div>
       </div>
@@ -449,6 +688,7 @@
   </div>
   
   <script>
+    // Firebase Configuration
     const firebaseConfig = {
       apiKey: "AIzaSyAHofuS76xf2oGPaJqEtopmcxdoJzjkDL4",
       authDomain: "zmex-investments.firebaseapp.com",
@@ -456,7 +696,8 @@
       projectId: "zmex-investments",
       storageBucket: "zmex-investments.appspot.com",
       messagingSenderId: "971623941364",
-      appId: "1:971623941364:web:6c65604fc45c3f64e74aa1"
+      appId: "1:971623941364:web:6c65604fc45c3f64e74aa1",
+      measurementId: "G-KQ1LYP77JF"
     };
     
     firebase.initializeApp(firebaseConfig);
@@ -467,55 +708,77 @@
       notification.className = 'notification';
       notification.textContent = message;
       document.body.appendChild(notification);
-      setTimeout(() => notification.remove(), 3000);
+      
+      setTimeout(() => {
+        notification.remove();
+      }, 3000);
     }
     
-    function formatDate(timestamp) {
-      return new Date(timestamp * 1000).toLocaleString();
+    function now() {
+      return Math.floor(Date.now() / 1000);
     }
     
+    // Tab Switching
     document.querySelectorAll('.admin-tab-btn').forEach(btn => {
       btn.addEventListener('click', function() {
         document.querySelectorAll('.admin-tab-btn').forEach(b => b.classList.remove('active'));
-        document.querySelectorAll('.admin-tab-content').forEach(c => c.classList.remove('active'));
         this.classList.add('active');
-        document.getElementById(this.dataset.tab + '-content').classList.add('active');
-        if (this.dataset.tab === 'deposits') loadDeposits();
-        else if (this.dataset.tab === 'withdrawals') loadWithdrawals();
-        else if (this.dataset.tab === 'trades') loadTrades();
+        
+        document.querySelectorAll('.admin-tab-content').forEach(content => {
+          content.classList.remove('active');
+        });
+        
+        const tabName = this.dataset.tab;
+        document.getElementById(`${tabName}-tab`).classList.add('active');
+        
+        if (tabName === 'deposits') loadDeposits();
+        else if (tabName === 'withdrawals') loadWithdrawals();
+        else if (tabName === 'trades') loadTrades();
+        else if (tabName === 'redeem-codes') loadRedeemCodes();
+        else if (tabName === 'redemptions') loadRedemptions();
       });
     });
     
+    // Load Statistics
     function loadStatistics() {
-      db.ref('admin/trading/deposits').once('value').then(snapshot => {
-        let total = 0, pending = 0;
+      db.ref('users').once('value').then(snapshot => {
+        const totalUsers = snapshot.numChildren();
+        document.getElementById('totalUsers').textContent = totalUsers;
+        
+        let totalDeposits = 0;
+        let totalWithdrawals = 0;
+        let activeTrades = 0;
+        
         snapshot.forEach(child => {
-          const deposit = child.val();
-          if (deposit.status === 'approved') total += parseFloat(deposit.amount);
-          if (deposit.status === 'pending') pending++;
+          const userData = child.val();
+          if (userData.trading) {
+            totalDeposits += userData.trading.totalDeposited || 0;
+            
+            if (userData.trading.activeTrades) {
+              activeTrades += Object.keys(userData.trading.activeTrades).length;
+            }
+          }
         });
-        document.getElementById('totalDeposits').textContent = '$' + total.toFixed(2);
-        document.getElementById('pendingDeposits').textContent = pending;
+        
+        document.getElementById('totalDeposits').textContent = '$' + totalDeposits.toFixed(2);
+        document.getElementById('activeTrades').textContent = activeTrades;
       });
       
       db.ref('admin/trading/withdrawals').once('value').then(snapshot => {
-        let total = 0, pending = 0;
+        let total = 0;
         snapshot.forEach(child => {
           const withdrawal = child.val();
-          if (withdrawal.status === 'approved') total += parseFloat(withdrawal.amount);
-          if (withdrawal.status === 'pending') pending++;
+          if (withdrawal.status === 'approved') {
+            total += withdrawal.amount || 0;
+          }
         });
         document.getElementById('totalWithdrawals').textContent = '$' + total.toFixed(2);
-        document.getElementById('pendingWithdrawals').textContent = pending;
-      });
-      
-      db.ref('admin/trading/purchases').once('value').then(snapshot => {
-        document.getElementById('activeTrades').textContent = snapshot.numChildren();
       });
     }
     
+    // Load Deposits
     function loadDeposits() {
-      db.ref('admin/trading/deposits').once('value').then(snapshot => {
+      db.ref('admin/trading/deposits').on('value', snapshot => {
         const tbody = document.getElementById('depositsTableBody');
         tbody.innerHTML = '';
         
@@ -526,52 +789,79 @@
         
         snapshot.forEach(child => {
           const deposit = child.val();
-          const key = child.key;
-          const row = document.createElement('tr');
-          row.innerHTML = `
-            <td>${deposit.userId}</td>
-            <td>$${deposit.amount}</td>
-            <td>${deposit.memo}</td>
-            <td>${deposit.txHash.substring(0, 10)}...</td>
-            <td>${formatDate(deposit.timestamp)}</td>
-            <td><span class="status-badge status-${deposit.status}">${deposit.status}</span></td>
-            <td>
-              ${deposit.status === 'pending' ? `
-                <button class="action-btn btn-approve" onclick="approveDeposit('${key}', '${deposit.userId}', '${deposit.depositId}', ${deposit.amount})">Approve</button>
-                <button class="action-btn btn-reject" onclick="rejectDeposit('${key}', '${deposit.userId}', '${deposit.depositId}')">Reject</button>
-              ` : '-'}
-            </td>
-          `;
-          tbody.appendChild(row);
+          const depositKey = child.key;
+          
+          if (deposit.status === 'pending') {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+              <td>${deposit.userName}<br><small>${deposit.userId}</small></td>
+              <td>$${deposit.amount}</td>
+              <td>${deposit.memo}</td>
+              <td><small>${deposit.txHash.substring(0, 20)}...</small></td>
+              <td>${new Date(deposit.timestamp * 1000).toLocaleString()}</td>
+              <td><span class="status-badge status-${deposit.status}">${deposit.status}</span></td>
+              <td>
+                <button class="action-btn btn-approve" onclick="approveDeposit('${depositKey}', '${deposit.userId}', '${deposit.depositId}', ${deposit.amount})">Approve</button>
+                <button class="action-btn btn-reject" onclick="rejectDeposit('${depositKey}', '${deposit.userId}', '${deposit.depositId}')">Reject</button>
+              </td>
+            `;
+            tbody.appendChild(row);
+          }
         });
       });
     }
     
-    function approveDeposit(key, userId, depositId, amount) {
-      if (!confirm('Approve this deposit?')) return;
+    // Approve Deposit
+    function approveDeposit(adminKey, userId, depositId, amount) {
+      if (!confirm(`Approve deposit of $${amount}?`)) return;
       
-      db.ref(`admin/trading/deposits/${key}`).update({ status: 'approved' });
-      db.ref(`users/${userId}/trading/depositHistory/${depositId}`).update({ status: 'approved' });
-      db.ref(`users/${userId}/trading/usdtBalance`).transaction(balance => (balance || 0) + amount);
+      // Update user balance
+      db.ref(`users/${userId}/trading/usdtBalance`).transaction(balance => {
+        return (balance || 0) + amount;
+      });
+      
+      // Update total deposited
+      db.ref(`users/${userId}/trading/totalDeposited`).transaction(total => {
+        return (total || 0) + amount;
+      });
+      
+      // Update deposit status in admin
+      db.ref(`admin/trading/deposits/${adminKey}`).update({
+        status: 'approved',
+        approvedAt: now()
+      });
+      
+      // Update deposit status in user's history
+      db.ref(`users/${userId}/trading/depositHistory/${depositId}`).update({
+        status: 'approved',
+        approvedAt: now()
+      });
       
       notify('Deposit approved successfully!');
-      loadDeposits();
-      loadStatistics();
     }
     
-    function rejectDeposit(key, userId, depositId) {
+    // Reject Deposit
+    function rejectDeposit(adminKey, userId, depositId) {
       if (!confirm('Reject this deposit?')) return;
       
-      db.ref(`admin/trading/deposits/${key}`).update({ status: 'rejected' });
-      db.ref(`users/${userId}/trading/depositHistory/${depositId}`).update({ status: 'rejected' });
+      // Update deposit status in admin
+      db.ref(`admin/trading/deposits/${adminKey}`).update({
+        status: 'rejected',
+        rejectedAt: now()
+      });
+      
+      // Update deposit status in user's history
+      db.ref(`users/${userId}/trading/depositHistory/${depositId}`).update({
+        status: 'rejected',
+        rejectedAt: now()
+      });
       
       notify('Deposit rejected!');
-      loadDeposits();
-      loadStatistics();
     }
     
+    // Load Withdrawals
     function loadWithdrawals() {
-      db.ref('admin/trading/withdrawals').once('value').then(snapshot => {
+      db.ref('admin/trading/withdrawals').on('value', snapshot => {
         const tbody = document.getElementById('withdrawalsTableBody');
         tbody.innerHTML = '';
         
@@ -582,57 +872,79 @@
         
         snapshot.forEach(child => {
           const withdrawal = child.val();
-          const key = child.key;
-          const row = document.createElement('tr');
-          row.innerHTML = `
-            <td>${withdrawal.userId}</td>
-            <td>$${withdrawal.amount}</td>
-            <td>${withdrawal.address.substring(0, 15)}...</td>
-            <td>${withdrawal.memo || '-'}</td>
-            <td>${formatDate(withdrawal.timestamp)}</td>
-            <td><span class="status-badge status-${withdrawal.status}">${withdrawal.status}</span></td>
-            <td>
-              ${withdrawal.status === 'pending' ? `
-                <button class="action-btn btn-approve" onclick="approveWithdrawal('${key}', '${withdrawal.userId}', '${withdrawal.withdrawId}')">Approve</button>
-                <button class="action-btn btn-reject" onclick="rejectWithdrawal('${key}', '${withdrawal.userId}', '${withdrawal.withdrawId}', ${withdrawal.amount})">Reject</button>
-              ` : '-'}
-            </td>
-          `;
-          tbody.appendChild(row);
+          const withdrawalKey = child.key;
+          
+          if (withdrawal.status === 'pending') {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+              <td>${withdrawal.userName}<br><small>${withdrawal.userId}</small></td>
+              <td>$${withdrawal.amount}</td>
+              <td><small>${withdrawal.address.substring(0, 20)}...</small></td>
+              <td>${withdrawal.memo || 'N/A'}</td>
+              <td>${new Date(withdrawal.timestamp * 1000).toLocaleString()}</td>
+              <td><span class="status-badge status-${withdrawal.status}">${withdrawal.status}</span></td>
+              <td>
+                <button class="action-btn btn-approve" onclick="approveWithdrawal('${withdrawalKey}', '${withdrawal.userId}', '${withdrawal.withdrawId}')">Approve</button>
+                <button class="action-btn btn-reject" onclick="rejectWithdrawal('${withdrawalKey}', '${withdrawal.userId}', '${withdrawal.withdrawId}', ${withdrawal.amount})">Reject</button>
+              </td>
+            `;
+            tbody.appendChild(row);
+          }
         });
       });
     }
     
-    function approveWithdrawal(key, userId, withdrawId) {
+    // Approve Withdrawal
+    function approveWithdrawal(adminKey, userId, withdrawId) {
       if (!confirm('Approve this withdrawal?')) return;
       
-      db.ref(`admin/trading/withdrawals/${key}`).update({ status: 'approved' });
-      db.ref(`users/${userId}/trading/withdrawHistory/${withdrawId}`).update({ status: 'approved' });
+      // Update withdrawal status in admin
+      db.ref(`admin/trading/withdrawals/${adminKey}`).update({
+        status: 'approved',
+        approvedAt: now()
+      });
+      
+      // Update withdrawal status in user's history
+      db.ref(`users/${userId}/trading/withdrawHistory/${withdrawId}`).update({
+        status: 'approved',
+        approvedAt: now()
+      });
       
       notify('Withdrawal approved successfully!');
-      loadWithdrawals();
-      loadStatistics();
     }
     
-    function rejectWithdrawal(key, userId, withdrawId, amount) {
-      if (!confirm('Reject this withdrawal?')) return;
+    // Reject Withdrawal
+    function rejectWithdrawal(adminKey, userId, withdrawId, amount) {
+      if (!confirm('Reject this withdrawal? The amount will be refunded.')) return;
       
-      db.ref(`admin/trading/withdrawals/${key}`).update({ status: 'rejected' });
-      db.ref(`users/${userId}/trading/withdrawHistory/${withdrawId}`).update({ status: 'rejected' });
-      db.ref(`users/${userId}/trading/usdtBalance`).transaction(balance => (balance || 0) + amount);
+      // Refund the amount
+      db.ref(`users/${userId}/trading/usdtBalance`).transaction(balance => {
+        return (balance || 0) + amount;
+      });
       
-      notify('Withdrawal rejected and balance refunded!');
-      loadWithdrawals();
-      loadStatistics();
+      // Update withdrawal status in admin
+      db.ref(`admin/trading/withdrawals/${adminKey}`).update({
+        status: 'rejected',
+        rejectedAt: now()
+      });
+      
+      // Update withdrawal status in user's history
+      db.ref(`users/${userId}/trading/withdrawHistory/${withdrawId}`).update({
+        status: 'rejected',
+        rejectedAt: now()
+      });
+      
+      notify('Withdrawal rejected and amount refunded!');
     }
     
+    // Load Trades
     function loadTrades() {
-      db.ref('admin/trading/purchases').once('value').then(snapshot => {
+      db.ref('admin/trading/purchases').on('value', snapshot => {
         const tbody = document.getElementById('tradesTableBody');
         tbody.innerHTML = '';
         
         if (!snapshot.exists()) {
-          tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state"><div class="empty-icon">📊</div><div class="empty-text">No trades yet</div></div></td></tr>';
+          tbody.innerHTML = '<tr><td colspan="8"><div class="empty-state"><div class="empty-icon">📭</div><div class="empty-text">No trades yet</div></div></td></tr>';
           return;
         }
         
@@ -640,21 +952,245 @@
           const trade = child.val();
           const row = document.createElement('tr');
           row.innerHTML = `
-            <td>${trade.userId}</td>
+            <td>${trade.userName}<br><small>${trade.userId}</small></td>
             <td>${trade.pair}</td>
             <td>$${trade.investment}</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td><span class="status-badge status-approved">Active</span></td>
+            <td>$${trade.dailyEarning}</td>
+            <td>${trade.daysCompleted}/${trade.duration}</td>
+            <td>$${trade.totalEarned.toFixed(2)}</td>
+            <td><span class="status-badge status-${trade.status === 'active' ? 'pending' : 'approved'}">${trade.status}</span></td>
+            <td>${new Date(trade.timestamp * 1000).toLocaleString()}</td>
           `;
           tbody.appendChild(row);
         });
       });
     }
     
+    // Generate Redeem Code
+    document.getElementById('generateCodeBtn').addEventListener('click', () => {
+      const codeValue = document.getElementById('codeValue').value.trim().toUpperCase();
+      const maxUses = parseInt(document.getElementById('codeMaxUses').value) || 100;
+      const bulkCount = parseInt(document.getElementById('codeBulkCount').value) || 1;
+      
+      if (bulkCount > 100) {
+        notify('Maximum 100 codes can be generated at once!');
+        return;
+      }
+      
+      const codes = [];
+      
+      for (let i = 0; i < bulkCount; i++) {
+        let code;
+        if (codeValue && bulkCount === 1) {
+          code = codeValue;
+        } else {
+          // Generate random 5-digit code
+          code = Math.random().toString(36).substring(2, 7).toUpperCase();
+        }
+        
+        codes.push(code);
+        
+        const codeData = {
+          code: code,
+          maxUses: maxUses,
+          usedCount: 0,
+          usedBy: {},
+          createdAt: now(),
+          createdBy: 'admin'
+        };
+        
+        db.ref(`redeemCodes/${code}`).set(codeData);
+      }
+      
+      notify(`Generated ${bulkCount} code(s) successfully!`);
+      document.getElementById('codeValue').value = '';
+      document.getElementById('codeBulkCount').value = '1';
+      
+      loadRedeemCodes();
+    });
+    
+    // Load Redeem Codes
+    function loadRedeemCodes() {
+      db.ref('redeemCodes').on('value', snapshot => {
+        const container = document.getElementById('codesList');
+        container.innerHTML = '';
+        
+        if (!snapshot.exists()) {
+          container.innerHTML = '<div class="empty-state"><div class="empty-icon">📭</div><div class="empty-text">No codes generated yet</div></div>';
+          return;
+        }
+        
+        snapshot.forEach(child => {
+          const code = child.val();
+          const codeKey = child.key;
+          
+          const item = document.createElement('div');
+          item.className = 'code-item';
+          item.innerHTML = `
+            <div class="code-info">
+              <div class="code-value">${code.code}</div>
+              <div class="code-details">
+                Used: ${code.usedCount}/${code.maxUses} | 
+                Created: ${new Date(code.createdAt * 1000).toLocaleDateString()}
+              </div>
+            </div>
+            <div class="code-actions">
+              <button class="action-btn btn-reject" onclick="deleteCode('${codeKey}')">Delete</button>
+            </div>
+          `;
+          container.appendChild(item);
+        });
+      });
+    }
+    
+    // Delete Code
+    function deleteCode(codeKey) {
+      if (!confirm('Delete this code?')) return;
+      
+      db.ref(`redeemCodes/${codeKey}`).remove();
+      notify('Code deleted successfully!');
+    }
+    
+    // Search User
+    document.getElementById('searchUserBtn').addEventListener('click', () => {
+      const userId = document.getElementById('userSearchInput').value.trim();
+      
+      if (!userId) {
+        notify('Please enter a User ID!');
+        return;
+      }
+      
+      db.ref(`users/${userId}`).once('value').then(snapshot => {
+        const resultDiv = document.getElementById('userSearchResult');
+        
+        if (!snapshot.exists()) {
+          resultDiv.innerHTML = '<div class="empty-state"><div class="empty-icon">❌</div><div class="empty-text">User not found</div></div>';
+          return;
+        }
+        
+        const user = snapshot.val();
+        const trading = user.trading || {};
+        
+        resultDiv.innerHTML = `
+          <div class="user-result">
+            <div class="user-header">
+              <img src="${user.avatar}" class="user-avatar" alt="${user.name}" />
+              <div class="user-info">
+                <div class="user-name">${user.name}</div>
+                <div class="user-id">ID: ${userId}</div>
+              </div>
+            </div>
+            
+            <div class="user-balances">
+              <div class="balance-box">
+                <div class="balance-label">SHB Balance</div>
+                <div class="balance-value">${user.balance || 0}</div>
+              </div>
+              <div class="balance-box">
+                <div class="balance-label">USDT Balance</div>
+                <div class="balance-value">$${(trading.usdtBalance || 0).toFixed(2)}</div>
+              </div>
+              <div class="balance-box">
+                <div class="balance-label">TON Balance</div>
+                <div class="balance-value">${(trading.tonBalance || 0).toFixed(2)}</div>
+              </div>
+              <div class="balance-box">
+                <div class="balance-label">Total Deposited</div>
+                <div class="balance-value">$${(trading.totalDeposited || 0).toFixed(2)}</div>
+              </div>
+            </div>
+            
+            <div class="section-title">
+              <span class="section-icon">💰</span>
+              Adjust USDT Balance
+            </div>
+            <div class="balance-actions">
+              <input type="number" class="balance-input" id="usdtAdjustAmount" placeholder="Amount" step="0.01" />
+              <button class="btn-primary" onclick="adjustBalance('${userId}', 'increase')">Increase</button>
+              <button class="btn-danger" onclick="adjustBalance('${userId}', 'decrease')">Decrease</button>
+            </div>
+          </div>
+        `;
+      });
+    });
+    
+    // Adjust Balance
+    function adjustBalance(userId, action) {
+      const amount = parseFloat(document.getElementById('usdtAdjustAmount').value);
+      
+      if (!amount || amount <= 0) {
+        notify('Please enter a valid amount!');
+        return;
+      }
+      
+      const confirmMsg = action === 'increase' 
+        ? `Increase user's USDT balance by $${amount}?`
+        : `Decrease user's USDT balance by $${amount}?`;
+      
+      if (!confirm(confirmMsg)) return;
+      
+      db.ref(`users/${userId}/trading/usdtBalance`).transaction(balance => {
+        const currentBalance = balance || 0;
+        if (action === 'increase') {
+          return currentBalance + amount;
+        } else {
+          return Math.max(0, currentBalance - amount);
+        }
+      }).then(() => {
+        // Log the action
+        db.ref('admin/balanceAdjustments').push({
+          userId: userId,
+          action: action,
+          amount: amount,
+          timestamp: now(),
+          admin: 'admin'
+        });
+        
+        notify(`Balance ${action}d successfully!`);
+        document.getElementById('usdtAdjustAmount').value = '';
+        
+        // Refresh user data
+        document.getElementById('searchUserBtn').click();
+      });
+    }
+    
+    // Load Redemptions
+    function loadRedemptions() {
+      db.ref('admin/redemptions').on('value', snapshot => {
+        const tbody = document.getElementById('redemptionsTableBody');
+        tbody.innerHTML = '';
+        
+        if (!snapshot.exists()) {
+          tbody.innerHTML = '<tr><td colspan="4"><div class="empty-state"><div class="empty-icon">📭</div><div class="empty-text">No redemptions yet</div></div></td></tr>';
+          return;
+        }
+        
+        const redemptions = [];
+        snapshot.forEach(child => {
+          redemptions.push(child.val());
+        });
+        
+        // Sort by timestamp descending
+        redemptions.sort((a, b) => b.timestamp - a.timestamp);
+        
+        redemptions.forEach(redemption => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${redemption.userName}<br><small>${redemption.userId}</small></td>
+            <td><strong>${redemption.code}</strong></td>
+            <td style="color: #4caf50; font-weight: 700;">$${redemption.reward}</td>
+            <td>${new Date(redemption.timestamp * 1000).toLocaleString()}</td>
+          `;
+          tbody.appendChild(row);
+        });
+      });
+    }
+    
+    // Initialize
     loadStatistics();
     loadDeposits();
+    
+    // Refresh statistics every 30 seconds
     setInterval(loadStatistics, 30000);
   </script>
 </body>
