@@ -21,7 +21,9 @@
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-analytics-compat.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+  
+  <!-- TradingView Widget -->
+  <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
   
   <style>
     * {
@@ -708,623 +710,65 @@
       margin-bottom: 16px;
     }
     
-    /* Crypto Trading Section */
+    /* Crypto Trading Button */
     .crypto-trading-card {
-      background: var(--card-bg);
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       backdrop-filter: blur(20px);
       border-radius: 20px;
       padding: 24px;
       margin-bottom: 16px;
-      border: 1px solid var(--card-border);
-      box-shadow: var(--shadow-md);
+      border: 2px solid var(--accent-purple);
+      box-shadow: 0 8px 32px rgba(118, 75, 162, 0.4);
       text-align: center;
       cursor: pointer;
       transition: all 0.3s ease;
-    }
-    
-    .crypto-trading-card:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-lg);
-    }
-    
-    .crypto-icon {
-      font-size: 48px;
-      margin-bottom: 12px;
-    }
-    
-    .crypto-title {
-      font-size: 20px;
-      font-weight: 700;
-      color: var(--text-primary);
-      margin-bottom: 8px;
-    }
-    
-    .crypto-subtitle {
-      font-size: 14px;
-      color: var(--text-secondary);
-      margin-bottom: 16px;
-    }
-    
-    /* Trading Full Screen */
-    #trading-screen {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #667eea 100%);
-      z-index: 10000;
-      display: none;
-      flex-direction: column;
-      overflow-y: auto;
-    }
-    
-    .trading-header {
-      position: sticky;
-      top: 0;
-      background: rgba(30, 60, 114, 0.95);
-      backdrop-filter: blur(20px);
-      padding: 16px 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-bottom: 1px solid var(--card-border);
-      z-index: 100;
-    }
-    
-    .trading-back-btn {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.1);
-      border: none;
-      color: var(--text-primary);
-      font-size: 24px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.3s ease;
-    }
-    
-    .trading-back-btn:hover {
-      background: rgba(255, 255, 255, 0.2);
-    }
-    
-    .trading-header-title {
-      font-size: 20px;
-      font-weight: 700;
-      color: var(--text-primary);
-    }
-    
-    .trading-balance-display {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      background: rgba(255, 255, 255, 0.1);
-      padding: 8px 16px;
-      border-radius: 20px;
-    }
-    
-    .ton-icon {
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-    }
-    
-    .trading-balance-amount {
-      font-size: 16px;
-      font-weight: 700;
-      color: var(--accent-cyan);
-    }
-    
-    .trading-content {
-      flex: 1;
-      padding: 20px;
-      max-width: 1200px;
-      margin: 0 auto;
-      width: 100%;
-    }
-    
-    .trading-nav {
-      display: flex;
-      gap: 12px;
-      margin-bottom: 20px;
-      overflow-x: auto;
-      padding-bottom: 8px;
-    }
-    
-    .trading-nav-btn {
-      padding: 12px 24px;
-      background: rgba(255, 255, 255, 0.1);
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
-      color: var(--text-secondary);
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      white-space: nowrap;
-    }
-    
-    .trading-nav-btn.active {
-      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-      color: #fff;
-      border-color: transparent;
-    }
-    
-    .trading-plans-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 20px;
-      margin-bottom: 20px;
-    }
-    
-    .trading-plan-card {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      border-radius: 20px;
-      padding: 24px;
-      box-shadow: var(--shadow-lg);
       position: relative;
       overflow: hidden;
-      transition: all 0.3s ease;
-      cursor: pointer;
     }
     
-    .trading-plan-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
-    }
-    
-    .trading-plan-card::before {
+    .crypto-trading-card::before {
       content: '';
       position: absolute;
       top: -50%;
-      right: -50%;
+      left: -50%;
       width: 200%;
       height: 200%;
-      background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
-      animation: shimmer 3s infinite;
+      background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+      animation: shine 3s infinite;
     }
     
-    @keyframes shimmer {
-      0%, 100% { transform: rotate(0deg); }
-      50% { transform: rotate(180deg); }
+    @keyframes shine {
+      0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+      100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
     }
     
-    .plan-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 16px;
+    .crypto-trading-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(118, 75, 162, 0.6);
+    }
+    
+    .crypto-trading-icon {
+      font-size: 48px;
+      margin-bottom: 12px;
       position: relative;
       z-index: 2;
     }
     
-    .plan-pair {
-      font-size: 20px;
-      font-weight: 800;
-      color: #fff;
-      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-    }
-    
-    .plan-badge {
-      background: rgba(255, 255, 255, 0.2);
-      padding: 4px 12px;
-      border-radius: 12px;
-      font-size: 11px;
-      font-weight: 700;
-      color: #fff;
-      text-transform: uppercase;
-    }
-    
-    .plan-chart-container {
-      width: 100%;
-      height: 120px;
-      margin-bottom: 16px;
-      background: rgba(0, 0, 0, 0.2);
-      border-radius: 12px;
-      position: relative;
-      z-index: 2;
-      overflow: hidden;
-    }
-    
-    .plan-details {
-      position: relative;
-      z-index: 2;
-    }
-    
-    .plan-price-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 12px;
-    }
-    
-    .plan-label {
-      font-size: 12px;
-      color: rgba(255, 255, 255, 0.7);
-      font-weight: 600;
-      text-transform: uppercase;
-    }
-    
-    .plan-value {
-      font-size: 18px;
-      font-weight: 700;
-      color: #fff;
-    }
-    
-    .plan-current-price {
-      font-size: 14px;
-      color: var(--accent-gold);
-      font-weight: 600;
-      margin-bottom: 12px;
-    }
-    
-    .plan-buy-btn {
-      width: 100%;
-      padding: 14px;
-      background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
-      border: none;
-      border-radius: 12px;
-      font-size: 16px;
-      font-weight: 700;
-      color: #1e3c72;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3);
-    }
-    
-    .plan-buy-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(255, 215, 0, 0.4);
-    }
-    
-    .plan-buy-btn:disabled {
-      background: rgba(255, 255, 255, 0.2);
-      color: rgba(255, 255, 255, 0.5);
-      cursor: not-allowed;
-      box-shadow: none;
-    }
-    
-    /* Wallet Section */
-    .wallet-section {
-      display: none;
-    }
-    
-    .wallet-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 16px;
-      margin-bottom: 20px;
-    }
-    
-    .wallet-option-card {
-      background: var(--card-bg);
-      backdrop-filter: blur(20px);
-      border-radius: 16px;
-      padding: 20px;
-      border: 1px solid var(--card-border);
-      box-shadow: var(--shadow-md);
-      text-align: center;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-    
-    .wallet-option-card:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-lg);
-      border-color: var(--accent-cyan);
-    }
-    
-    .wallet-option-icon {
-      width: 48px;
-      height: 48px;
-      margin: 0 auto 12px;
-      border-radius: 50%;
-    }
-    
-    .wallet-option-title {
-      font-size: 14px;
-      font-weight: 700;
-      color: var(--text-primary);
-    }
-    
-    /* Deposit/Withdraw Forms */
-    .transaction-form {
-      background: var(--card-bg);
-      backdrop-filter: blur(20px);
-      border-radius: 20px;
-      padding: 24px;
-      border: 1px solid var(--card-border);
-      box-shadow: var(--shadow-md);
-      margin-bottom: 20px;
-    }
-    
-    .form-title {
-      font-size: 20px;
-      font-weight: 700;
-      color: var(--text-primary);
-      margin-bottom: 20px;
-      text-align: center;
-    }
-    
-    .form-group {
-      margin-bottom: 16px;
-    }
-    
-    .form-label {
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--text-secondary);
-      margin-bottom: 8px;
-      display: block;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-    
-    .form-input {
-      width: 100%;
-      padding: 14px 16px;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
-      font-size: 15px;
-      color: var(--text-primary);
-      font-family: 'Poppins', sans-serif;
-      outline: none;
-      transition: all 0.3s ease;
-    }
-    
-    .form-input:focus {
-      border-color: var(--accent-cyan);
-      background: rgba(255, 255, 255, 0.08);
-    }
-    
-    .form-input::placeholder {
-      color: var(--text-secondary);
-    }
-    
-    .form-note {
-      font-size: 12px;
-      color: var(--accent-pink);
-      margin-top: 4px;
-      font-weight: 500;
-    }
-    
-    .qr-container {
-      background: #fff;
-      padding: 20px;
-      border-radius: 16px;
-      margin: 20px 0;
-      text-align: center;
-    }
-    
-    .qr-code {
-      margin: 0 auto;
-    }
-    
-    .deposit-info {
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: 12px;
-      padding: 16px;
-      margin-bottom: 16px;
-    }
-    
-    .deposit-info-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 12px;
-    }
-    
-    .deposit-info-row:last-child {
-      margin-bottom: 0;
-    }
-    
-    .deposit-info-label {
-      font-size: 13px;
-      color: var(--text-secondary);
-      font-weight: 600;
-    }
-    
-    .deposit-info-value {
-      font-size: 14px;
-      color: var(--text-primary);
-      font-weight: 700;
-      word-break: break-all;
-      text-align: right;
-      max-width: 60%;
-    }
-    
-    .copy-btn {
-      padding: 4px 12px;
-      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-      border: none;
-      border-radius: 8px;
-      font-size: 11px;
-      font-weight: 700;
-      color: #fff;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      text-transform: uppercase;
-    }
-    
-    .timer-display {
-      text-align: center;
+    .crypto-trading-title {
       font-size: 24px;
       font-weight: 800;
-      color: var(--accent-pink);
-      margin-bottom: 20px;
-      padding: 16px;
-      background: rgba(245, 87, 108, 0.1);
-      border-radius: 12px;
-      border: 2px solid var(--accent-pink);
-    }
-    
-    /* History Tables */
-    .history-table {
-      background: var(--card-bg);
-      backdrop-filter: blur(20px);
-      border-radius: 16px;
-      overflow: hidden;
-      border: 1px solid var(--card-border);
-      margin-bottom: 20px;
-    }
-    
-    .history-item {
-      padding: 16px;
-      border-bottom: 1px solid var(--card-border);
-      transition: all 0.3s ease;
-    }
-    
-    .history-item:last-child {
-      border-bottom: none;
-    }
-    
-    .history-item:hover {
-      background: rgba(255, 255, 255, 0.05);
-    }
-    
-    .history-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      color: var(--text-primary);
       margin-bottom: 8px;
+      position: relative;
+      z-index: 2;
     }
     
-    .history-row:last-child {
-      margin-bottom: 0;
-    }
-    
-    .history-label {
-      font-size: 12px;
-      color: var(--text-secondary);
-      font-weight: 600;
-    }
-    
-    .history-value {
+    .crypto-trading-subtitle {
       font-size: 14px;
-      color: var(--text-primary);
-      font-weight: 700;
-    }
-    
-    .status-badge {
-      padding: 4px 12px;
-      border-radius: 12px;
-      font-size: 11px;
-      font-weight: 700;
-      text-transform: uppercase;
-    }
-    
-    .status-pending {
-      background: rgba(255, 193, 7, 0.2);
-      color: #ffc107;
-    }
-    
-    .status-approved {
-      background: rgba(76, 175, 80, 0.2);
-      color: #4caf50;
-    }
-    
-    .status-rejected {
-      background: rgba(244, 67, 54, 0.2);
-      color: #f44336;
-    }
-    
-    .empty-state {
-      text-align: center;
-      padding: 40px 20px;
-      color: var(--text-secondary);
-      font-size: 14px;
-    }
-    
-    /* Active Plans */
-    .active-plan-card {
-      background: var(--card-bg);
-      backdrop-filter: blur(20px);
-      border-radius: 16px;
-      padding: 20px;
-      border: 1px solid var(--card-border);
-      box-shadow: var(--shadow-md);
-      margin-bottom: 16px;
-    }
-    
-    .active-plan-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 16px;
-    }
-    
-    .active-plan-pair {
-      font-size: 18px;
-      font-weight: 700;
-      color: var(--text-primary);
-    }
-    
-    .active-plan-status {
-      padding: 4px 12px;
-      background: rgba(76, 175, 80, 0.2);
-      color: #4caf50;
-      border-radius: 12px;
-      font-size: 11px;
-      font-weight: 700;
-      text-transform: uppercase;
-    }
-    
-    .active-plan-details {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-      margin-bottom: 16px;
-    }
-    
-    .active-plan-detail {
-      text-align: center;
-    }
-    
-    .active-plan-detail-label {
-      font-size: 11px;
-      color: var(--text-secondary);
-      font-weight: 600;
-      text-transform: uppercase;
-      margin-bottom: 4px;
-    }
-    
-    .active-plan-detail-value {
-      font-size: 16px;
-      font-weight: 700;
-      color: var(--accent-cyan);
-    }
-    
-    .claim-timer {
-      text-align: center;
-      font-size: 14px;
-      color: var(--text-secondary);
-      margin-bottom: 12px;
-    }
-    
-    .claim-btn {
-      width: 100%;
-      padding: 12px;
-      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-      border: none;
-      border-radius: 12px;
-      font-size: 14px;
-      font-weight: 700;
-      color: #fff;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      text-transform: uppercase;
-    }
-    
-    .claim-btn:disabled {
-      background: rgba(255, 255, 255, 0.1);
-      color: rgba(255, 255, 255, 0.4);
-      cursor: not-allowed;
+      color: rgba(255, 255, 255, 0.9);
+      font-weight: 500;
+      position: relative;
+      z-index: 2;
     }
     
     /* Milestone Rewards */
@@ -2038,6 +1482,658 @@
       }
     }
     
+    /* CRYPTO TRADING FULL SCREEN */
+    #crypto-trading-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+      z-index: 10000;
+      display: none;
+      overflow-y: auto;
+      padding-bottom: 80px;
+    }
+    
+    .trading-header {
+      position: sticky;
+      top: 0;
+      background: rgba(15, 32, 39, 0.95);
+      backdrop-filter: blur(20px);
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      z-index: 100;
+    }
+    
+    .trading-back-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      color: var(--text-primary);
+      font-size: 24px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+    }
+    
+    .trading-back-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+    
+    .trading-header-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    
+    .trading-wallet-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+    
+    .trading-wallet-btn img {
+      width: 24px;
+      height: 24px;
+    }
+    
+    .trading-wallet-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+    
+    .trading-balance-display {
+      position: absolute;
+      top: 60px;
+      right: 20px;
+      background: rgba(0, 0, 0, 0.9);
+      backdrop-filter: blur(20px);
+      border-radius: 12px;
+      padding: 12px 16px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      display: none;
+      flex-direction: column;
+      gap: 8px;
+      min-width: 150px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    }
+    
+    .trading-balance-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .trading-balance-icon {
+      width: 20px;
+      height: 20px;
+    }
+    
+    .trading-balance-label {
+      font-size: 12px;
+      color: var(--text-secondary);
+      flex: 1;
+    }
+    
+    .trading-balance-value {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--accent-cyan);
+    }
+    
+    .trading-nav {
+      display: flex;
+      gap: 12px;
+      padding: 16px 20px;
+      background: rgba(0, 0, 0, 0.3);
+      overflow-x: auto;
+    }
+    
+    .trading-nav-btn {
+      padding: 10px 20px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 20px;
+      color: var(--text-secondary);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      white-space: nowrap;
+    }
+    
+    .trading-nav-btn.active {
+      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      color: #fff;
+      border-color: transparent;
+    }
+    
+    .trading-content {
+      padding: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .trading-plans-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+    
+    .trading-plan-card {
+      background: linear-gradient(135deg, rgba(79, 172, 254, 0.1) 0%, rgba(0, 242, 254, 0.1) 100%);
+      backdrop-filter: blur(20px);
+      border-radius: 20px;
+      padding: 20px;
+      border: 2px solid rgba(79, 172, 254, 0.3);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .trading-plan-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
+    }
+    
+    .trading-plan-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(79, 172, 254, 0.4);
+    }
+    
+    .trading-plan-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    
+    .trading-plan-pair {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--text-primary);
+    }
+    
+    .trading-plan-badge {
+      padding: 4px 12px;
+      background: rgba(255, 215, 0, 0.2);
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent-gold);
+      text-transform: uppercase;
+    }
+    
+    .trading-plan-chart {
+      width: 100%;
+      height: 150px;
+      margin-bottom: 16px;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    
+    .trading-plan-price {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--accent-cyan);
+      margin-bottom: 16px;
+    }
+    
+    .trading-plan-details {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    
+    .trading-plan-detail {
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 10px;
+      padding: 12px;
+      text-align: center;
+    }
+    
+    .trading-plan-detail-label {
+      font-size: 11px;
+      color: var(--text-secondary);
+      font-weight: 600;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    
+    .trading-plan-detail-value {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    
+    .trading-plan-buy-btn {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 700;
+      color: #fff;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .trading-plan-buy-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(79, 172, 254, 0.5);
+    }
+    
+    .trading-plan-buy-btn:disabled {
+      background: rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.4);
+      cursor: not-allowed;
+    }
+    
+    /* Wallet Modal */
+    .wallet-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.9);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 10001;
+      padding: 20px;
+    }
+    
+    .wallet-modal-content {
+      background: linear-gradient(135deg, #0f2027 0%, #203a43 100%);
+      border-radius: 24px;
+      padding: 24px;
+      max-width: 500px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    }
+    
+    .wallet-modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+    
+    .wallet-modal-title {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--text-primary);
+    }
+    
+    .wallet-modal-close {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      color: var(--text-primary);
+      font-size: 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+    }
+    
+    .wallet-modal-close:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+    
+    .wallet-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 24px;
+      overflow-x: auto;
+    }
+    
+    .wallet-tab-btn {
+      padding: 10px 16px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+      color: var(--text-secondary);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      white-space: nowrap;
+    }
+    
+    .wallet-tab-btn.active {
+      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      color: #fff;
+      border-color: transparent;
+    }
+    
+    .wallet-tab-content {
+      display: none;
+    }
+    
+    .wallet-tab-content.active {
+      display: block;
+    }
+    
+    .wallet-form {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    
+    .wallet-form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    
+    .wallet-form-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+    }
+    
+    .wallet-form-input {
+      padding: 12px 16px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+      font-size: 14px;
+      color: var(--text-primary);
+      font-family: 'Poppins', sans-serif;
+      outline: none;
+      transition: all 0.3s ease;
+    }
+    
+    .wallet-form-input:focus {
+      border-color: var(--accent-cyan);
+      background: rgba(255, 255, 255, 0.08);
+    }
+    
+    .wallet-form-input::placeholder {
+      color: var(--text-secondary);
+    }
+    
+    .wallet-form-note {
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+    
+    .wallet-deposit-qr {
+      text-align: center;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 16px;
+      margin-bottom: 16px;
+    }
+    
+    .wallet-deposit-qr img {
+      width: 200px;
+      height: 200px;
+      border-radius: 12px;
+      margin-bottom: 16px;
+    }
+    
+    .wallet-deposit-address {
+      font-size: 12px;
+      color: var(--accent-cyan);
+      font-weight: 600;
+      word-break: break-all;
+      margin-bottom: 12px;
+    }
+    
+    .wallet-deposit-memo {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--accent-gold);
+      margin-bottom: 8px;
+    }
+    
+    .wallet-deposit-timer {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--accent-pink);
+      margin-bottom: 16px;
+    }
+    
+    .wallet-history-item {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .wallet-history-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+    
+    .wallet-history-type {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    
+    .wallet-history-status {
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    
+    .wallet-history-status.pending {
+      background: rgba(255, 193, 7, 0.2);
+      color: #ffc107;
+    }
+    
+    .wallet-history-status.approved {
+      background: rgba(76, 175, 80, 0.2);
+      color: #4caf50;
+    }
+    
+    .wallet-history-status.rejected {
+      background: rgba(244, 67, 54, 0.2);
+      color: #f44336;
+    }
+    
+    .wallet-history-details {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    
+    .wallet-history-detail {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+    
+    .wallet-history-amount {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--accent-cyan);
+    }
+    
+    .wallet-history-empty {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+    
+    /* My Trades Section */
+    .my-trades-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    
+    .my-trade-card {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(20px);
+      border-radius: 16px;
+      padding: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .my-trade-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    
+    .my-trade-pair {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    
+    .my-trade-status {
+      padding: 6px 12px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    
+    .my-trade-status.active {
+      background: rgba(76, 175, 80, 0.2);
+      color: #4caf50;
+    }
+    
+    .my-trade-status.completed {
+      background: rgba(79, 172, 254, 0.2);
+      color: var(--accent-cyan);
+    }
+    
+    .my-trade-details {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    
+    .my-trade-detail {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    
+    .my-trade-detail-label {
+      font-size: 11px;
+      color: var(--text-secondary);
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+    
+    .my-trade-detail-value {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    
+    .my-trade-progress {
+      margin-bottom: 16px;
+    }
+    
+    .my-trade-progress-label {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+    }
+    
+    .my-trade-progress-bar {
+      width: 100%;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    
+    .my-trade-progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
+      border-radius: 4px;
+      transition: width 0.3s ease;
+    }
+    
+    .my-trade-claim-btn {
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      border: none;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+    }
+    
+    .my-trade-claim-btn:disabled {
+      background: rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.4);
+      cursor: not-allowed;
+    }
+    
+    .my-trades-empty {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-secondary);
+    }
+    
+    .my-trades-empty-icon {
+      font-size: 64px;
+      margin-bottom: 16px;
+    }
+    
+    .my-trades-empty-text {
+      font-size: 16px;
+      font-weight: 600;
+    }
+    
     /* Responsive Design */
     @media (max-width: 360px) {
       .balance-amount {
@@ -2064,6 +2160,16 @@
       
       .stat-value {
         font-size: 18px;
+      }
+      
+      .trading-plans-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .trading-plans-grid {
+        grid-template-columns: 1fr;
       }
     }
   </style>
@@ -2130,19 +2236,6 @@
     </div>
   </div>
   
-  <!-- Trading Full Screen -->
-  <div id="trading-screen">
-    <div class="trading-header">
-      <button class="trading-back-btn" id="tradingBackBtn">←</button>
-      <div class="trading-header-title">Crypto Trading</div>
-      <div class="trading-balance-display">
-        <img src="https://i.postimg.cc/9M4vVYZQ/images-6.jpg" class="ton-icon" alt="TON" />
-        <span class="trading-balance-amount" id="tradingBalance">0.00</span>
-      </div>
-    </div>
-    <div class="trading-content" id="tradingContent"></div>
-  </div>
-  
   <!-- Referral List Modal -->
   <div class="modal-overlay" id="referralModal">
     <div class="modal-content">
@@ -2154,8 +2247,119 @@
     </div>
   </div>
   
-  <script>
-    // [SCRIPT CONTENT CONTINUES IN NEXT PART DUE TO LENGTH...]
-  </script>
+  <!-- Crypto Trading Full Screen -->
+  <div id="crypto-trading-screen">
+    <div class="trading-header">
+      <button class="trading-back-btn" id="tradingBackBtn">←</button>
+      <div class="trading-header-title">Crypto Trading</div>
+      <button class="trading-wallet-btn" id="tradingWalletBtn">
+        <img src="https://cdn-icons-png.flaticon.com/512/3135/3135706.png" alt="Wallet" />
+      </button>
+      <div class="trading-balance-display" id="tradingBalanceDisplay">
+        <div class="trading-balance-item">
+          <img src="https://i.postimg.cc/9M4vVYZQ/images-6.jpg" class="trading-balance-icon" alt="TON" />
+          <span class="trading-balance-label">TON:</span>
+          <span class="trading-balance-value" id="tonBalance">0</span>
+        </div>
+        <div class="trading-balance-item">
+          <img src="https://cryptologos.cc/logos/tether-usdt-logo.png" class="trading-balance-icon" alt="USDT" />
+          <span class="trading-balance-label">USDT:</span>
+          <span class="trading-balance-value" id="usdtBalance">0</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="trading-nav">
+      <button class="trading-nav-btn active" data-trading-tab="plans">Trading Plans</button>
+      <button class="trading-nav-btn" data-trading-tab="my-trades">My Trades</button>
+    </div>
+    
+    <div class="trading-content">
+      <div id="trading-plans-content" class="trading-tab-content active">
+        <div class="trading-plans-grid" id="tradingPlansGrid"></div>
+      </div>
+      
+      <div id="my-trades-content" class="trading-tab-content">
+        <div class="my-trades-list" id="myTradesList"></div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Wallet Modal -->
+  <div class="wallet-modal" id="walletModal">
+    <div class="wallet-modal-content">
+      <div class="wallet-modal-header">
+        <div class="wallet-modal-title">Wallet</div>
+        <button class="wallet-modal-close" id="walletModalClose">×</button>
+      </div>
+      
+      <div class="wallet-tabs">
+        <button class="wallet-tab-btn active" data-wallet-tab="deposit">Deposit</button>
+        <button class="wallet-tab-btn" data-wallet-tab="withdraw">Withdraw</button>
+        <button class="wallet-tab-btn" data-wallet-tab="deposit-history">Deposit History</button>
+        <button class="wallet-tab-btn" data-wallet-tab="withdraw-history">Withdraw History</button>
+        <button class="wallet-tab-btn" data-wallet-tab="trade-history">Trade History</button>
+      </div>
+      
+      <div id="wallet-deposit-content" class="wallet-tab-content active">
+        <div class="wallet-form">
+          <div class="wallet-form-group">
+            <label class="wallet-form-label">Deposit Amount (Min: $30)</label>
+            <input type="number" class="wallet-form-input" id="depositAmount" placeholder="Enter amount in USDT" min="30" />
+          </div>
+          <button class="btn-primary" id="confirmDepositBtn">Confirm Deposit</button>
+        </div>
+        
+        <div id="depositQRSection" style="display: none;">
+          <div class="wallet-deposit-qr">
+            <img src="https://i.postimg.cc/kG1SJTf9/Screenshot-2025-10-09-23-39-32-878-com-ton-keeper-edit.jpg" alt="QR Code" />
+            <div class="wallet-deposit-address">UQBWOgFgB4B8qBCo8CNjDUNAtvUSosw4v7v9gkt0GVOaNLSz</div>
+            <div class="wallet-deposit-memo" id="depositMemo">Memo: shark0000</div>
+            <div class="wallet-deposit-timer" id="depositTimer">15:00</div>
+          </div>
+          
+          <div class="wallet-form">
+            <div class="wallet-form-group">
+              <label class="wallet-form-label">Transaction Hash</label>
+              <input type="text" class="wallet-form-input" id="depositTxHash" placeholder="Enter transaction hash" />
+            </div>
+            <button class="btn-primary" id="submitDepositBtn">Submit Deposit</button>
+          </div>
+        </div>
+      </div>
+      
+      <div id="wallet-withdraw-content" class="wallet-tab-content">
+        <div class="wallet-form">
+          <div class="wallet-form-group">
+            <label class="wallet-form-label">USDT TON Address *</label>
+            <input type="text" class="wallet-form-input" id="withdrawAddress" placeholder="Enter your USDT TON address" required />
+          </div>
+          <div class="wallet-form-group">
+            <label class="wallet-form-label">Amount (Min: $0.10) *</label>
+            <input type="number" class="wallet-form-input" id="withdrawAmount" placeholder="Enter amount in USDT" min="0.10" step="0.01" required />
+          </div>
+          <div class="wallet-form-group">
+            <label class="wallet-form-label">Memo / Comment (Optional)</label>
+            <input type="text" class="wallet-form-input" id="withdrawMemo" placeholder="Enter memo or comment" />
+          </div>
+          <button class="btn-primary" id="confirmWithdrawBtn">Confirm Withdraw</button>
+        </div>
+      </div>
+      
+      <div id="wallet-deposit-history-content" class="wallet-tab-content">
+        <div id="depositHistoryList"></div>
+      </div>
+      
+      <div id="wallet-withdraw-history-content" class="wallet-tab-content">
+        <div id="withdrawHistoryList"></div>
+      </div>
+      
+      <div id="wallet-trade-history-content" class="wallet-tab-content">
+        <div id="tradeHistoryList"></div>
+      </div>
+    </div>
+  </div>
+  
+  <script src="trading.js"></script>
 </body>
 </html>
