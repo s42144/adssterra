@@ -22,6 +22,12 @@
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-analytics-compat.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   
+  <!-- TradingView Widget -->
+  <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+  
+  <!-- QR Code Generator -->
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+  
   <style>
     * {
       margin: 0;
@@ -43,6 +49,8 @@
       --accent-purple: #764ba2;
       --accent-pink: #f5576c;
       --accent-cyan: #00f2fe;
+      --accent-gold: #ffd700;
+      --accent-green: #00ff88;
       --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.1);
       --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.15);
       --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.2);
@@ -124,6 +132,114 @@
       margin-top: 20px;
       font-size: 12px;
       color: var(--text-secondary);
+      font-weight: 600;
+    }
+    
+    /* Referral Welcome Screen */
+    #referral-welcome {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #667eea 100%);
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 9998;
+      padding: 20px;
+    }
+    
+    .welcome-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(20px);
+      border-radius: 24px;
+      padding: 40px 30px;
+      border: 1px solid var(--card-border);
+      box-shadow: var(--shadow-lg);
+      text-align: center;
+      max-width: 400px;
+      width: 100%;
+      animation: slideUp 0.5s ease;
+    }
+    
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(50px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .welcome-icon {
+      font-size: 64px;
+      margin-bottom: 20px;
+    }
+    
+    .welcome-title {
+      font-size: 28px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 16px;
+    }
+    
+    .welcome-message {
+      font-size: 16px;
+      color: var(--text-secondary);
+      margin-bottom: 24px;
+      line-height: 1.6;
+    }
+    
+    .referrer-info {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 20px;
+      border: 1px solid var(--card-border);
+    }
+    
+    .referrer-label {
+      font-size: 12px;
+      color: var(--text-secondary);
+      font-weight: 600;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    
+    .referrer-details {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .referrer-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border: 2px solid var(--accent-cyan);
+    }
+    
+    .referrer-name {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    
+    .referrer-id {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+    
+    .welcome-countdown {
+      font-size: 14px;
+      color: var(--accent-cyan);
       font-weight: 600;
     }
     
@@ -290,6 +406,43 @@
       font-size: 10px;
       color: var(--text-secondary);
       font-weight: 400;
+    }
+    
+    /* Income Status Warning */
+    .income-status-warning {
+      width: 100%;
+      background: rgba(245, 87, 108, 0.15);
+      backdrop-filter: blur(20px);
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 20px;
+      border: 2px solid var(--accent-pink);
+      box-shadow: 0 0 20px rgba(245, 87, 108, 0.3);
+      text-align: center;
+      animation: warningPulse 2s ease-in-out infinite;
+    }
+    
+    @keyframes warningPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.02); }
+    }
+    
+    .income-status-icon {
+      font-size: 32px;
+      margin-bottom: 8px;
+    }
+    
+    .income-status-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--accent-pink);
+      margin-bottom: 8px;
+    }
+    
+    .income-status-message {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.5;
     }
     
     /* Navigation Bar */
@@ -561,69 +714,403 @@
       margin-bottom: 16px;
     }
     
-    /* Milestone Cards */
-    .milestone-card {
-      background: linear-gradient(135deg, rgba(79, 172, 254, 0.1) 0%, rgba(0, 242, 254, 0.1) 100%);
+    /* CRYPTO TRADING SECTION */
+    .crypto-trading-card {
+      background: var(--card-bg);
       backdrop-filter: blur(20px);
-      border-radius: 16px;
-      padding: 20px;
-      margin-bottom: 12px;
-      border: 2px solid var(--card-border);
+      border-radius: 20px;
+      padding: 24px;
+      margin-bottom: 16px;
+      border: 1px solid var(--card-border);
       box-shadow: var(--shadow-md);
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .crypto-trading-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+    
+    .crypto-icon {
+      font-size: 48px;
+      margin-bottom: 12px;
+    }
+    
+    .crypto-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+    
+    .crypto-subtitle {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-bottom: 16px;
+    }
+    
+    /* Trading Full Screen */
+    #trading-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #667eea 100%);
+      z-index: 10000;
+      display: none;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+    
+    .trading-header {
+      position: sticky;
+      top: 0;
+      background: rgba(30, 60, 114, 0.95);
+      backdrop-filter: blur(20px);
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--card-border);
+      z-index: 100;
+    }
+    
+    .trading-back-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      color: var(--text-primary);
+      font-size: 24px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+    }
+    
+    .trading-back-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+    
+    .trading-header-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    
+    .trading-wallet-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+    }
+    
+    .trading-wallet-btn img {
+      width: 24px;
+      height: 24px;
+    }
+    
+    .trading-wallet-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+    
+    .trading-balance-bar {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--card-border);
+    }
+    
+    .balance-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .balance-icon {
+      width: 24px;
+      height: 24px;
+    }
+    
+    .balance-info {
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .balance-label-small {
+      font-size: 10px;
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+    
+    .balance-value-small {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--accent-cyan);
+    }
+    
+    .trading-tabs {
+      display: flex;
+      background: rgba(255, 255, 255, 0.05);
+      border-bottom: 1px solid var(--card-border);
+    }
+    
+    .trading-tab {
+      flex: 1;
+      padding: 16px;
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border-bottom: 3px solid transparent;
+    }
+    
+    .trading-tab.active {
+      color: var(--accent-cyan);
+      border-bottom-color: var(--accent-cyan);
+    }
+    
+    .trading-content {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+    }
+    
+    /* Trading Plans */
+    .trading-plans-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+    
+    .trading-plan-card {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 20px;
+      padding: 24px;
       position: relative;
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+      transition: all 0.3s ease;
+    }
+    
+    .trading-plan-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+    }
+    
+    .trading-plan-card::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+      animation: shimmer 3s infinite;
+    }
+    
+    @keyframes shimmer {
+      0%, 100% { transform: translate(0, 0); }
+      50% { transform: translate(-20%, -20%); }
+    }
+    
+    .plan-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      position: relative;
+      z-index: 2;
+    }
+    
+    .plan-pair {
+      font-size: 24px;
+      font-weight: 800;
+      color: #fff;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+    
+    .plan-badge {
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #fff;
+      text-transform: uppercase;
+    }
+    
+    .plan-chart-container {
+      width: 100%;
+      height: 120px;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 12px;
+      margin-bottom: 16px;
+      position: relative;
+      z-index: 2;
       overflow: hidden;
     }
     
-    .milestone-card.claimed {
-      opacity: 0.6;
-      border-color: rgba(255, 255, 255, 0.1);
+    .plan-details {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-bottom: 16px;
+      position: relative;
+      z-index: 2;
     }
     
-    .milestone-header {
+    .plan-detail-item {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 12px;
+      padding: 12px;
+      text-align: center;
+    }
+    
+    .plan-detail-label {
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.7);
+      font-weight: 600;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+    }
+    
+    .plan-detail-value {
+      font-size: 18px;
+      font-weight: 800;
+      color: #fff;
+    }
+    
+    .plan-price {
+      font-size: 32px;
+      font-weight: 800;
+      color: #fff;
+      text-align: center;
+      margin-bottom: 16px;
+      position: relative;
+      z-index: 2;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+    
+    .plan-buy-btn {
+      width: 100%;
+      padding: 14px;
+      background: rgba(255, 255, 255, 0.9);
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 700;
+      color: #764ba2;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      position: relative;
+      z-index: 2;
+    }
+    
+    .plan-buy-btn:hover {
+      background: #fff;
+      transform: scale(1.02);
+    }
+    
+    .plan-buy-btn:disabled {
+      background: rgba(255, 255, 255, 0.3);
+      color: rgba(255, 255, 255, 0.5);
+      cursor: not-allowed;
+    }
+    
+    /* My Trades */
+    .my-trades-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    
+    .trade-item {
+      background: var(--card-bg);
+      backdrop-filter: blur(20px);
+      border-radius: 16px;
+      padding: 16px;
+      border: 1px solid var(--card-border);
+      box-shadow: var(--shadow-md);
+    }
+    
+    .trade-item-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
       margin-bottom: 12px;
     }
     
-    .milestone-icon {
-      width: 48px;
-      height: 48px;
+    .trade-pair {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    
+    .trade-status {
+      padding: 4px 12px;
       border-radius: 12px;
-      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 24px;
-      box-shadow: 0 4px 12px rgba(79, 172, 254, 0.4);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
     }
     
-    .milestone-reward {
-      font-size: 24px;
-      font-weight: 800;
-      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+    .trade-status.active {
+      background: rgba(0, 255, 136, 0.2);
+      color: var(--accent-green);
     }
     
-    .milestone-info {
+    .trade-status.completed {
+      background: rgba(79, 172, 254, 0.2);
+      color: var(--accent-cyan);
+    }
+    
+    .trade-info-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
       margin-bottom: 12px;
     }
     
-    .milestone-title {
-      font-size: 16px;
-      font-weight: 700;
-      color: var(--text-primary);
+    .trade-info-item {
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .trade-info-label {
+      font-size: 11px;
+      color: var(--text-secondary);
+      font-weight: 600;
       margin-bottom: 4px;
     }
     
-    .milestone-desc {
-      font-size: 12px;
-      color: var(--text-secondary);
+    .trade-info-value {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-primary);
     }
     
-    .milestone-progress {
+    .trade-progress-bar {
       width: 100%;
       height: 8px;
       background: rgba(255, 255, 255, 0.1);
@@ -632,23 +1119,501 @@
       margin-bottom: 8px;
     }
     
-    .milestone-progress-bar {
+    .trade-progress-fill {
       height: 100%;
-      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      background: linear-gradient(90deg, var(--accent-cyan) 0%, var(--accent-green) 100%);
       border-radius: 4px;
       transition: width 0.3s ease;
     }
     
-    .milestone-progress-text {
-      font-size: 11px;
-      color: var(--text-secondary);
+    .trade-claim-btn {
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(135deg, #00ff88 0%, #00d4ff 100%);
+      border: none;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #1e3c72;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+    }
+    
+    .trade-claim-btn:disabled {
+      background: rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.4);
+      cursor: not-allowed;
+    }
+    
+    .empty-state {
       text-align: center;
+      padding: 60px 20px;
+    }
+    
+    .empty-icon {
+      font-size: 64px;
+      margin-bottom: 16px;
+      opacity: 0.5;
+    }
+    
+    .empty-text {
+      font-size: 16px;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+    
+    /* Wallet Modal */
+    #wallet-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.8);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 10001;
+      padding: 20px;
+    }
+    
+    .wallet-modal-content {
+      background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+      border-radius: 24px;
+      padding: 0;
+      max-width: 480px;
+      width: 100%;
+      max-height: 90vh;
+      overflow: hidden;
+      border: 1px solid var(--card-border);
+      box-shadow: var(--shadow-lg);
+      animation: slideUp 0.3s ease;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .wallet-modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px;
+      border-bottom: 1px solid var(--card-border);
+    }
+    
+    .wallet-modal-title {
+      font-size: 24px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .wallet-modal-close {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      color: var(--text-primary);
+      font-size: 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+    }
+    
+    .wallet-modal-close:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+    
+    .wallet-sections {
+      display: flex;
+      background: rgba(255, 255, 255, 0.05);
+      border-bottom: 1px solid var(--card-border);
+      overflow-x: auto;
+    }
+    
+    .wallet-section-btn {
+      padding: 16px 20px;
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border-bottom: 3px solid transparent;
+      white-space: nowrap;
+    }
+    
+    .wallet-section-btn.active {
+      color: var(--accent-cyan);
+      border-bottom-color: var(--accent-cyan);
+    }
+    
+    .wallet-modal-body {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+    }
+    
+    .wallet-section-content {
+      display: none;
+    }
+    
+    .wallet-section-content.active {
+      display: block;
+    }
+    
+    /* Deposit Form */
+    .deposit-form {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    
+    .form-label {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    
+    .form-input {
+      width: 100%;
+      padding: 12px 16px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      font-size: 14px;
+      color: var(--text-primary);
+      font-family: 'Poppins', sans-serif;
+      outline: none;
+      transition: all 0.3s ease;
+    }
+    
+    .form-input:focus {
+      border-color: var(--accent-cyan);
+      background: rgba(255, 255, 255, 0.08);
+    }
+    
+    .form-input::placeholder {
+      color: var(--text-secondary);
+    }
+    
+    .form-note {
+      font-size: 12px;
+      color: var(--text-secondary);
+      font-style: italic;
+    }
+    
+    .btn-confirm {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 700;
+      color: #fff;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .btn-confirm:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(79, 172, 254, 0.4);
+    }
+    
+    .btn-confirm:disabled {
+      background: rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.4);
+      cursor: not-allowed;
+    }
+    
+    /* Deposit Payment Screen */
+    .deposit-payment-screen {
+      display: none;
+      flex-direction: column;
+      gap: 20px;
+    }
+    
+    .payment-timer {
+      background: rgba(245, 87, 108, 0.2);
+      border: 2px solid var(--accent-pink);
+      border-radius: 12px;
+      padding: 16px;
+      text-align: center;
+    }
+    
+    .timer-label {
+      font-size: 12px;
+      color: var(--text-secondary);
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    
+    .timer-value {
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--accent-pink);
+      font-family: 'Courier New', monospace;
+    }
+    
+    .payment-qr-container {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 16px;
+      padding: 20px;
+      text-align: center;
+    }
+    
+    .qr-code {
+      width: 200px;
+      height: 200px;
+      margin: 0 auto 16px;
+      background: #fff;
+      border-radius: 12px;
+      padding: 10px;
+    }
+    
+    .payment-address {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 12px;
+      margin-bottom: 12px;
+      word-break: break-all;
+      font-size: 12px;
+      color: var(--accent-cyan);
+      font-weight: 600;
+    }
+    
+    .payment-info-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    
+    .payment-info-item {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+      padding: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .payment-info-label {
+      font-size: 13px;
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+    
+    .payment-info-value {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    
+    .payment-memo {
+      background: rgba(255, 215, 0, 0.1);
+      border: 2px solid var(--accent-gold);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 20px;
+    }
+    
+    .payment-memo-label {
+      font-size: 12px;
+      color: var(--accent-gold);
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    
+    .payment-memo-value {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--accent-gold);
+      text-align: center;
+      letter-spacing: 2px;
+    }
+    
+    .btn-back {
+      width: 100%;
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .btn-back:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+    
+    /* History Lists */
+    .history-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    
+    .history-item {
+      background: var(--card-bg);
+      backdrop-filter: blur(20px);
+      border-radius: 12px;
+      padding: 16px;
+      border: 1px solid var(--card-border);
+    }
+    
+    .history-item-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
       margin-bottom: 12px;
     }
     
-    .btn-milestone {
-      width: 100%;
-      padding: 12px;
+    .history-type {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    
+    .history-status {
+      padding: 4px 10px;
+      border-radius: 10px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    
+    .history-status.pending {
+      background: rgba(255, 193, 7, 0.2);
+      color: #ffc107;
+    }
+    
+    .history-status.approved {
+      background: rgba(0, 255, 136, 0.2);
+      color: var(--accent-green);
+    }
+    
+    .history-status.rejected {
+      background: rgba(245, 87, 108, 0.2);
+      color: var(--accent-pink);
+    }
+    
+    .history-details {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    
+    .history-detail-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+    }
+    
+    .history-detail-label {
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+    
+    .history-detail-value {
+      color: var(--text-primary);
+      font-weight: 700;
+    }
+    
+    /* Milestone Rewards */
+    .milestone-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(20px);
+      border-radius: 20px;
+      padding: 24px;
+      margin-bottom: 16px;
+      border: 1px solid var(--card-border);
+      box-shadow: var(--shadow-md);
+    }
+    
+    .milestone-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 16px;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    
+    .milestone-icon {
+      font-size: 24px;
+    }
+    
+    .milestone-item {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 12px;
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: all 0.3s ease;
+    }
+    
+    .milestone-item.unlocked {
+      border-color: var(--accent-cyan);
+      background: rgba(79, 172, 254, 0.1);
+      box-shadow: 0 0 20px rgba(79, 172, 254, 0.3);
+    }
+    
+    .milestone-item.locked {
+      opacity: 0.6;
+    }
+    
+    .milestone-info {
+      flex: 1;
+    }
+    
+    .milestone-target {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+    
+    .milestone-reward {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--accent-cyan);
+    }
+    
+    .milestone-progress {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: 4px;
+    }
+    
+    .milestone-btn {
+      padding: 10px 20px;
       background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
       border: none;
       border-radius: 10px;
@@ -661,10 +1626,21 @@
       letter-spacing: 0.5px;
     }
     
-    .btn-milestone:disabled {
+    .milestone-btn:disabled {
       background: rgba(255, 255, 255, 0.1);
       color: rgba(255, 255, 255, 0.4);
       cursor: not-allowed;
+    }
+    
+    .milestone-btn.unlocked {
+      background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+      color: #1e3c72;
+      animation: glow 2s ease-in-out infinite;
+    }
+    
+    @keyframes glow {
+      0%, 100% { box-shadow: 0 0 10px rgba(255, 215, 0, 0.5); }
+      50% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.8); }
     }
     
     /* Task Card */
@@ -903,6 +1879,7 @@
       grid-template-columns: 1fr 1fr;
       gap: 12px;
       margin-top: 12px;
+      margin-bottom: 16px;
     }
     
     .referral-stat {
@@ -925,6 +1902,26 @@
       font-size: 20px;
       font-weight: 700;
       color: var(--accent-cyan);
+    }
+    
+    .btn-view-referrals {
+      width: 100%;
+      padding: 12px 24px;
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      border: none;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .btn-view-referrals:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(240, 147, 251, 0.4);
     }
     
     .section-link-card {
@@ -992,6 +1989,135 @@
       color: var(--text-secondary);
       letter-spacing: normal;
       font-weight: 400;
+    }
+    
+    /* Referral List Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.8);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      padding: 20px;
+    }
+    
+    .modal-content {
+      background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+      border-radius: 24px;
+      padding: 24px;
+      max-width: 480px;
+      width: 100%;
+      max-height: 80vh;
+      overflow-y: auto;
+      border: 1px solid var(--card-border);
+      box-shadow: var(--shadow-lg);
+      animation: slideUp 0.3s ease;
+    }
+    
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    
+    .modal-title {
+      font-size: 24px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .modal-close {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      color: var(--text-primary);
+      font-size: 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+    }
+    
+    .modal-close:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+    
+    .referral-list-item {
+      background: var(--card-bg);
+      backdrop-filter: blur(20px);
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 12px;
+      border: 1px solid var(--card-border);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .referral-list-avatar {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      border: 2px solid var(--accent-cyan);
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+    
+    .referral-list-info {
+      flex: 1;
+      min-width: 0;
+    }
+    
+    .referral-list-name {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    
+    .referral-list-id {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-bottom: 4px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    
+    .referral-list-balance {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--accent-cyan);
+    }
+    
+    .referral-commission {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--accent-gold);
+      margin-top: 4px;
+    }
+    
+    .referral-list-empty {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--text-secondary);
+      font-size: 14px;
     }
     
     /* Ranking Section */
@@ -1168,6 +2294,26 @@
     <div class="loading-progress" id="loadingProgress">Connecting to Telegram...</div>
   </div>
   
+  <!-- Referral Welcome Screen -->
+  <div id="referral-welcome">
+    <div class="welcome-card">
+      <div class="welcome-icon">🎉</div>
+      <div class="welcome-title">Welcome!</div>
+      <div class="welcome-message">You've been invited to join Shark Bounty</div>
+      <div class="referrer-info">
+        <div class="referrer-label">Your Referrer</div>
+        <div class="referrer-details">
+          <img id="referrerAvatar" src="" class="referrer-avatar" alt="Referrer" />
+          <div>
+            <div class="referrer-name" id="referrerName">Loading...</div>
+            <div class="referrer-id" id="referrerId">ID: ...</div>
+          </div>
+        </div>
+      </div>
+      <div class="welcome-countdown" id="welcomeCountdown">Starting in 5 seconds...</div>
+    </div>
+  </div>
+  
   <!-- Main App -->
   <div id="app">
     <div id="main-content"></div>
@@ -1175,1264 +2321,95 @@
     <!-- Navigation Bar -->
     <div class="nav-bar">
       <button class="nav-btn active" data-tab="home">
-        <img src="https://github.com/akhterefti-del/Shark/blob/e7c848276e3281e80d912cab430f8f62e9cf679e/homebtn%20(1).png?raw=true" alt="Home" class="nav-icon" />
+        <img src="https://github.com/s42144/mettg/blob/ea86468991e3cb26f300a18ef0d3d49158b5f4af/hme.png?raw=true" alt="Home" class="nav-icon" />
         <span class="nav-label">Home</span>
       </button>
       <button class="nav-btn" data-tab="booster">
-        <img src="https://github.com/akhterefti-del/Shark/blob/823776a5bcbad3401fd886a8f932726c1bd88e9a/boostbt%20(1).png?raw=true" alt="Booster" class="nav-icon" />
+        <img src="https://github.com/s42144/mettg/blob/ea86468991e3cb26f300a18ef0d3d49158b5f4af/bst.png?raw=true" alt="Booster" class="nav-icon" />
         <span class="nav-label">Booster</span>
       </button>
       <button class="nav-btn" data-tab="earn">
-        <img src="https://github.com/akhterefti-del/Shark/blob/e7c848276e3281e80d912cab430f8f62e9cf679e/earnbtn%20(1).png?raw=true" alt="Earn" class="nav-icon" />
+        <img src="https://github.com/s42144/mettg/blob/ea86468991e3cb26f300a18ef0d3d49158b5f4af/ern.png?raw=true" alt="Earn" class="nav-icon" />
         <span class="nav-label">Earn</span>
       </button>
       <button class="nav-btn" data-tab="profile">
-        <img src="https://github.com/akhterefti-del/Shark/blob/b5e62135807688bb67f0d564bcbe383d9c0b5eef/profilebtn%20(1).png?raw=true" alt="Profile" class="nav-icon" />
+        <img src="https://github.com/s42144/mettg/blob/ea86468991e3cb26f300a18ef0d3d49158b5f4af/pfl.png?raw=true" alt="Profile" class="nav-icon" />
         <span class="nav-label">Profile</span>
       </button>
       <button class="nav-btn" data-tab="ranking">
-        <img src="https://github.com/akhterefti-del/Shark/blob/e7c848276e3281e80d912cab430f8f62e9cf679e/rankingbtn%20(1).png?raw=true" alt="Ranking" class="nav-icon" />
+        <img src="https://github.com/s42144/mettg/blob/ea86468991e3cb26f300a18ef0d3d49158b5f4af/rnkng.png?raw=true" alt="Ranking" class="nav-icon" />
         <span class="nav-label">Ranking</span>
       </button>
     </div>
   </div>
   
-  <script>
-    // Telegram WebApp Initialization
-    const tg = window.Telegram.WebApp;
-    tg.expand();
-    tg.ready();
+  <!-- Trading Full Screen -->
+  <div id="trading-screen">
+    <div class="trading-header">
+      <button class="trading-back-btn" id="tradingBackBtn">←</button>
+      <div class="trading-header-title">Crypto Trading</div>
+      <button class="trading-wallet-btn" id="tradingWalletBtn">
+        <img src="https://cdn-icons-png.flaticon.com/512/3135/3135706.png" alt="Wallet" />
+      </button>
+    </div>
     
-    // Firebase Configuration
-    const firebaseConfig = {
-      apiKey: "AIzaSyAHofuS76xf2oGPaJqEtopmcxdoJzjkDL4",
-      authDomain: "zmex-investments.firebaseapp.com",
-      databaseURL: "https://zmex-investments-default-rtdb.asia-southeast1.firebasedatabase.app",
-      projectId: "zmex-investments",
-      storageBucket: "zmex-investments.appspot.com",
-      messagingSenderId: "971623941364",
-      appId: "1:971623941364:web:6c65604fc45c3f64e74aa1",
-      measurementId: "G-KQ1LYP77JF"
-    };
-    
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
-    
-    // Global State
-    let userId = null;
-    let userName = null;
-    let userAvatar = null;
-    let userData = null;
-    let energyTimer = null;
-    let incomeTimer = null;
-    let adStats = { 
-      today: 0, 
-      yesterday: 0, 
-      thisWeek: 0, 
-      thisMonth: 0,
-      lifetime: 0,
-      lastAdDate: null
-    };
-    let booster = {
-      energy: 1200,
-      maxEnergy: 1200,
-      multiTap: 1,
-      incomeBooster: false,
-      multiTapCount: 0,
-      maxEnergyUpCount: 0
-    };
-    let coinsEarned = 0;
-    let adLoading = false;
-    let profileSections = [];
-    let rankingListener = null;
-    let referralCount = 0;
-    let milestones = {
-      m100: false,
-      m200: false,
-      m500: false
-    };
-    
-    // Utility Functions
-    function now() {
-      return Math.floor(Date.now() / 1000);
-    }
-    
-    function getToday() {
-      const d = new Date();
-      return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
-    }
-    
-    function getYesterday() {
-      const d = new Date();
-      d.setDate(d.getDate() - 1);
-      return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
-    }
-    
-    function getWeekStart() {
-      const d = new Date();
-      const day = d.getDay();
-      const diff = d.getDate() - day + (day === 0 ? -6 : 1);
-      d.setDate(diff);
-      return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
-    }
-    
-    function getMonthStart() {
-      const d = new Date();
-      return `${d.getFullYear()}-${d.getMonth() + 1}-1`;
-    }
-    
-    function updateLoadingProgress(text) {
-      const progressEl = document.getElementById('loadingProgress');
-      if (progressEl) {
-        progressEl.textContent = text;
-      }
-    }
-    
-    function notify(message, duration = 2500) {
-      const notification = document.createElement('div');
-      notification.className = 'notification';
-      notification.textContent = message;
-      document.body.appendChild(notification);
-      
-      setTimeout(() => {
-        notification.remove();
-      }, duration);
-    }
-    
-    function getTelegramUserData() {
-      updateLoadingProgress('Getting Telegram user data...');
-      
-      const user = tg.initDataUnsafe?.user;
-      
-      if (user && user.id) {
-        userId = user.id.toString();
-        userName = user.first_name + (user.last_name ? ' ' + user.last_name : '');
-        
-        if (user.photo_url) {
-          userAvatar = user.photo_url;
-        } else {
-          userAvatar = "https://github.com/akhterefti-del/Shark/blob/76091d5ce35c6707100f0269223352d0b5c1a163/Gemini_Generated_Image_ad2lr0ad2lr0ad2l.png?raw=true";
-        }
-        
-        console.log('Telegram User ID:', userId);
-        console.log('Telegram User Name:', userName);
-        return true;
-      }
-      
-      console.warn('Running outside Telegram environment - using test user');
-      userId = 'test_' + Math.floor(10000 + Math.random() * 89999).toString();
-      userName = 'Test User';
-      userAvatar = "https://github.com/akhterefti-del/Shark/blob/76091d5ce35c6707100f0269223352d0b5c1a163/Gemini_Generated_Image_ad2lr0ad2lr0ad2l.png?raw=true";
-      return true;
-    }
-    
-    function processReferral() {
-      updateLoadingProgress('Processing referral...');
-      
-      const startParam = tg.initDataUnsafe?.start_param;
-      console.log('Start Param:', startParam);
-      
-      if (startParam) {
-        let referrerId = null;
-        
-        if (startParam.startsWith('r')) {
-          referrerId = startParam.substring(1);
-        } else {
-          referrerId = startParam;
-        }
-        
-        console.log('Referrer ID:', referrerId);
-        console.log('Current User ID:', userId);
-        
-        if (referrerId && referrerId !== userId) {
-          db.ref('users/' + userId + '/referredBy').once('value').then(snap => {
-            if (!snap.exists()) {
-              console.log('Processing new referral...');
-              
-              db.ref('users/' + referrerId).once('value').then(refSnap => {
-                if (refSnap.exists()) {
-                  console.log('Referrer found in database');
-                  
-                  const referrerData = refSnap.val();
-                  const newBalance = (referrerData.balance || 0) + 5000;
-                  const newReferralCount = (referrerData.referrals || 0) + 1;
-                  
-                  // Update referrer's balance and referral count
-                  db.ref('users/' + referrerId).update({
-                    balance: newBalance,
-                    referrals: newReferralCount,
-                    lastUpdated: now()
-                  }).then(() => {
-                    console.log('Referrer balance updated to:', newBalance);
-                    console.log('Referrer referral count updated to:', newReferralCount);
-                  });
-                  
-                  // Store referrer in new user's data
-                  db.ref('users/' + userId).update({
-                    referredBy: referrerId,
-                    referredAt: now()
-                  }).then(() => {
-                    console.log('Referral link saved for user');
-                    notify('Welcome! Your referrer earned 5000 SHB!', 3000);
-                  });
-                } else {
-                  console.log('Referrer not found in database');
-                }
-              });
-            } else {
-              console.log('User was already referred by:', snap.val());
-            }
-          });
-        }
-      } else {
-        console.log('No referral parameter found');
-      }
-    }
-    
-    function saveLastSeenData() {
-      if (userData) {
-        db.ref('users/' + userId).update({
-          lastSeen: now(),
-          lastBalance: coinsEarned,
-          lastEnergy: booster.energy
-        });
-      }
-    }
-    
-    window.addEventListener('beforeunload', saveLastSeenData);
-    window.addEventListener('unload', saveLastSeenData);
-    
-    setInterval(saveLastSeenData, 30000);
-    
-    function getOfflineTime(snap) {
-      const lastSeen = snap.val() && snap.val().lastSeen;
-      if (!lastSeen) return 0;
-      const timeDiff = now() - lastSeen;
-      return timeDiff > 0 ? timeDiff : 0;
-    }
-    
-    function updateAdStats() {
-      const today = getToday();
-      const yesterday = getYesterday();
-      const weekStart = getWeekStart();
-      const monthStart = getMonthStart();
-      
-      if (adStats.lastAdDate !== today) {
-        if (adStats.lastAdDate === yesterday) {
-          adStats.yesterday = adStats.today;
-        }
-        adStats.today = 0;
-      }
-      
-      adStats.today++;
-      adStats.lifetime++;
-      adStats.lastAdDate = today;
-      
-      // Calculate this week and this month
-      // This is simplified - in production you'd track each day
-      adStats.thisWeek = adStats.today + (adStats.yesterday || 0);
-      adStats.thisMonth = adStats.thisWeek;
-    }
-    
-    // Load User Data
-    function loadUserData() {
-      updateLoadingProgress('Loading your data...');
-      
-      db.ref('users/' + userId).once('value').then(snap => {
-        const offlineTime = getOfflineTime(snap);
-        
-        if (snap.exists()) {
-          userData = snap.val();
-          console.log('Existing user data loaded');
-        } else {
-          userData = {
-            balance: 0,
-            energy: 1200,
-            maxEnergy: 1200,
-            multiTap: 1,
-            incomeBooster: false,
-            multiTapCount: 0,
-            maxEnergyUpCount: 0,
-            ton: "",
-            avatar: userAvatar,
-            name: userName,
-            referrals: 0,
-            eject: 0,
-            completedTasks: {},
-            adStats: { 
-              today: 0, 
-              yesterday: 0, 
-              thisWeek: 0, 
-              thisMonth: 0,
-              lifetime: 0,
-              lastAdDate: null
-            },
-            milestones: {
-              m100: false,
-              m200: false,
-              m500: false
-            },
-            lastSeen: now(),
-            lastBalance: 0,
-            lastEnergy: 1200,
-            createdAt: now()
-          };
-          db.ref('users/' + userId).set(userData);
-          console.log('New user created');
-        }
-        
-        if (userData.name !== userName || userData.avatar !== userAvatar) {
-          db.ref('users/' + userId).update({
-            name: userName,
-            avatar: userAvatar
-          });
-          userData.name = userName;
-          userData.avatar = userAvatar;
-        }
-        
-        let energy = userData.energy || 1200;
-        const maxEnergy = userData.maxEnergy || 1200;
-        const offlineEnergy = Math.min(energy + offlineTime * 0.5, maxEnergy);
-        
-        let balance = userData.balance || 0;
-        const incomeBooster = userData.incomeBooster || false;
-        if (incomeBooster) {
-          const offlineIncome = Math.floor(offlineTime / 10);
-          balance += offlineIncome;
-          if (offlineIncome > 0) {
-            notify(`Earned ${offlineIncome} SHB while offline!`);
-          }
-        }
-        
-        userData.energy = Math.round(offlineEnergy);
-        userData.balance = balance;
-        coinsEarned = balance;
-        booster.energy = userData.energy;
-        booster.maxEnergy = userData.maxEnergy || 1200;
-        booster.multiTap = userData.multiTap || 1;
-        booster.incomeBooster = incomeBooster;
-        booster.multiTapCount = userData.multiTapCount || 0;
-        booster.maxEnergyUpCount = userData.maxEnergyUpCount || 0;
-        adStats = userData.adStats || { 
-          today: 0, 
-          yesterday: 0, 
-          thisWeek: 0, 
-          thisMonth: 0,
-          lifetime: 0,
-          lastAdDate: null
-        };
-        milestones = userData.milestones || {
-          m100: false,
-          m200: false,
-          m500: false
-        };
-        referralCount = userData.referrals || 0;
-        
-        db.ref('users/' + userId).update({
-          energy: userData.energy,
-          balance: balance,
-          lastSeen: now(),
-          lastBalance: balance,
-          lastEnergy: userData.energy
-        });
-        
-        processReferral();
-        
-        updateLoadingProgress('Starting app...');
-        
-        setTimeout(() => {
-          document.getElementById('loading-screen').style.display = 'none';
-          document.getElementById('app').style.display = 'block';
-        }, 1000);
-        
-        showTab('home');
-        setupIncomeBooster();
-      });
-    }
-    
-    function updateUserData(newData) {
-      Object.assign(userData, newData);
-      db.ref('users/' + userId).update(newData);
-      
-      if (newData.balance !== undefined) coinsEarned = newData.balance;
-      if (newData.energy !== undefined) booster.energy = newData.energy;
-      if (newData.maxEnergy !== undefined) booster.maxEnergy = newData.maxEnergy;
-      if (newData.multiTap !== undefined) booster.multiTap = newData.multiTap;
-      if (newData.incomeBooster !== undefined) booster.incomeBooster = newData.incomeBooster;
-      if (newData.multiTapCount !== undefined) booster.multiTapCount = newData.multiTapCount;
-      if (newData.maxEnergyUpCount !== undefined) booster.maxEnergyUpCount = newData.maxEnergyUpCount;
-      if (newData.adStats !== undefined) adStats = newData.adStats;
-      if (newData.milestones !== undefined) milestones = newData.milestones;
-      if (newData.referrals !== undefined) referralCount = newData.referrals;
-    }
-    
-    // Navigation
-    function showTab(tab) {
-      document.querySelectorAll('.nav-btn').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.tab === tab);
-      });
-      
-      if (tab === 'home') renderHome();
-      if (tab === 'booster') renderBooster();
-      if (tab === 'earn') renderEarn();
-      if (tab === 'profile') renderProfile();
-      if (tab === 'ranking') renderRanking();
-    }
-    
-    // Home Section
-    function renderHome() {
-      const profit = booster.incomeBooster ? Math.floor(coinsEarned / 3600) : 0;
-      
-      const html = `
-        <div class="home-main">
-          <div class="balance-card">
-            <div class="balance-label">Your Balance</div>
-            <div class="balance-amount" id="homeBalance">${coinsEarned}</div>
-            <div class="balance-currency">SHB</div>
-          </div>
-          
-          <div class="coin-container">
-            <div class="coin-glow"></div>
-            <img src="https://github.com/akhterefti-del/Shark/blob/eec9a5de183800435c0f781a44b5da5722479f20/sharkcoin.png?raw=true" 
-                 class="coin-image" 
-                 id="coinImage" 
-                 alt="Shark Coin" />
-            <div class="tap-indicator" id="tapIndicator">+1</div>
-          </div>
-          
-          <div class="stats-grid">
-            <div class="stat-card">
-              <div class="stat-label">Energy</div>
-              <div class="stat-value" id="energyValue">${Math.floor(booster.energy)}</div>
-              <div class="stat-desc">/ ${booster.maxEnergy}</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-label">Multi-Tap</div>
-              <div class="stat-value" id="multiTapValue">${booster.multiTap}</div>
-              <div class="stat-desc">fingers</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-label">Profit</div>
-              <div class="stat-value" id="profitValue">${profit}</div>
-              <div class="stat-desc">per hour</div>
-            </div>
-          </div>
+    <div class="trading-balance-bar">
+      <div class="balance-item">
+        <img src="https://cryptologos.cc/logos/tether-usdt-logo.png" class="balance-icon" alt="USDT" />
+        <div class="balance-info">
+          <div class="balance-label-small">USDT</div>
+          <div class="balance-value-small" id="usdtBalance">0.00</div>
         </div>
-      `;
-      
-      document.getElementById('main-content').innerHTML = html;
-      setupCoinTapping();
-      setupEnergyRecovery();
-    }
-    
-    function setupCoinTapping() {
-      const coin = document.getElementById('coinImage');
-      const indicator = document.getElementById('tapIndicator');
-      
-      if (!coin) return;
-      
-      function handleTap(tapCount) {
-        if (booster.energy < tapCount) {
-          notify('Not enough energy!');
-          indicator.textContent = 'Low Energy';
-          indicator.classList.add('show');
-          setTimeout(() => indicator.classList.remove('show'), 500);
-          return;
-        }
-        
-        booster.energy -= tapCount;
-        coinsEarned += tapCount;
-        
-        updateUserData({
-          balance: coinsEarned,
-          energy: booster.energy
-        });
-        
-        indicator.textContent = '+' + tapCount;
-        indicator.classList.add('show');
-        setTimeout(() => indicator.classList.remove('show'), 400);
-        
-        updateEnergyDisplay();
-        document.getElementById('homeBalance').textContent = coinsEarned;
-      }
-      
-      coin.addEventListener('click', (e) => {
-        e.preventDefault();
-        handleTap(booster.multiTap);
-      });
-      
-      coin.addEventListener('touchstart', (e) => {
-        e.preventDefault();
-        const touches = e.touches.length;
-        const tapCount = Math.min(touches, booster.multiTap);
-        handleTap(tapCount);
-      });
-    }
-    
-    function updateEnergyDisplay() {
-      const energyEl = document.getElementById('energyValue');
-      if (energyEl) {
-        energyEl.textContent = Math.floor(booster.energy);
-      }
-    }
-    
-    function updateStatsDisplay() {
-      const multiTapEl = document.getElementById('multiTapValue');
-      const profitEl = document.getElementById('profitValue');
-      
-      if (multiTapEl) multiTapEl.textContent = booster.multiTap;
-      if (profitEl) {
-        const profit = booster.incomeBooster ? Math.floor(coinsEarned / 3600) : 0;
-        profitEl.textContent = profit;
-      }
-    }
-    
-    function setupEnergyRecovery() {
-      if (energyTimer) clearInterval(energyTimer);
-      
-      energyTimer = setInterval(() => {
-        if (booster.energy < booster.maxEnergy) {
-          booster.energy += 0.5;
-          booster.energy = Math.min(booster.energy, booster.maxEnergy);
-          
-          updateUserData({ energy: Math.round(booster.energy) });
-          updateEnergyDisplay();
-        }
-      }, 1000);
-    }
-    
-    function setupIncomeBooster() {
-      if (incomeTimer) clearInterval(incomeTimer);
-      
-      if (booster.incomeBooster) {
-        incomeTimer = setInterval(() => {
-          coinsEarned++;
-          updateUserData({ balance: coinsEarned });
-          
-          const balanceEl = document.getElementById('homeBalance');
-          if (balanceEl) balanceEl.textContent = coinsEarned;
-          
-          updateStatsDisplay();
-        }, 10000);
-      }
-    }
-    
-    // Booster Section
-    function renderBooster() {
-      const maxEnergyDisabled = (booster.maxEnergyUpCount || 0) >= 10;
-      const multiTapDisabled = (booster.multiTapCount || 0) >= 3;
-      const incomeDisabled = booster.incomeBooster;
-      
-      const html = `
-        <div class="booster-main">
-          <div class="section-header">
-            <div class="section-title">Boosters</div>
-            <div class="section-subtitle">Upgrade your earning power</div>
-          </div>
-          
-          <div class="booster-card" style="background-image: url('https://github.com/akhterefti-del/Shark/blob/7799e462d86dda9a2cd8c175f882b9ed36892998/incomebtbt.png?raw=true');">
-            <div class="booster-header">
-              <div class="booster-icon">⚡</div>
-              <div class="booster-info">
-                <div class="booster-title">Max Energy</div>
-                <div class="booster-price">10,000 SHB</div>
-              </div>
-            </div>
-            <div class="booster-desc">
-              Increase your maximum energy capacity by 500 points. More energy means more tapping power!
-            </div>
-            <div class="booster-progress">
-              Remaining: ${10 - (booster.maxEnergyUpCount || 0)} / 10
-            </div>
-            <button class="btn-primary" id="buyEnergy" ${coinsEarned < 10000 || maxEnergyDisabled ? 'disabled' : ''}>
-              ${maxEnergyDisabled ? 'Max Level' : 'Upgrade'}
-            </button>
-          </div>
-          
-          <div class="booster-card" style="background-image: url('https://github.com/akhterefti-del/Shark/blob/7799e462d86dda9a2cd8c175f882b9ed36892998/multitapbt.png?raw=true');">
-            <div class="booster-header">
-              <div class="booster-icon">👆</div>
-              <div class="booster-info">
-                <div class="booster-title">Multi-Tap</div>
-                <div class="booster-price">15,000 SHB</div>
-              </div>
-            </div>
-            <div class="booster-desc">
-              Unlock multi-finger tapping! Each upgrade adds one more finger (up to 4 total).
-            </div>
-            <div class="booster-progress">
-              Current: ${booster.multiTap} fingers | Remaining: ${3 - (booster.multiTapCount || 0)} / 3
-            </div>
-            <button class="btn-primary" id="buyMultiTap" ${coinsEarned < 15000 || multiTapDisabled ? 'disabled' : ''}>
-              ${multiTapDisabled ? 'Max Level' : 'Upgrade'}
-            </button>
-          </div>
-          
-          <div class="booster-card" style="background-image: url('https://github.com/akhterefti-del/Shark/blob/7799e462d86dda9a2cd8c175f882b9ed36892998/incomebt.png?raw=true');">
-            <div class="booster-header">
-              <div class="booster-icon">💲</div>
-              <div class="booster-info">
-                <div class="booster-title">Passive Income</div>
-                <div class="booster-price">100,000 SHB</div>
-              </div>
-            </div>
-            <div class="booster-desc">
-              Earn 1 SHB every 10 seconds automatically, even when offline! One-time purchase.
-            </div>
-            <div class="booster-progress">
-              ${incomeDisabled ? 'Active' : 'Not Purchased'}
-            </div>
-            <button class="btn-primary" id="buyIncome" ${coinsEarned < 100000 || incomeDisabled ? 'disabled' : ''}>
-              ${incomeDisabled ? 'Activated' : 'Purchase'}
-            </button>
-          </div>
+      </div>
+      <div class="balance-item">
+        <img src="https://cryptologos.cc/logos/toncoin-ton-logo.png" class="balance-icon" alt="TON" />
+        <div class="balance-info">
+          <div class="balance-label-small">TON</div>
+          <div class="balance-value-small" id="tonBalance">0.00</div>
         </div>
-      `;
-      
-      document.getElementById('main-content').innerHTML = html;
-      
-      document.getElementById('buyEnergy').addEventListener('click', () => {
-        if (coinsEarned < 10000 || maxEnergyDisabled) {
-          notify('Cannot purchase this upgrade!');
-          return;
-        }
-        
-        coinsEarned -= 10000;
-        booster.maxEnergy += 500;
-        booster.energy = booster.maxEnergy;
-        booster.maxEnergyUpCount = (booster.maxEnergyUpCount || 0) + 1;
-        
-        updateUserData({
-          balance: coinsEarned,
-          maxEnergy: booster.maxEnergy,
-          energy: booster.maxEnergy,
-          maxEnergyUpCount: booster.maxEnergyUpCount
-        });
-        
-        notify('Max energy increased by 500!');
-        renderBooster();
-      });
-      
-      document.getElementById('buyMultiTap').addEventListener('click', () => {
-        if (coinsEarned < 15000 || multiTapDisabled) {
-          notify('Cannot purchase this upgrade!');
-          return;
-        }
-        
-        coinsEarned -= 15000;
-        const nextTap = booster.multiTap === 1 ? 2 : (booster.multiTap === 2 ? 3 : 4);
-        booster.multiTap = nextTap;
-        booster.multiTapCount = (booster.multiTapCount || 0) + 1;
-        
-        updateUserData({
-          balance: coinsEarned,
-          multiTap: nextTap,
-          multiTapCount: booster.multiTapCount
-        });
-        
-        notify(`Multi-tap upgraded to ${nextTap} fingers!`);
-        renderBooster();
-        updateStatsDisplay();
-      });
-      
-      document.getElementById('buyIncome').addEventListener('click', () => {
-        if (coinsEarned < 100000 || incomeDisabled) {
-          notify('Cannot purchase this upgrade!');
-          return;
-        }
-        
-        coinsEarned -= 100000;
-        booster.incomeBooster = true;
-        
-        updateUserData({
-          balance: coinsEarned,
-          incomeBooster: true
-        });
-        
-        notify('Passive income activated!');
-        setupIncomeBooster();
-        renderBooster();
-        updateStatsDisplay();
-      });
-    }
+      </div>
+    </div>
     
-    // Earn Section
-    function renderEarn() {
-      const lifetimeAds = adStats.lifetime || 0;
-      const progress100 = Math.min((lifetimeAds / 100) * 100, 100);
-      const progress200 = Math.min((lifetimeAds / 200) * 100, 100);
-      const progress500 = Math.min((lifetimeAds / 500) * 100, 100);
-      
-      const html = `
-        <div class="earn-main">
-          <div class="section-header">
-            <div class="section-title">Earn More</div>
-            <div class="section-subtitle">Complete tasks and watch ads</div>
-          </div>
-          
-          <div class="chart-card">
-            <div class="chart-title">Ad Statistics</div>
-            <canvas id="adChart" width="400" height="200"></canvas>
-          </div>
-          
-          <div class="stats-row">
-            <div class="stat-box">
-              <div class="stat-box-label">Today</div>
-              <div class="stat-box-value">${adStats.today || 0}</div>
-            </div>
-            <div class="stat-box">
-              <div class="stat-box-label">Yesterday</div>
-              <div class="stat-box-value">${adStats.yesterday || 0}</div>
-            </div>
-            <div class="stat-box">
-              <div class="stat-box-label">This Week</div>
-              <div class="stat-box-value">${adStats.thisWeek || 0}</div>
-            </div>
-            <div class="stat-box">
-              <div class="stat-box-label">This Month</div>
-              <div class="stat-box-value">${adStats.thisMonth || 0}</div>
-            </div>
-          </div>
-          
-          <div class="ad-card">
-            <div class="ad-title">Watch Advertisement</div>
-            <div class="ad-reward">Earn 500 SHB per ad</div>
-            <button class="btn-primary" id="showAdBtn">
-              ${adLoading ? 'Loading...' : 'Watch Ad'}
-            </button>
-          </div>
-          
-          <div class="section-header" style="padding-top: 10px;">
-            <div class="section-title" style="font-size: 22px;">Ad Milestones</div>
-            <div class="section-subtitle">Watch ads to unlock bonus rewards</div>
-          </div>
-          
-          <div class="milestone-card ${milestones.m100 ? 'claimed' : ''}">
-            <div class="milestone-header">
-              <div class="milestone-icon">🎯</div>
-              <div class="milestone-reward">+5,000 SHB</div>
-            </div>
-            <div class="milestone-info">
-              <div class="milestone-title">Bronze Milestone</div>
-              <div class="milestone-desc">Watch 100 ads to claim this reward</div>
-            </div>
-            <div class="milestone-progress">
-              <div class="milestone-progress-bar" style="width: ${progress100}%"></div>
-            </div>
-            <div class="milestone-progress-text">${lifetimeAds} / 100 ads watched</div>
-            <button class="btn-milestone" id="claim100" ${lifetimeAds < 100 || milestones.m100 ? 'disabled' : ''}>
-              ${milestones.m100 ? 'Claimed' : lifetimeAds >= 100 ? 'Claim Reward' : 'Locked'}
-            </button>
-          </div>
-          
-          <div class="milestone-card ${milestones.m200 ? 'claimed' : ''}">
-            <div class="milestone-header">
-              <div class="milestone-icon">🏆</div>
-              <div class="milestone-reward">+10,000 SHB</div>
-            </div>
-            <div class="milestone-info">
-              <div class="milestone-title">Silver Milestone</div>
-              <div class="milestone-desc">Watch 200 ads to claim this reward</div>
-            </div>
-            <div class="milestone-progress">
-              <div class="milestone-progress-bar" style="width: ${progress200}%"></div>
-            </div>
-            <div class="milestone-progress-text">${lifetimeAds} / 200 ads watched</div>
-            <button class="btn-milestone" id="claim200" ${lifetimeAds < 200 || milestones.m200 ? 'disabled' : ''}>
-              ${milestones.m200 ? 'Claimed' : lifetimeAds >= 200 ? 'Claim Reward' : 'Locked'}
-            </button>
-          </div>
-          
-          <div class="milestone-card ${milestones.m500 ? 'claimed' : ''}">
-            <div class="milestone-header">
-              <div class="milestone-icon">👑</div>
-              <div class="milestone-reward">+20,000 SHB</div>
-            </div>
-            <div class="milestone-info">
-              <div class="milestone-title">Gold Milestone</div>
-              <div class="milestone-desc">Watch 500 ads to claim this reward</div>
-            </div>
-            <div class="milestone-progress">
-              <div class="milestone-progress-bar" style="width: ${progress500}%"></div>
-            </div>
-            <div class="milestone-progress-text">${lifetimeAds} / 500 ads watched</div>
-            <button class="btn-milestone" id="claim500" ${lifetimeAds < 500 || milestones.m500 ? 'disabled' : ''}>
-              ${milestones.m500 ? 'Claimed' : lifetimeAds >= 500 ? 'Claim Reward' : 'Locked'}
-            </button>
-          </div>
-          
-          <div id="tasksList"></div>
-        </div>
-      `;
-      
-      document.getElementById('main-content').innerHTML = html;
-      
-      document.getElementById('showAdBtn').addEventListener('click', () => {
-        if (adLoading) return;
-        
-        adLoading = true;
-        document.getElementById('showAdBtn').textContent = 'Loading...';
-        
-        if (typeof show_9970324 === 'function') {
-          show_9970324().then(() => {
-            adLoading = false;
-            document.getElementById('showAdBtn').textContent = 'Watch Ad';
-            
-            coinsEarned += 500;
-            updateAdStats();
-            
-            updateUserData({
-              balance: coinsEarned,
-              adStats: adStats
-            });
-            
-            notify('Earned 500 SHB for watching ad!');
-            renderEarn();
-          }).catch(() => {
-            adLoading = false;
-            document.getElementById('showAdBtn').textContent = 'Watch Ad';
-            notify('Ad failed to load. Please try again.');
-          });
-        } else {
-          adLoading = false;
-          document.getElementById('showAdBtn').textContent = 'Watch Ad';
-          notify('Ad service not available.');
-        }
-      });
-      
-      // Milestone claim buttons
-      if (document.getElementById('claim100')) {
-        document.getElementById('claim100').addEventListener('click', () => {
-          if (lifetimeAds >= 100 && !milestones.m100) {
-            coinsEarned += 5000;
-            milestones.m100 = true;
-            updateUserData({
-              balance: coinsEarned,
-              milestones: milestones
-            });
-            notify('Claimed 5,000 SHB! 🎉');
-            renderEarn();
-          }
-        });
-      }
-      
-      if (document.getElementById('claim200')) {
-        document.getElementById('claim200').addEventListener('click', () => {
-          if (lifetimeAds >= 200 && !milestones.m200) {
-            coinsEarned += 10000;
-            milestones.m200 = true;
-            updateUserData({
-              balance: coinsEarned,
-              milestones: milestones
-            });
-            notify('Claimed 10,000 SHB! 🏆');
-            renderEarn();
-          }
-        });
-      }
-      
-      if (document.getElementById('claim500')) {
-        document.getElementById('claim500').addEventListener('click', () => {
-          if (lifetimeAds >= 500 && !milestones.m500) {
-            coinsEarned += 20000;
-            milestones.m500 = true;
-            updateUserData({
-              balance: coinsEarned,
-              milestones: milestones
-            });
-            notify('Claimed 20,000 SHB! 👑');
-            renderEarn();
-          }
-        });
-      }
-      
-      loadTasks();
-      
-      setTimeout(() => {
-        const ctx = document.getElementById('adChart').getContext('2d');
-        new Chart(ctx, {
-          type: 'bar',
-          data: {
-            labels: ['Today', 'Yesterday', 'This Week', 'This Month'],
-            datasets: [{
-              label: 'Ads Watched',
-              data: [
-                adStats.today || 0,
-                adStats.yesterday || 0,
-                adStats.thisWeek || 0,
-                adStats.thisMonth || 0
-              ],
-              backgroundColor: [
-                'rgba(79, 172, 254, 0.8)',
-                'rgba(102, 126, 234, 0.8)',
-                'rgba(118, 75, 162, 0.8)',
-                'rgba(245, 87, 108, 0.8)'
-              ],
-              borderColor: [
-                'rgba(79, 172, 254, 1)',
-                'rgba(102, 126, 234, 1)',
-                'rgba(118, 75, 162, 1)',
-                'rgba(245, 87, 108, 1)'
-              ],
-              borderWidth: 2,
-              borderRadius: 8
-            }]
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: true,
-            plugins: {
-              legend: {
-                display: false
-              }
-            },
-            scales: {
-              y: {
-                beginAtZero: true,
-                ticks: {
-                  color: 'rgba(255, 255, 255, 0.7)'
-                },
-                grid: {
-                  color: 'rgba(255, 255, 255, 0.1)'
-                }
-              },
-              x: {
-                ticks: {
-                  color: 'rgba(255, 255, 255, 0.7)'
-                },
-                grid: {
-                  display: false
-                }
-              }
-            }
-          }
-        });
-      }, 100);
-    }
+    <div class="trading-tabs">
+      <button class="trading-tab active" data-trading-tab="plans">Trading Plans</button>
+      <button class="trading-tab" data-trading-tab="mytrades">My Trades</button>
+    </div>
     
-    function loadTasks() {
-      db.ref('tasks').once('value').then(snap => {
-        const tasks = snap.val() || {};
-        let html = '';
-        
-        Object.keys(tasks).forEach(taskId => {
-          const task = tasks[taskId];
-          const completed = userData.completedTasks && userData.completedTasks[taskId];
-          
-          html += `
-            <div class="task-card">
-              <img src="${task.photo}" class="task-image" alt="${task.name}" />
-              <div class="task-info">
-                <div class="task-name">${task.name}</div>
-                <div class="task-reward">+${task.amount} SHB</div>
-              </div>
-              <button class="task-btn ${completed ? 'completed' : ''}" data-task-id="${taskId}">
-                ${completed ? 'Done' : 'Start'}
-              </button>
-            </div>
-          `;
-        });
-        
-        document.getElementById('tasksList').innerHTML = html;
-        
-        document.querySelectorAll('.task-btn').forEach(btn => {
-          btn.addEventListener('click', function() {
-            const taskId = this.dataset.taskId;
-            const task = tasks[taskId];
-            
-            if (userData.completedTasks && userData.completedTasks[taskId]) {
-              window.open(task.link, '_blank');
-              return;
-            }
-            
-            coinsEarned += parseInt(task.amount);
-            
-            if (!userData.completedTasks) userData.completedTasks = {};
-            userData.completedTasks[taskId] = true;
-            
-            updateUserData({
-              balance: coinsEarned,
-              completedTasks: userData.completedTasks
-            });
-            
-            notify(`Earned ${task.amount} SHB!`);
-            window.open(task.link, '_blank');
-            renderEarn();
-          });
-        });
-      });
-    }
-    
-    // Profile Section
-    function renderProfile() {
-      loadProfileSections().then(() => {
-        db.ref('users')
-          .orderByChild('referredBy')
-          .equalTo(userId)
-          .once('value')
-          .then(refSnap => {
-            const actualReferralCount = refSnap.numChildren();
-            
-            if (actualReferralCount !== referralCount) {
-              referralCount = actualReferralCount;
-              updateUserData({ referrals: actualReferralCount });
-            }
-            
-            let sectionsHTML = '';
-            profileSections.forEach(section => {
-              sectionsHTML += `
-                <div class="section-link-card" onclick="window.open('${section.link}', '_blank')">
-                  <img src="${section.image}" class="section-link-image" alt="${section.name}" />
-                  <div class="section-link-title">${section.name}</div>
-                </div>
-              `;
-            });
-            
-            const html = `
-              <div class="profile-main">
-                <div class="profile-header">
-                  <div class="avatar-container">
-                    <div class="avatar-glow"></div>
-                    <img src="${userData.avatar}" class="avatar-image" alt="Avatar" />
-                  </div>
-                  <div class="user-info-box">
-                    <div class="user-name">${userData.name}</div>
-                    <div class="user-id-row">
-                      <span class="user-id-label">ID:</span>
-                      <span class="user-id-value">${userId}</span>
-                      <img src="https://github.com/akhterefti-del/Shark/blob/414f316d45b382764893e66646e983d101310c2e/Gemini_Generated_Image_c5nuk1c5nuk1c5nu.png?raw=true" 
-                           class="copy-icon" 
-                           id="copyUserId" 
-                           alt="Copy" />
-                    </div>
-                  </div>
-                </div>
-                
-                <div class="profile-card">
-                  <div class="card-title">TON Wallet</div>
-                  <div class="wallet-input-group">
-                    <input type="text" 
-                           class="input-field" 
-                           id="tonWallet" 
-                           placeholder="Enter your TON wallet address" 
-                           value="${userData.ton || ''}" />
-                    <button class="btn-secondary" id="saveTonWallet">Save</button>
-                  </div>
-                </div>
-                
-                <div class="profile-card">
-                  <div class="card-title">Referral Program</div>
-                  <div class="referral-link-box">
-                    <span class="referral-link" id="referralLink">https://t.me/SharkBountybot?start=r${userId}</span>
-                    <img src="https://github.com/akhterefti-del/Shark/blob/414f316d45b382764893e66646e983d101310c2e/Gemini_Generated_Image_c5nuk1c5nuk1c5nu.png?raw=true" 
-                         class="copy-icon" 
-                         id="copyReferralLink" 
-                         alt="Copy" />
-                  </div>
-                  <div class="referral-stats">
-                    <div class="referral-stat">
-                      <div class="referral-stat-label">Total Referrals</div>
-                      <div class="referral-stat-value">${actualReferralCount}</div>
-                    </div>
-                    <div class="referral-stat">
-                      <div class="referral-stat-label">Earnings</div>
-                      <div class="referral-stat-value">${actualReferralCount * 5000}</div>
-                    </div>
-                  </div>
-                </div>
-                
-                ${sectionsHTML}
-                
-                <div class="profile-card">
-                  <div class="card-title">Redeem Code</div>
-                  <div class="redeem-form-group">
-                    <input type="text" 
-                           class="redeem-input" 
-                           id="redeemCode" 
-                           placeholder="Enter 4-digit code" 
-                           maxlength="4" />
-                    <button class="btn-secondary" id="redeemBtn">Redeem</button>
-                  </div>
-                </div>
-              </div>
-            `;
-            
-            document.getElementById('main-content').innerHTML = html;
-            
-            document.getElementById('copyUserId').addEventListener('click', () => {
-              navigator.clipboard.writeText(userId).then(() => {
-                notify('User ID copied to clipboard!');
-              });
-            });
-            
-            document.getElementById('saveTonWallet').addEventListener('click', () => {
-              const wallet = document.getElementById('tonWallet').value.trim();
-              if (wallet.length < 10) {
-                notify('Please enter a valid TON wallet address!');
-                return;
-              }
-              
-              updateUserData({ ton: wallet });
-              
-              db.ref('admin/tonSubmissions').push({
-                userId: userId,
-                userName: userName,
-                walletAddress: wallet,
-                timestamp: now(),
-                balance: coinsEarned
-              });
-              
-              notify('TON wallet saved successfully!');
-            });
-            
-            document.getElementById('copyReferralLink').addEventListener('click', () => {
-              const link = document.getElementById('referralLink').textContent;
-              navigator.clipboard.writeText(link).then(() => {
-                notify('Referral link copied to clipboard!');
-              });
-            });
-            
-            document.getElementById('redeemBtn').addEventListener('click', () => {
-              const code = document.getElementById('redeemCode').value.trim();
-              if (code.length !== 4) {
-                notify('Please enter a valid 4-digit code!');
-                return;
-              }
-              
-              db.ref('redeemCodes/' + code).once('value').then(snap => {
-                if (snap.exists()) {
-                  const amount = Math.floor(Math.random() * (10000 - 500 + 1)) + 500;
-                  coinsEarned += amount;
-                  
-                  updateUserData({ balance: coinsEarned });
-                  db.ref('redeemCodes/' + code).remove();
-                  
-                  notify(`Redeemed ${amount} SHB successfully!`);
-                  document.getElementById('redeemCode').value = '';
-                } else {
-                  notify('Invalid or already used code!');
-                }
-              });
-            });
-          });
-      });
-    }
-    
-    function loadProfileSections() {
-      return db.ref('profileSections').once('value').then(snap => {
-        const sections = snap.val() || {};
-        profileSections = [];
-        
-        Object.keys(sections).forEach(sectionId => {
-          profileSections.push({
-            id: sectionId,
-            name: sections[sectionId].name,
-            image: sections[sectionId].image,
-            link: sections[sectionId].link
-          });
-        });
-      });
-    }
-    
-    // Ranking Section
-    function renderRanking() {
-      const html = `
-        <div class="ranking-main">
-          <div class="section-header">
-            <div class="section-title">Leaderboard</div>
-            <div class="section-subtitle">Top 200 players</div>
-          </div>
-          
-          <div class="ranking-position">
-            <div class="ranking-position-label">Your Position</div>
-            <div class="ranking-position-value" id="myPosition">Loading...</div>
-          </div>
-          
-          <div id="rankingList"></div>
-        </div>
-      `;
+    <div class="trading-content" id="tradingContent"></div>
+  </div>
+  
+  <!-- Wallet Modal -->
+  <div id="wallet-modal">
+    <div class="wallet-modal-content">
+      <div class="wallet-modal-header">
+        <div class="wallet-modal-title">Wallet</div>
+        <button class="wallet-modal-close" id="closeWalletModal">×</button>
+      </div>
       
-      document.getElementById('main-content').innerHTML = html;
+      <div class="wallet-sections">
+        <button class="wallet-section-btn active" data-wallet-section="deposit">Deposit</button>
+        <button class="wallet-section-btn" data-wallet-section="withdraw">Withdraw</button>
+        <button class="wallet-section-btn" data-wallet-section="deposit-history">Deposit History</button>
+        <button class="wallet-section-btn" data-wallet-section="withdraw-history">Withdraw History</button>
+        <button class="wallet-section-btn" data-wallet-section="trade-history">Trade History</button>
+        <button class="wallet-section-btn" data-wallet-section="activities">Activities</button>
+      </div>
       
-      if (rankingListener) rankingListener.off();
-      
-      const usersRef = db.ref('users');
-      
-      function updateRankingList(snap) {
-        const users = [];
-        
-        snap.forEach(child => {
-          const userData = child.val();
-          users.push({
-            id: child.key,
-            name: userData.name || 'Unknown',
-            avatar: userData.avatar || 'https://github.com/akhterefti-del/Shark/blob/76091d5ce35c6707100f0269223352d0b5c1a163/Gemini_Generated_Image_ad2lr0ad2lr0ad2l.png?raw=true',
-            balance: userData.balance || 0
-          });
-        });
-        
-        users.sort((a, b) => b.balance - a.balance);
-        
-        const myPosition = users.findIndex(u => u.id === userId) + 1;
-        const top200 = users.slice(0, 200);
-        
-        let html = '';
-        top200.forEach((user, index) => {
-          const position = index + 1;
-          const isTop3 = position <= 3;
-          
-          html += `
-            <div class="ranking-row">
-              <div class="ranking-position-num ${isTop3 ? 'top3' : ''}">${position}</div>
-              <img src="${user.avatar}" class="ranking-avatar" alt="${user.name}" />
-              <div class="ranking-user-info">
-                <div class="ranking-user-name">${user.name}</div>
-                <div class="ranking-user-id">ID: ${user.id}</div>
-              </div>
-              <div class="ranking-balance">${user.balance} SHB</div>
-            </div>
-          `;
-        });
-        
-        document.getElementById('rankingList').innerHTML = html;
-        document.getElementById('myPosition').textContent = myPosition > 0 ? `#${myPosition}` : 'Unranked';
-      }
-      
-      usersRef.on('value', updateRankingList);
-      rankingListener = usersRef;
-    }
-    
-    // Navigation Setup
-    document.querySelectorAll('.nav-btn').forEach(btn => {
-      btn.addEventListener('click', function() {
-        showTab(this.dataset.tab);
-      });
-    });
-    
-    // Initialize default profile sections if not exist
-    db.ref('profileSections').once('value').then(snap => {
-      if (!snap.exists()) {
-        db.ref('profileSections').set({
-          roadmap: {
-            name: 'Roadmap',
-            image: 'https://github.com/akhterefti-del/Shark/blob/7e14b838bb95a2bb6ab2cc81008d2b69cfbe2d0b/readmap.png?raw=true',
-            link: 'https://example.com/roadmap'
-          },
-          presale: {
-            name: 'Presale',
-            image: 'https://github.com/akhterefti-del/Shark/blob/7e14b838bb95a2bb6ab2cc81008d2b69cfbe2d0b/presale.png?raw=true',
-            link: 'https://example.com/presale'
-          }
-        });
-      }
-    });
-    
-    // Initialize App
-    if (getTelegramUserData()) {
-      loadUserData();
-    } else {
-      notify('Failed to initialize Telegram user data');
-    }
-  </script>
+      <div class="wallet-modal-body" id="walletModalBody"></div>
+    </div>
+  </div>
+  
+  <!-- Referral List Modal -->
+  <div class="modal-overlay" id="referralModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title">My Referrals</div>
+        <button class="modal-close" id="closeReferralModal">×</button>
+      </div>
+      <div id="referralListContent"></div>
+    </div>
+  </div>
+  
+  <script src="app.js"></script>
 </body>
 </html>
