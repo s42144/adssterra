@@ -906,24 +906,15 @@
       return '$' + parseFloat(amount).toFixed(2);
     }
     
-    // Authentication
+    // Authentication - Direct access without password
     document.getElementById('loginForm').addEventListener('submit', (e) => {
       e.preventDefault();
       
-      const email = document.getElementById('adminEmail').value;
-      const password = document.getElementById('adminPassword').value;
-      
-      auth.signInWithEmailAndPassword(email, password)
-        .then((userCredential) => {
-          currentUser = userCredential.user;
-          document.getElementById('login-screen').style.display = 'none';
-          document.getElementById('admin-dashboard').style.display = 'block';
-          notify('Login successful!');
-          loadDashboardData();
-        })
-        .catch((error) => {
-          notify('Login failed: ' + error.message);
-        });
+      // Direct access - no authentication required
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('admin-dashboard').style.display = 'block';
+      notify('Admin access granted!');
+      loadDashboardData();
     });
     
     document.getElementById('logoutBtn').addEventListener('click', () => {
