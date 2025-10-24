@@ -4,7 +4,346 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no,maximum-scale=1" />
   <title>Exotix Trade Admin Panel</title>
-  <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/825/825454.png" />
+  <link rel="icon" href="https://cryptologos.cc/logos/tether-usdt-logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    :root{
+      --primary-gradient: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+      --secondary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --success-gradient: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+      --warning-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      --danger-gradient: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%);
+      --dark-bg: linear-gradient(135deg, #0c0c0c 0%, #1a1a1a 50%, #2d2d2d 100%);
+      --card-bg: rgba(255,255,255,0.05);
+      --card-border: rgba(255,255,255,0.1);
+      --text-primary: #ffffff; 
+      --text-secondary: #a0a0a0;
+      --accent-blue: #3b82f6;
+      --accent-green: #10b981;
+      --accent-yellow: #f59e0b;
+      --accent-red: #ef4444;
+      --shadow-md: 0 4px 16px rgba(0,0,0,0.3); 
+      --shadow-lg: 0 8px 32px rgba(0,0,0,0.4);
+    }
+    html,body{width:100%;height:100%;font-family:'Inter',system-ui,Segoe UI,sans-serif;background:var(--dark-bg);color:var(--text-primary);overflow-x:hidden}
+    #app{display:block;min-height:100vh;padding-bottom:80px;background:var(--dark-bg);background-attachment:fixed}
+    #main-content{width:100%;max-width:1200px;margin:0 auto;padding:0 16px}
+
+    .admin-header{background:var(--card-bg);backdrop-filter:blur(20px);border-radius:16px;padding:16px;border:1px solid var(--card-border);box-shadow:var(--shadow-md);margin-bottom:20px;text-align:center}
+    .admin-title{font-size:28px;font-weight:800;background:var(--success-gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .admin-subtitle{font-size:14px;color:var(--text-secondary);margin-top:8px}
+
+    .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:20px}
+    .stat-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:16px;padding:20px;text-align:center}
+    .stat-icon{width:48px;height:48px;border-radius:12px;background:var(--primary-gradient);display:flex;align-items:center;justify-content:center;margin:0 auto 12px}
+    .stat-icon img{width:24px;height:24px}
+    .stat-label{font-size:12px;color:var(--text-secondary);font-weight:700;text-transform:uppercase;margin-bottom:8px}
+    .stat-value{font-size:24px;font-weight:800;color:var(--accent-green)}
+
+    .card{background:var(--card-bg);backdrop-filter:blur(20px);border-radius:16px;padding:20px;border:1px solid var(--card-border);box-shadow:var(--shadow-md);margin-bottom:20px}
+    .card-title{font-size:18px;font-weight:800;margin-bottom:16px;color:var(--accent-blue)}
+
+    .btn-primary,.btn-success,.btn-danger,.btn-warning{padding:10px 16px;border:none;border-radius:8px;font-size:14px;font-weight:700;color:#fff;cursor:pointer;transition:.2s;margin:4px}
+    .btn-primary{background:var(--primary-gradient)}
+    .btn-success{background:var(--success-gradient)}
+    .btn-danger{background:var(--danger-gradient)}
+    .btn-warning{background:var(--warning-gradient)}
+
+    .form-group{margin-bottom:16px}
+    .form-label{font-size:12px;color:var(--text-secondary);font-weight:700;margin-bottom:6px;display:block}
+    .form-input{width:100%;padding:10px;border-radius:8px;border:1px solid var(--card-border);background:rgba(255,255,255,.06);color:#fff;outline:none}
+    .form-select{width:100%;padding:10px;border-radius:8px;border:1px solid var(--card-border);background:rgba(255,255,255,.06);color:#fff;outline:none}
+
+    .table{width:100%;border-collapse:collapse;margin-top:16px}
+    .table th,.table td{padding:12px;text-align:left;border-bottom:1px solid var(--card-border)}
+    .table th{background:rgba(255,255,255,.05);font-weight:700;font-size:12px;text-transform:uppercase;color:var(--text-secondary)}
+    .table td{font-size:14px}
+
+    .status-badge{padding:4px 8px;border-radius:6px;font-size:11px;font-weight:700;text-transform:uppercase}
+    .status-pending{background:rgba(245,158,11,.2);color:#f59e0b}
+    .status-approved{background:rgba(16,185,129,.2);color:#10b981}
+    .status-rejected{background:rgba(239,68,68,.2);color:#ef4444}
+
+    .search-box{width:100%;padding:12px;border-radius:8px;border:1px solid var(--card-border);background:rgba(255,255,255,.06);color:#fff;outline:none;margin-bottom:16px}
+
+    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+    .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+
+    .notification{position:fixed;top:16px;right:16px;background:var(--success-gradient);color:#fff;padding:12px 20px;border-radius:12px;font-size:13px;font-weight:800;box-shadow:0 8px 24px rgba(0,0,0,.3);z-index:10000}
+
+    .nav-bar{position:fixed;bottom:0;left:0;width:100%;background:rgba(12,12,12,.95);backdrop-filter:blur(20px);border-top:1px solid var(--card-border);display:flex;justify-content:space-around;padding:10px 0 8px;z-index:1000;box-shadow:0 -4px 16px rgba(0,0,0,.2)}
+    .nav-btn{flex:1;background:none;border:none;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;transition:.2s;padding:8px;border-radius:12px}
+    .nav-icon{width:30px;height:30px;border-radius:10px;filter:grayscale(100%) brightness(.7)}
+    .nav-label{font-size:11px;font-weight:700;color:var(--text-secondary)}
+    .nav-btn.active .nav-icon{filter:grayscale(0%) brightness(1);box-shadow:0 4px 12px rgba(59,130,246,.4)}
+    .nav-btn.active .nav-label{color:var(--accent-blue)}
+
+    @media(max-width:768px){
+      .grid-2,.grid-3{grid-template-columns:1fr}
+      .stats-grid{grid-template-columns:repeat(2,1fr)}
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div class="admin-header">
+      <div class="admin-title">Exotix Trade Admin Panel</div>
+      <div class="admin-subtitle">Professional Trading Platform Management</div>
+    </div>
+    <div id="main-content"></div>
+
+    <div class="nav-bar">
+      <button class="nav-btn active" data-tab="dashboard">
+        <img src="https://img.icons8.com/fluency/48/combo-chart.png" alt="Dashboard" class="nav-icon" />
+        <span class="nav-label">Dashboard</span>
+      </button>
+      <button class="nav-btn" data-tab="users">
+        <img src="https://img.icons8.com/fluency/48/user-groups.png" alt="Users" class="nav-icon" />
+        <span class="nav-label">Users</span>
+      </button>
+      <button class="nav-btn" data-tab="deposits">
+        <img src="https://img.icons8.com/fluency/48/money-bag.png" alt="Deposits" class="nav-icon" />
+        <span class="nav-label">Deposits</span>
+      </button>
+      <button class="nav-btn" data-tab="withdrawals">
+        <img src="https://img.icons8.com/fluency/48/money-transfer.png" alt="Withdrawals" class="nav-icon" />
+        <span class="nav-label">Withdrawals</span>
+      </button>
+      <button class="nav-btn" data-tab="tasks">
+        <img src="https://img.icons8.com/fluency/48/checklist.png" alt="Tasks" class="nav-icon" />
+        <span class="nav-label">Tasks</span>
+      </button>
+      <button class="nav-btn" data-tab="settings">
+        <img src="https://img.icons8.com/fluency/48/settings.png" alt="Settings" class="nav-icon" />
+        <span class="nav-label">Settings</span>
+      </button>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+    import { getDatabase, ref, get, set, update, onValue, off, push, remove } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBfR97veh6idxb81mH6N5_Gq8-CpW2D7bE",
+      authDomain: "jbhigfi.firebaseapp.com",
+      databaseURL: "https://jbhigfi-default-rtdb.firebaseio.com",
+      projectId: "jbhigfi",
+      storageBucket: "jbhigfi.firebasestorage.app",
+      messagingSenderId: "736760492095",
+      appId: "1:736760492095:web:47b94412495e21c561c88a",
+      measurementId: "G-ZZMHC9RTVT"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const rtdb = getDatabase(app);
+
+    const BOT_TOKEN = '8332448822:AAHKhDvougBhBThL6aBl3hGjZbKFGAq7BUs';
+    const sendBot = async (msg, userId) => {
+      try {
+        await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ chat_id: userId, text: msg, parse_mode: 'HTML' }) });
+      } catch (e) { /* noop */ }
+    };
+
+    let adminData = { totalUsers: 0, totalDeposits: 0, totalWithdrawals: 0, activeUsers: 0, totalAds: 0, totalTasks: 0 };
+    let depositsUnsub = null; let withdrawalsUnsub = null;
+
+    const notify = (m, d=3000) => { const n=document.createElement('div'); n.className='notification'; n.textContent=m; document.body.appendChild(n); setTimeout(()=>n.remove(), d); };
+    const toCsv = (rows) => { const esc=v=> '"'+String(v??'').replace(/"/g,'""')+'"'; const headers=Object.keys(rows[0]||{}); const lines=[headers.join(',')].concat(rows.map(r=>headers.map(h=>esc(r[h])).join(','))); return lines.join('\n'); };
+    const download = (filename, text) => { const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([text],{type:'text/csv;charset=utf-8;'})); a.download=filename; a.click(); };
+
+    function showTab(tab){
+      document.querySelectorAll('.nav-btn').forEach(b=>b.classList.toggle('active', b.dataset.tab===tab));
+      if(tab==='dashboard') renderDashboard();
+      if(tab==='users') renderUsers();
+      if(tab==='deposits') renderDeposits();
+      if(tab==='withdrawals') renderWithdrawals();
+      if(tab==='tasks') renderTasks();
+      if(tab==='settings') renderSettings();
+    }
+
+    function renderDashboard(){
+      const html = `
+        <div class="stats-grid">
+          <div class="stat-card"><div class="stat-icon"><img src="https://img.icons8.com/fluency/48/user.png"/></div><div class="stat-label">Total Users</div><div class="stat-value" id="totalUsers">${adminData.totalUsers}</div></div>
+          <div class="stat-card"><div class="stat-icon"><img src="https://img.icons8.com/fluency/48/money-bag.png"/></div><div class="stat-label">Total Deposits</div><div class="stat-value" id="totalDeposits">$${adminData.totalDeposits.toFixed(2)}</div></div>
+          <div class="stat-card"><div class="stat-icon"><img src="https://img.icons8.com/fluency/48/money-transfer.png"/></div><div class="stat-label">Total Withdrawals</div><div class="stat-value" id="totalWithdrawals">$${adminData.totalWithdrawals.toFixed(2)}</div></div>
+          <div class="stat-card"><div class="stat-icon"><img src="https://img.icons8.com/fluency/48/line-chart.png"/></div><div class="stat-label">Active Users</div><div class="stat-value" id="activeUsers">${adminData.activeUsers}</div></div>
+          <div class="stat-card"><div class="stat-icon"><img src="https://img.icons8.com/fluency/48/advertising.png"/></div><div class="stat-label">Total Ads</div><div class="stat-value" id="totalAds">${adminData.totalAds}</div></div>
+          <div class="stat-card"><div class="stat-icon"><img src="https://img.icons8.com/fluency/48/checklist.png"/></div><div class="stat-label">Total Tasks</div><div class="stat-value" id="totalTasks">${adminData.totalTasks}</div></div>
+        </div>
+        <div class="grid-2">
+          <div class="card"><div class="card-title">Recent Deposits</div><div id="recentDeposits">Loading...</div></div>
+          <div class="card"><div class="card-title">Recent Withdrawals</div><div id="recentWithdrawals">Loading...</div></div>
+        </div>
+        <div class="card"><div class="card-title">User Activity Chart</div><canvas id="activityChart" height="300"></canvas></div>
+      `;
+      document.getElementById('main-content').innerHTML = html;
+      loadDashboardData();
+    }
+
+    function loadDashboardData(){
+      get(ref(rtdb,'users')).then(s=>{ if(s.exists()){ const users=s.val(); adminData.totalUsers=Object.keys(users).length; adminData.activeUsers=Object.values(users).filter(u=> (Date.now()/1000-(u.createdAt||0))<86400).length; document.getElementById('totalUsers').textContent=adminData.totalUsers; document.getElementById('activeUsers').textContent=adminData.activeUsers; }});
+      get(ref(rtdb,'admin/deposits')).then(s=>{ if(s.exists()){ const deposits=s.val(); adminData.totalDeposits=Object.values(deposits).reduce((a,d)=>a+(d.amount||0),0); document.getElementById('totalDeposits').textContent=`$${adminData.totalDeposits.toFixed(2)}`; const recent=Object.values(deposits).slice(-5).reverse(); document.getElementById('recentDeposits').innerHTML=recent.map(d=>`<div style="display:flex;justify-content:space-between;padding:8px;border-bottom:1px solid var(--card-border)"><div><div style=\"font-weight:700\">${d.userName}</div><div style=\"font-size:12px;color:var(--text-secondary)\">$${d.amount}</div></div><div><span class=\"status-badge status-${d.status}\">${d.status}</span><div style=\"font-size:11px;color:var(--text-secondary)\">${new Date((d.timestamp||0)*1000).toLocaleDateString()}</div></div></div>`).join(''); }});
+      get(ref(rtdb,'admin/withdrawals')).then(s=>{ if(s.exists()){ const w=s.val(); adminData.totalWithdrawals=Object.values(w).reduce((a,d)=>a+(d.amount||0),0); document.getElementById('totalWithdrawals').textContent=`$${adminData.totalWithdrawals.toFixed(2)}`; const recent=Object.values(w).slice(-5).reverse(); document.getElementById('recentWithdrawals').innerHTML=recent.map(d=>`<div style="display:flex;justify-content:space-between;padding:8px;border-bottom:1px solid var(--card-border)"><div><div style=\"font-weight:700\">${d.userName}</div><div style=\"font-size:12px;color:var(--text-secondary)\">$${d.amount}</div></div><div><span class=\"status-badge status-${d.status}\">${d.status}</span><div style=\"font-size:11px;color:var(--text-secondary)\">${new Date((d.timestamp||0)*1000).toLocaleDateString()}</div></div></div>`).join(''); }});
+      get(ref(rtdb,'tasks')).then(s=>{ if(s.exists()){ adminData.totalTasks=Object.keys(s.val()).length; const el=document.getElementById('totalTasks'); if(el) el.textContent=adminData.totalTasks; }});
+      setTimeout(()=>{ const ctx=document.getElementById('activityChart').getContext('2d'); new Chart(ctx,{type:'line',data:{labels:['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],datasets:[{label:'Active Users',data:[12,19,3,5,2,3,7],borderColor:'#3b82f6',backgroundColor:'rgba(59,130,246,0.1)',tension:.4}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{x:{grid:{color:'rgba(255,255,255,0.1)'},ticks:{color:'rgba(255,255,255,0.7)'}},y:{grid:{color:'rgba(255,255,255,0.1)'},ticks:{color:'rgba(255,255,255,0.7)'}}}}); },100); 
+    }
+
+    function renderUsers(){
+      const html = `
+        <div class="card">
+          <div class="card-title">User Management</div>
+          <input type="text" class="search-box" id="userSearch" placeholder="Search users by ID or name...">
+          <div id="usersList">Loading...</div>
+        </div>`;
+      document.getElementById('main-content').innerHTML = html;
+      get(ref(rtdb,'users')).then(s=>{ if(s.exists()){ const users=s.val(); let rows=''; Object.entries(users).forEach(([id,u])=>{ rows+=`<tr><td><img src=\"${u.avatar}\" style=\"width:32px;height:32px;border-radius:50%;object-fit:cover\"></td><td>${u.name}</td><td>${id}</td><td>$${(u.usdtBalance||0).toFixed(6)}</td><td>${u.referrals||0}</td><td>${u.createdAt? new Date(u.createdAt*1000).toLocaleDateString():''}</td><td><button class=\"btn-primary\" onclick=\"editUser('${id}')\">Edit</button><button class=\"btn-warning\" onclick=\"banUser('${id}')\">Ban</button></td></tr>`; }); document.getElementById('usersList').innerHTML = `<table class="table"><thead><tr><th>Avatar</th><th>Name</th><th>ID</th><th>Balance</th><th>Referrals</th><th>Created</th><th>Actions</th></tr></thead><tbody>${rows}</tbody></table>`; const input=document.getElementById('userSearch'); input.addEventListener('input',e=>{ const q=e.target.value.toLowerCase(); document.querySelectorAll('#usersList tbody tr').forEach(tr=>{ tr.style.display = tr.textContent.toLowerCase().includes(q)?'':'none'; }); }); }});
+    }
+
+    function renderDeposits(){
+      const html = `
+        <div class="card">
+          <div class="card-title">Deposit Management</div>
+          <input type="text" class="search-box" id="depositSearch" placeholder="Search by user, tx, status...">
+          <div><button class="btn-primary" id="exportDeposits">Export CSV</button></div>
+          <div id="depositsList">Loading...</div>
+        </div>`;
+      document.getElementById('main-content').innerHTML = html;
+      if (depositsUnsub) { off(depositsUnsub); depositsUnsub=null; }
+      const r = ref(rtdb,'admin/deposits');
+      onValue(r, s=>{ const data = s.exists()? s.val(): {}; renderDepositsTable(data); }); depositsUnsub=r;
+      document.getElementById('exportDeposits').onclick = async ()=>{ const snap=await get(ref(rtdb,'admin/deposits')); const rows=[]; if(snap.exists()){ Object.entries(snap.val()).forEach(([k,d])=> rows.push({ adminId:k, id:d.id||'', userId:d.userId, userName:d.userName, amount:d.amount, txHash:d.txHash, status:d.status, timestamp:new Date((d.timestamp||0)*1000).toISOString() })); } download('deposits.csv', toCsv(rows)); };
+      document.getElementById('depositSearch').addEventListener('input', e=>{ const q=e.target.value.toLowerCase(); document.querySelectorAll('#depositsList tbody tr').forEach(tr=> tr.style.display = tr.textContent.toLowerCase().includes(q)?'':'none'); });
+    }
+
+    function renderDepositsTable(items){
+      let rows=''; Object.entries(items).forEach(([k,d])=>{ const id=d.id||k; rows+=`<tr><td style=\"font-family:monospace;font-size:11px\">${id}</td><td><div style=\"font-weight:700\">${d.userName}</div><div style=\"font-size:11px;color:var(--text-secondary)\">${d.userId}</div></td><td>$${Number(d.amount||0).toFixed(2)}</td><td style=\"font-family:monospace;font-size:11px;max-width:220px;overflow:hidden;text-overflow:ellipsis\">${d.txHash||''}</td><td><span class=\"status-badge status-${d.status}\">${d.status}</span></td><td>${d.timestamp? new Date(d.timestamp*1000).toLocaleString():''}</td><td>${d.status==='pending'?`<button class=\"btn-success\" onclick=\"approveDeposit('${k}','${d.userId}',${Number(d.amount||0)})\">Approve</button><button class=\"btn-danger\" onclick=\"rejectDeposit('${k}','${d.userId}')\">Reject</button>`:''}</td></tr>`; });
+      document.getElementById('depositsList').innerHTML = `<table class="table"><thead><tr><th>User Rec ID</th><th>User</th><th>Amount</th><th>TX Hash</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead><tbody>${rows}</tbody></table>`;
+    }
+
+    function renderWithdrawals(){
+      const html = `
+        <div class="card">
+          <div class="card-title">Withdrawal Management</div>
+          <input type="text" class="search-box" id="withdrawSearch" placeholder="Search by user, address, status...">
+          <div><button class="btn-primary" id="exportWithdrawals">Export CSV</button></div>
+          <div id="withdrawalsList">Loading...</div>
+        </div>`;
+      document.getElementById('main-content').innerHTML = html;
+      if (withdrawalsUnsub) { off(withdrawalsUnsub); withdrawalsUnsub=null; }
+      const r=ref(rtdb,'admin/withdrawals'); onValue(r, s=>{ const data=s.exists()? s.val(): {}; renderWithdrawalsTable(data); }); withdrawalsUnsub=r;
+      document.getElementById('exportWithdrawals').onclick = async ()=>{ const snap=await get(ref(rtdb,'admin/withdrawals')); const rows=[]; if(snap.exists()){ Object.entries(snap.val()).forEach(([k,d])=> rows.push({ adminId:k, id:d.id||'', userId:d.userId, userName:d.userName, amount:d.amount, address:d.address, status:d.status, timestamp:new Date((d.timestamp||0)*1000).toISOString() })); } download('withdrawals.csv', toCsv(rows)); };
+      document.getElementById('withdrawSearch').addEventListener('input', e=>{ const q=e.target.value.toLowerCase(); document.querySelectorAll('#withdrawalsList tbody tr').forEach(tr=> tr.style.display = tr.textContent.toLowerCase().includes(q)?'':'none'); });
+    }
+
+    function renderWithdrawalsTable(items){
+      let rows=''; Object.entries(items).forEach(([k,d])=>{ const id=d.id||k; rows+=`<tr><td style=\"font-family:monospace;font-size:11px\">${id}</td><td><div style=\"font-weight:700\">${d.userName}</div><div style=\"font-size:11px;color:var(--text-secondary)\">${d.userId}</div></td><td>$${Number(d.amount||0).toFixed(2)}</td><td style=\"font-family:monospace;font-size:11px;max-width:220px;overflow:hidden;text-overflow:ellipsis\">${d.address||''}</td><td><span class=\"status-badge status-${d.status}\">${d.status}</span></td><td>${d.timestamp? new Date(d.timestamp*1000).toLocaleString():''}</td><td>${d.status==='pending'?`<button class=\"btn-success\" onclick=\"approveWithdrawal('${k}','${d.userId}',${Number(d.amount||0)})\">Approve</button><button class=\"btn-danger\" onclick=\"rejectWithdrawal('${k}','${d.userId}')\">Reject</button>`:''}</td></tr>`; });
+      document.getElementById('withdrawalsList').innerHTML = `<table class="table"><thead><tr><th>User Rec ID</th><th>User</th><th>Amount</th><th>Address</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead><tbody>${rows}</tbody></table>`;
+    }
+
+    function renderTasks(){
+      const html = `
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-title">Add New Task</div>
+            <div class="form-group"><label class="form-label">Task Name</label><input id="taskName" class="form-input" placeholder="Enter task name"></div>
+            <div class="form-group"><label class="form-label">Category</label><select id="taskCategory" class="form-select"><option>Project</option><option>Partner</option><option>Advertise</option></select></div>
+            <div class="form-group"><label class="form-label">Reward Amount (USDT)</label><input id="taskAmount" type="number" step="0.01" class="form-input" placeholder="Enter reward amount"></div>
+            <div class="form-group"><label class="form-label">Task Link</label><input id="taskLink" class="form-input" placeholder="Enter task URL"></div>
+            <div class="form-group"><label class="form-label">Task Photo URL</label><input id="taskPhoto" class="form-input" placeholder="Enter photo URL"></div>
+            <button class="btn-primary" onclick="addTask()">Add Task</button>
+          </div>
+          <div class="card"><div class="card-title">Existing Tasks</div><div id="tasksList">Loading...</div></div>
+        </div>`;
+      document.getElementById('main-content').innerHTML = html; loadTasks();
+    }
+
+    function loadTasks(){ get(ref(rtdb,'tasks')).then(s=>{ if(!s.exists()){ document.getElementById('tasksList').innerHTML='<div style="text-align:center;color:var(--text-secondary)">No tasks found</div>'; return; } const tasks=s.val(); let html=''; Object.entries(tasks).forEach(([id,t])=>{ html+=`<div style=\"border:1px solid var(--card-border);border-radius:8px;padding:12px;margin-bottom:8px\"><div style=\"display:flex;justify-content:space-between;align-items:center\"><div><div style=\"font-weight:700\">${t.name}</div><div style=\"font-size:12px;color:var(--text-secondary)\">${t.category} • $${t.amount} USDT</div></div><div><button class=\"btn-danger\" onclick=\"deleteTask('${id}')\">Delete</button></div></div></div>`; }); document.getElementById('tasksList').innerHTML=html; }); }
+
+    function renderSettings(){
+      const html = `
+        <div class="grid-2">
+          <div class="card"><div class="card-title">Generate Redeem Code</div>
+            <div class="form-group"><label class="form-label">Max Users</label><input id="redeemMaxUsers" type="number" class="form-input"></div>
+            <div class="form-group"><label class="form-label">Total USDT Pool</label><input id="redeemPool" type="number" step="0.01" class="form-input"></div>
+            <button class="btn-primary" onclick="generateRedeemCode()">Generate Code</button>
+          </div>
+          <div class="card"><div class="card-title">User Balance Management</div>
+            <div class="form-group"><label class="form-label">User ID</label><input id="balanceUserId" class="form-input"></div>
+            <div class="form-group"><label class="form-label">Amount</label><input id="balanceAmount" type="number" step="0.01" class="form-input"></div>
+            <div class="form-group"><label class="form-label">Action</label><select id="balanceAction" class="form-select"><option value="add">Add Balance</option><option value="subtract">Subtract Balance</option><option value="set">Set Balance</option></select></div>
+            <button class="btn-primary" onclick="updateUserBalance()">Update Balance</button>
+          </div>
+        </div>`;
+      document.getElementById('main-content').innerHTML = html;
+    }
+
+    window.editUser = function(userId){ const v = prompt('Enter new balance:', '0'); if(v!==null){ update(ref(rtdb,`users/${userId}`),{usdtBalance:parseFloat(v)||0}).then(()=>notify('User balance updated')).catch(()=>notify('Failed to update balance')); }};
+    window.banUser = function(userId){ if(confirm('Ban this user?')){ update(ref(rtdb,`users/${userId}`),{banned:true}).then(()=>notify('User banned')).catch(()=>notify('Failed to ban user')); }};
+
+    const updateUserHistoryStatus = async (userId, key, recId, status) => {
+      const snap = await get(ref(rtdb, `users/${userId}/${key}`));
+      if (!snap.exists()) return;
+      const arr = snap.val() || [];
+      const updated = arr.map(item => { if(!item) return item; if (item.id===recId || item.adminId===recId) return {...item, status}; return item; });
+      await update(ref(rtdb, `users/${userId}`), { [key]: updated });
+    };
+
+    window.approveDeposit = function(adminId, userId, amount){
+      update(ref(rtdb, `admin/deposits/${adminId}`), { status:'approved' }).then(async ()=>{
+        await updateUserHistoryStatus(userId, 'depositHistory', adminId, 'approved');
+        const uSnap = await get(ref(rtdb,`users/${userId}`));
+        if (uSnap.exists()){
+          const u = uSnap.val(); const newBal = (u.usdtBalance||0) + Number(amount||0);
+          await update(ref(rtdb,`users/${userId}`), { usdtBalance: newBal });
+          sendBot(`✅ <b>Deposit Approved</b>\nAmount: $${Number(amount||0).toFixed(2)} USDT\nBalance: $${newBal.toFixed(6)} USDT`, userId);
+        }
+        notify('Deposit approved');
+      });
+    };
+
+    window.rejectDeposit = function(adminId, userId){ update(ref(rtdb,`admin/deposits/${adminId}`),{status:'rejected'}).then(async()=>{ await updateUserHistoryStatus(userId,'depositHistory',adminId,'rejected'); sendBot('❌ <b>Deposit Rejected</b>', userId); notify('Deposit rejected'); }); };
+
+    window.approveWithdrawal = function(adminId, userId, amount){
+      update(ref(rtdb, `admin/withdrawals/${adminId}`), { status:'approved' }).then(async ()=>{
+        await updateUserHistoryStatus(userId, 'withdrawHistory', adminId, 'approved');
+        const uSnap = await get(ref(rtdb,`users/${userId}`));
+        if (uSnap.exists()){
+          const u = uSnap.val(); const newBal = Math.max(0, (u.usdtBalance||0) - Number(amount||0));
+          await update(ref(rtdb,`users/${userId}`), { usdtBalance: newBal });
+          sendBot(`✅ <b>Withdrawal Approved</b>\nAmount: $${Number(amount||0).toFixed(2)} USDT\nBalance: $${newBal.toFixed(6)} USDT`, userId);
+        }
+        notify('Withdrawal approved');
+      });
+    };
+
+    window.rejectWithdrawal = function(adminId, userId){ update(ref(rtdb,`admin/withdrawals/${adminId}`),{status:'rejected'}).then(async()=>{ await updateUserHistoryStatus(userId,'withdrawHistory',adminId,'rejected'); sendBot('❌ <b>Withdrawal Rejected</b>', userId); notify('Withdrawal rejected'); }); };
+
+    window.addTask = function(){ const name=document.getElementById('taskName').value.trim(); const category=document.getElementById('taskCategory').value; const amount=parseFloat(document.getElementById('taskAmount').value); const link=document.getElementById('taskLink').value.trim(); const photo=document.getElementById('taskPhoto').value.trim(); if(!name||!amount||!link||!photo){ notify('Please fill all fields'); return;} const id = 'task_'+Date.now(); set(ref(rtdb,`tasks/${id}`), {name,category,amount,link,photo,createdAt:Date.now()/1000}).then(()=>{ notify('Task added'); loadTasks(); }); };
+    window.deleteTask = function(id){ if(confirm('Delete this task?')) remove(ref(rtdb,`tasks/${id}`)).then(()=>{ notify('Task deleted'); loadTasks(); }); };
+    window.generateRedeemCode = function(){ const maxUsers=parseInt(document.getElementById('redeemMaxUsers').value); const pool=parseFloat(document.getElementById('redeemPool').value); if(!maxUsers||!pool){ notify('Please fill all fields'); return;} const code=Math.random().toString(36).substring(2,10).toUpperCase(); set(ref(rtdb,`redeemCodes/${code}`),{maxUsers,pool,used:0,createdAt:Date.now()/1000}).then(()=>notify(`Redeem code: ${code}`)); };
+    window.updateUserBalance = function(){ const userId=document.getElementById('balanceUserId').value.trim(); const amount=parseFloat(document.getElementById('balanceAmount').value); const action=document.getElementById('balanceAction').value; if(!userId||!amount){ notify('Please fill all fields'); return;} get(ref(rtdb,`users/${userId}`)).then(s=>{ if(!s.exists()){ notify('User not found'); return;} const u=s.val(); let newBal=u.usdtBalance||0; if(action==='add') newBal+=amount; else if(action==='subtract') newBal=Math.max(0,newBal-amount); else newBal=amount; update(ref(rtdb,`users/${userId}`),{usdtBalance:newBal}).then(()=>{ sendBot(`💰 <b>Balance Updated</b>\nAction: ${action}\nAmount: $${amount.toFixed(2)} USDT\nNew Balance: $${newBal.toFixed(6)} USDT`, userId); notify('Balance updated'); }); }); };
+
+    document.querySelectorAll('.nav-btn').forEach(b=> b.addEventListener('click', ()=>showTab(b.dataset.tab)));
+    showTab('dashboard');
+  </script>
+</body>
+</html>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no,maximum-scale=1" />
+  <title>Exotix Trade Admin Panel</title>
+  <link rel="icon" href="https://cryptologos.cc/logos/tether-usdt-logo.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -114,27 +453,27 @@
     <!-- Navigation Bar -->
     <div class="nav-bar">
       <button class="nav-btn active" data-tab="dashboard">
-        <img src="https://cdn-icons-png.flaticon.com/512/2103/2103633.png" alt="Dashboard" class="nav-icon" />
+        <img src="https://img.icons8.com/fluency/48/combo-chart.png" alt="Dashboard" class="nav-icon" />
         <span class="nav-label">Dashboard</span>
       </button>
       <button class="nav-btn" data-tab="users">
-        <img src="https://cdn-icons-png.flaticon.com/512/1077/1077114.png" alt="Users" class="nav-icon" />
+        <img src="https://img.icons8.com/fluency/48/user-groups.png" alt="Users" class="nav-icon" />
         <span class="nav-label">Users</span>
       </button>
       <button class="nav-btn" data-tab="deposits">
-        <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Deposits" class="nav-icon" />
+        <img src="https://img.icons8.com/fluency/48/money-bag.png" alt="Deposits" class="nav-icon" />
         <span class="nav-label">Deposits</span>
       </button>
       <button class="nav-btn" data-tab="withdrawals">
-        <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Withdrawals" class="nav-icon" />
+        <img src="https://img.icons8.com/fluency/48/money-transfer.png" alt="Withdrawals" class="nav-icon" />
         <span class="nav-label">Withdrawals</span>
       </button>
       <button class="nav-btn" data-tab="tasks">
-        <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Tasks" class="nav-icon" />
+        <img src="https://img.icons8.com/fluency/48/checklist.png" alt="Tasks" class="nav-icon" />
         <span class="nav-label">Tasks</span>
       </button>
       <button class="nav-btn" data-tab="settings">
-        <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Settings" class="nav-icon" />
+        <img src="https://img.icons8.com/fluency/48/settings.png" alt="Settings" class="nav-icon" />
         <span class="nav-label">Settings</span>
       </button>
     </div>
@@ -183,6 +522,9 @@
       totalTasks: 0
     };
 
+    let depositsUnsub = null;
+    let withdrawalsUnsub = null;
+
     // Utils
     const notify = (m, d=3000) => { 
       const n=document.createElement('div'); 
@@ -190,6 +532,20 @@
       n.textContent=m; 
       document.body.appendChild(n); 
       setTimeout(()=>n.remove(), d); 
+    };
+
+    const toCsv = (rows) => {
+      const escape = (v) => '"' + String(v ?? '').replace(/"/g,'""') + '"';
+      const headers = Object.keys(rows[0] || {});
+      const lines = [headers.join(',')].concat(rows.map(r=>headers.map(h=>escape(r[h])).join(',')));
+      return lines.join('\n');
+    };
+
+    const download = (filename, text) => {
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(new Blob([text], { type: 'text/csv;charset=utf-8;' }));
+      a.download = filename;
+      a.click();
     };
 
     // Tabs
@@ -440,57 +796,79 @@
       const html = `
         <div class="card">
           <div class="card-title">Deposit Management</div>
+          <input type="text" class="search-box" id="depositSearch" placeholder="Search by user, tx, status...">
+          <div>
+            <button class="btn-primary" id="exportDeposits">Export CSV</button>
+          </div>
           <div id="depositsList">Loading...</div>
         </div>
       `;
       document.getElementById('main-content').innerHTML = html;
-      loadDeposits();
+      if (depositsUnsub) { off(depositsUnsub); depositsUnsub = null; }
+      const depositsRef = ref(rtdb,'admin/deposits');
+      onValue(depositsRef, (s)=>{
+        const deposits = s.exists()? s.val(): {};
+        renderDepositsTable(deposits);
+      });
+      depositsUnsub = depositsRef;
+      document.getElementById('exportDeposits').onclick = async ()=>{
+        const snap = await get(ref(rtdb,'admin/deposits'));
+        const data = [];
+        if (snap.exists()) {
+          Object.entries(snap.val()).forEach(([key, d])=>{
+            data.push({ id: d.id || key, userId: d.userId, userName: d.userName, amount: d.amount, txHash: d.txHash, status: d.status, timestamp: new Date((d.timestamp||0)*1000).toISOString() });
+          });
+        }
+        download('deposits.csv', toCsv(data));
+      };
+      document.getElementById('depositSearch').addEventListener('input', (e)=>{
+        const q = e.target.value.toLowerCase();
+        document.querySelectorAll('#depositsList tbody tr').forEach(tr=>{
+          tr.style.display = tr.textContent.toLowerCase().includes(q) ? '' : 'none';
+        });
+      });
     }
 
-    function loadDeposits(){
-      get(ref(rtdb,'admin/deposits')).then(s=>{
-        if(s.exists()){
-          const deposits = s.val();
-          let html = `
-            <table class="table">
-              <thead>
-                <tr>
-                  <th>User</th>
-                  <th>Amount</th>
-                  <th>TX Hash</th>
-                  <th>Status</th>
-                  <th>Date</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-          `;
-          
-          Object.entries(deposits).forEach(([id, deposit]) => {
-            html += `
-              <tr>
-                <td>
-                  <div style="font-weight:700">${deposit.userName}</div>
-                  <div style="font-size:11px;color:var(--text-secondary)">${deposit.userId}</div>
-                </td>
-                <td>$${deposit.amount.toFixed(2)}</td>
-                <td style="font-family:monospace;font-size:11px">${deposit.txHash}</td>
-                <td><span class="status-badge status-${deposit.status}">${deposit.status}</span></td>
-                <td>${new Date(deposit.timestamp * 1000).toLocaleString()}</td>
-                <td>
-                  ${deposit.status === 'pending' ? `
-                    <button class="btn-success" onclick="approveDeposit('${id}', '${deposit.userId}', ${deposit.amount})">Approve</button>
-                    <button class="btn-danger" onclick="rejectDeposit('${id}', '${deposit.userId}')">Reject</button>
-                  ` : ''}
-                </td>
-              </tr>
-            `;
-          });
-          
-          html += '</tbody></table>';
-          document.getElementById('depositsList').innerHTML = html;
-        }
+    function renderDepositsTable(deposits){
+      let html = `
+        <table class="table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>User</th>
+              <th>Amount</th>
+              <th>TX Hash</th>
+              <th>Status</th>
+              <th>Date</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+      `;
+      Object.entries(deposits).forEach(([key, d])=>{
+        const id = d.id || key;
+        html += `
+          <tr>
+            <td style="font-family:monospace;font-size:11px">${id}</td>
+            <td>
+              <div style="font-weight:700">${d.userName}</div>
+              <div style="font-size:11px;color:var(--text-secondary)">${d.userId}</div>
+            </td>
+            <td>$${Number(d.amount||0).toFixed(2)}</td>
+            <td style="font-family:monospace;font-size:11px;max-width:220px;overflow:hidden;text-overflow:ellipsis">${d.txHash||''}</td>
+            <td><span class="status-badge status-${d.status}">${d.status}</span></td>
+            <td>${d.timestamp? new Date(d.timestamp*1000).toLocaleString(): ''}</td>
+            <td>
+              ${d.status === 'pending' ? `
+                <button class="btn-success" onclick="approveDeposit('${id}', '${d.userId}', ${Number(d.amount||0)})">Approve</button>
+                <button class="btn-danger" onclick="rejectDeposit('${id}', '${d.userId}')">Reject</button>
+              ` : ''}
+            </td>
+          </tr>
+        `;
       });
+      html += '</tbody></table>';
+      document.getElementById('depositsList').innerHTML = html;
     }
 
     // Withdrawals
@@ -498,57 +876,79 @@
       const html = `
         <div class="card">
           <div class="card-title">Withdrawal Management</div>
+          <input type="text" class="search-box" id="withdrawSearch" placeholder="Search by user, address, status...">
+          <div>
+            <button class="btn-primary" id="exportWithdrawals">Export CSV</button>
+          </div>
           <div id="withdrawalsList">Loading...</div>
         </div>
       `;
       document.getElementById('main-content').innerHTML = html;
-      loadWithdrawals();
+      if (withdrawalsUnsub) { off(withdrawalsUnsub); withdrawalsUnsub = null; }
+      const wRef = ref(rtdb,'admin/withdrawals');
+      onValue(wRef, (s)=>{
+        const withdrawals = s.exists()? s.val(): {};
+        renderWithdrawalsTable(withdrawals);
+      });
+      withdrawalsUnsub = wRef;
+      document.getElementById('exportWithdrawals').onclick = async ()=>{
+        const snap = await get(ref(rtdb,'admin/withdrawals'));
+        const data = [];
+        if (snap.exists()) {
+          Object.entries(snap.val()).forEach(([key, w])=>{
+            data.push({ id: w.id || key, userId: w.userId, userName: w.userName, amount: w.amount, address: w.address, status: w.status, timestamp: new Date((w.timestamp||0)*1000).toISOString() });
+          });
+        }
+        download('withdrawals.csv', toCsv(data));
+      };
+      document.getElementById('withdrawSearch').addEventListener('input', (e)=>{
+        const q = e.target.value.toLowerCase();
+        document.querySelectorAll('#withdrawalsList tbody tr').forEach(tr=>{
+          tr.style.display = tr.textContent.toLowerCase().includes(q) ? '' : 'none';
+        });
+      });
     }
 
-    function loadWithdrawals(){
-      get(ref(rtdb,'admin/withdrawals')).then(s=>{
-        if(s.exists()){
-          const withdrawals = s.val();
-          let html = `
-            <table class="table">
-              <thead>
-                <tr>
-                  <th>User</th>
-                  <th>Amount</th>
-                  <th>Address</th>
-                  <th>Status</th>
-                  <th>Date</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-          `;
-          
-          Object.entries(withdrawals).forEach(([id, withdrawal]) => {
-            html += `
-              <tr>
-                <td>
-                  <div style="font-weight:700">${withdrawal.userName}</div>
-                  <div style="font-size:11px;color:var(--text-secondary)">${withdrawal.userId}</div>
-                </td>
-                <td>$${withdrawal.amount.toFixed(2)}</td>
-                <td style="font-family:monospace;font-size:11px">${withdrawal.address}</td>
-                <td><span class="status-badge status-${withdrawal.status}">${withdrawal.status}</span></td>
-                <td>${new Date(withdrawal.timestamp * 1000).toLocaleString()}</td>
-                <td>
-                  ${withdrawal.status === 'pending' ? `
-                    <button class="btn-success" onclick="approveWithdrawal('${id}', '${withdrawal.userId}', ${withdrawal.amount})">Approve</button>
-                    <button class="btn-danger" onclick="rejectWithdrawal('${id}', '${withdrawal.userId}', ${withdrawal.amount})">Reject</button>
-                  ` : ''}
-                </td>
-              </tr>
-            `;
-          });
-          
-          html += '</tbody></table>';
-          document.getElementById('withdrawalsList').innerHTML = html;
-        }
+    function renderWithdrawalsTable(withdrawals){
+      let html = `
+        <table class="table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>User</th>
+              <th>Amount</th>
+              <th>Address</th>
+              <th>Status</th>
+              <th>Date</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+      `;
+      Object.entries(withdrawals).forEach(([key, w])=>{
+        const id = w.id || key;
+        html += `
+          <tr>
+            <td style="font-family:monospace;font-size:11px">${id}</td>
+            <td>
+              <div style="font-weight:700">${w.userName}</div>
+              <div style="font-size:11px;color:var(--text-secondary)">${w.userId}</div>
+            </td>
+            <td>$${Number(w.amount||0).toFixed(2)}</td>
+            <td style="font-family:monospace;font-size:11px;max-width:220px;overflow:hidden;text-overflow:ellipsis">${w.address||''}</td>
+            <td><span class="status-badge status-${w.status}">${w.status}</span></td>
+            <td>${w.timestamp? new Date(w.timestamp*1000).toLocaleString(): ''}</td>
+            <td>
+              ${w.status === 'pending' ? `
+                <button class="btn-success" onclick="approveWithdrawal('${id}', '${w.userId}', ${Number(w.amount||0)})">Approve</button>
+                <button class="btn-danger" onclick="rejectWithdrawal('${id}', '${w.userId}', ${Number(w.amount||0)})">Reject</button>
+              ` : ''}
+            </td>
+          </tr>
+        `;
       });
+      html += '</tbody></table>';
+      document.getElementById('withdrawalsList').innerHTML = html;
     }
 
     // Tasks
@@ -696,61 +1096,63 @@
       }
     };
 
+    const updateUserHistoryStatus = async (userId, key, recId, status) => {
+      const snap = await get(ref(rtdb, `users/${userId}/${key}`));
+      if (!snap.exists()) return;
+      const arr = snap.val() || [];
+      const updated = arr.map(item => {
+        if (!item) return item;
+        if (item.id === recId || item.adminId === recId) return { ...item, status };
+        return item;
+      });
+      await update(ref(rtdb, `users/${userId}`), { [key]: updated });
+    };
+
     window.approveDeposit = function(depositId, userId, amount){
-      // Update deposit status
       update(ref(rtdb, `admin/deposits/${depositId}`), { status: 'approved' })
-        .then(() => {
-          // Add balance to user
-          get(ref(rtdb, `users/${userId}`)).then(s => {
-            if(s.exists()){
-              const user = s.val();
-              const newBalance = (user.usdtBalance || 0) + amount;
-              update(ref(rtdb, `users/${userId}`), { usdtBalance: newBalance })
-                .then(() => {
-                  sendBot(`✅ <b>Deposit Approved</b>\nAmount: $${amount.toFixed(2)} USDT\nStatus: Approved\nBalance: $${newBalance.toFixed(6)} USDT`, userId);
-                  notify('Deposit approved');
-                  renderDeposits();
-                });
-            }
-          });
+        .then(async () => {
+          await updateUserHistoryStatus(userId, 'depositHistory', depositId, 'approved');
+          const userSnap = await get(ref(rtdb, `users/${userId}`));
+          if (userSnap.exists()){
+            const user = userSnap.val();
+            const newBalance = (user.usdtBalance || 0) + Number(amount||0);
+            await update(ref(rtdb, `users/${userId}`), { usdtBalance: newBalance });
+            sendBot(`✅ <b>Deposit Approved</b>\nAmount: $${Number(amount||0).toFixed(2)} USDT\nStatus: Approved\nBalance: $${newBalance.toFixed(6)} USDT`, userId);
+          }
+          notify('Deposit approved');
         });
     };
 
     window.rejectDeposit = function(depositId, userId){
       update(ref(rtdb, `admin/deposits/${depositId}`), { status: 'rejected' })
-        .then(() => {
-          sendBot(`❌ <b>Deposit Rejected</b>\nYour deposit request has been rejected. Please contact support if you have any questions.`, userId);
+        .then(async () => {
+          await updateUserHistoryStatus(userId, 'depositHistory', depositId, 'rejected');
+          sendBot(`❌ <b>Deposit Rejected</b>\nYour deposit request has been rejected.`, userId);
           notify('Deposit rejected');
-          renderDeposits();
         });
     };
 
     window.approveWithdrawal = function(withdrawalId, userId, amount){
-      // Update withdrawal status
       update(ref(rtdb, `admin/withdrawals/${withdrawalId}`), { status: 'approved' })
-        .then(() => {
-          // Subtract balance from user
-          get(ref(rtdb, `users/${userId}`)).then(s => {
-            if(s.exists()){
-              const user = s.val();
-              const newBalance = Math.max(0, (user.usdtBalance || 0) - amount);
-              update(ref(rtdb, `users/${userId}`), { usdtBalance: newBalance })
-                .then(() => {
-                  sendBot(`✅ <b>Withdrawal Approved</b>\nAmount: $${amount.toFixed(2)} USDT\nStatus: Approved\nBalance: $${newBalance.toFixed(6)} USDT`, userId);
-                  notify('Withdrawal approved');
-                  renderWithdrawals();
-                });
-            }
-          });
+        .then(async () => {
+          await updateUserHistoryStatus(userId, 'withdrawHistory', withdrawalId, 'approved');
+          const userSnap = await get(ref(rtdb, `users/${userId}`));
+          if (userSnap.exists()){
+            const user = userSnap.val();
+            const newBalance = Math.max(0, (user.usdtBalance || 0) - Number(amount||0));
+            await update(ref(rtdb, `users/${userId}`), { usdtBalance: newBalance });
+            sendBot(`✅ <b>Withdrawal Approved</b>\nAmount: $${Number(amount||0).toFixed(2)} USDT\nStatus: Approved\nBalance: $${newBalance.toFixed(6)} USDT`, userId);
+          }
+          notify('Withdrawal approved');
         });
     };
 
-    window.rejectWithdrawal = function(withdrawalId, userId, amount){
+    window.rejectWithdrawal = function(withdrawalId, userId){
       update(ref(rtdb, `admin/withdrawals/${withdrawalId}`), { status: 'rejected' })
-        .then(() => {
-          sendBot(`❌ <b>Withdrawal Rejected</b>\nYour withdrawal request has been rejected. Please contact support if you have any questions.`, userId);
+        .then(async () => {
+          await updateUserHistoryStatus(userId, 'withdrawHistory', withdrawalId, 'rejected');
+          sendBot(`❌ <b>Withdrawal Rejected</b>\nYour withdrawal request has been rejected.`, userId);
           notify('Withdrawal rejected');
-          renderWithdrawals();
         });
     };
 
